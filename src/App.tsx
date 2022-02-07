@@ -1,6 +1,6 @@
 import "aframe";
 import "./App.css";
-import { Camera, Scene } from "@belivvr/aframe-react";
+import { Assets, Camera, Scene } from "@belivvr/aframe-react";
 import SkyBox from "./components/SkyBox";
 import AframeProvider from "./lib/aframe/AframeProvider";
 
@@ -8,13 +8,10 @@ function App() {
     return (
         <div style={{ width: "100vw", height: "100vh" }}>
             <AframeProvider>
-                <Scene
-                    inspector={{
-                        url: new URL(
-                            "http://localhost:3000/aframe-inspector.min.js"
-                        ),
-                    }}
-                >
+                <Scene>
+                    {/* <Assets>
+                        <Image id="clouds" src="clouds.png" />
+                    </Assets> */}
                     <Camera />
                     <SkyBox />
                 </Scene>
