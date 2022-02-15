@@ -1,4 +1,4 @@
-import { Light, Sphere, GLTFModel } from "@belivvr/aframe-react";
+import { Light, Sphere, GLTFModel, Sky } from "@belivvr/aframe-react";
 import { useEffect } from "react";
 import Clouds from "./Clouds";
 
@@ -12,6 +12,7 @@ export default function Space() {
 
     return (
         <>
+            <Sky src={"textures/crab_nebula.png"} />
             <Light type="ambient" />
             <Light
                 type="directional"
@@ -30,30 +31,6 @@ export default function Space() {
                 intensity={3}
                 distance={100}
             />
-            {/* <Sphere
-                scale={{ x: 400, y: 400, z: 400 }}
-                material={{
-                    shader: "colorize-sky",
-                    side: "back",
-                    uColor: "#000000",
-                }}
-            /> */}
-            <Sphere
-                scale={{ x: 400, y: 400, z: 400 }}
-                material={{
-                    side: "back",
-                    color: "#000000",
-                }}
-            />
-            {/* <Sphere
-                scale={{ x: 399, y: 399, z: 399 }}
-                material={{
-                    transparent: true,
-                    depthTest: false,
-                    side: "back",
-                    src: "clouds.png",
-                }}
-            /> */}
             <GLTFModel
                 src="#ground_grey"
                 position={{ x: -5, y: -2, z: -10 }}
