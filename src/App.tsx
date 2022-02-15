@@ -4,6 +4,7 @@ import { AssetItem, Assets, Camera, Image } from "@belivvr/aframe-react";
 import SkyBox from "./components/SkyBox";
 import AframeProvider from "./lib/aframe/AframeProvider";
 import Space from "./components/Space";
+import SeaBox from "./components/SeaBox";
 
 function App() {
     return (
@@ -17,7 +18,9 @@ function App() {
                     <Image id="smoke" src="textures/smoke.png" />
                 </Assets>
                 <Camera />
-                <Space />
+                {/* <Space /> */}
+                {/* <SkyBox /> */}
+                <SeaBox />
             </AframeProvider>
         </div>
     );
