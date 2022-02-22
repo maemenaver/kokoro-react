@@ -46,6 +46,20 @@ export default function Space() {
                 position={{ x: 4, y: -2, z: -8 }}
                 scale={{ x: 6, y: 6, z: 6 }}
             />
+            <GLTFModel
+                src="#marble_bust_01"
+                position={{ x: -1, y: 2, z: -9 }}
+                scale={{ x: 10, y: 10, z: 10 }}
+                material={{
+                    transparent: true,
+                    opacity: 0.2,
+                }}
+            />
+            <GLTFModel
+                src="#vintage_pocket_watch"
+                position={{ x: 4, y: 4, z: -12 }}
+                scale={{ x: 46, y: 46, z: 46 }}
+            />
             <Clouds />
         </>
     );
