@@ -11,7 +11,7 @@ export default function AframeProvider({ children }) {
             <ColorizeSea />
 
             {/* Scene */}
-            <Scene>{children}</Scene>
+            <Scene vrModeUI={{ enabled: false }}>{children}</Scene>
         </>
     );
 }
