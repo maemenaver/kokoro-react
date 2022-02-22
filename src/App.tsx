@@ -5,8 +5,11 @@ import SkyBox from "./components/SkyBox";
 import AframeProvider from "./lib/aframe/AframeProvider";
 import Space from "./components/Space";
 import SeaBox from "./components/SeaBox";
+import { useLocation } from "wouter";
 
 function App() {
+    const [location] = useLocation();
+
     return (
         <div style={{ width: "100vw", height: "100vh" }}>
             <AframeProvider>
@@ -18,9 +21,13 @@ function App() {
                     <Image id="smoke" src="textures/smoke.png" />
                 </Assets>
                 <Camera />
-                {/* <Space /> */}
-                {/* <SkyBox /> */}
-                <SeaBox />
+                {location === "/sea" ? (
+                    <SeaBox />
+                ) : location === "/sky" ? (
+                    <SkyBox />
+                ) : (
+                    <Space />
+                )}
             </AframeProvider>
         </div>
     );
