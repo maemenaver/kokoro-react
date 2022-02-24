@@ -28,11 +28,7 @@ export default function SkyBox() {
                 src="#vintage_pocket_watch"
                 position={{ x: 4, y: 4, z: -12 }}
                 scale={{ x: 46, y: 46, z: 46 }}
-                model-material={{
-                    opacity: 0.5,
-                    transparent: true,
-                    needsUpdate: true,
-                }}
+                model-material-opacity={1}
             />
         </>
     );
