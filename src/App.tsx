@@ -26,6 +26,10 @@ function App() {
                         id="vintage_pocket_watch"
                         src="models/vintage_pocket_watch_2k/vintage_pocket_watch_2k.gltf"
                     />
+                    <AssetItem
+                        id="Balloon_Cluster_v1"
+                        src="models/Balloon_Cluster_v1/Balloon_Cluster_v1.gltf"
+                    />
                     <Image id="smoke" src="textures/smoke.png" />
                 </Assets>
                 <Camera />
