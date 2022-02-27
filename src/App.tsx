@@ -31,6 +31,7 @@ function App() {
                         src="models/Balloon_Cluster_v1/Balloon_Cluster_v1.gltf"
                     />
                     <Image id="smoke" src="textures/smoke.png" />
+                    <Image id="outCircle" src="textures/particles/2.png" />
                 </Assets>
                 <Camera />
                 {location === "/sea" ? (

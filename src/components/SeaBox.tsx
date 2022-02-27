@@ -1,4 +1,4 @@
-import { Assets, Light, Sphere } from "@belivvr/aframe-react";
+import { Assets, Entity, Light, Sphere } from "@belivvr/aframe-react";
 
 export default function SeaBox() {
     return (
@@ -12,6 +12,7 @@ export default function SeaBox() {
                     uColor: "#3366CC",
                 }}
             />
+            <Entity point />
         </>
     );
 }
