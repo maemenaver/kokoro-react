@@ -1,15 +1,66 @@
 import * as AFRAME from "aframe";
 
 export default function renderOrder() {
-    AFRAME.registerComponent("render-order", {
-        dependencies: ["material"],
-        schema: {
-            order: { type: "number", default: 0 },
-        },
+    AFRAME.registerSystem("render-order", {
+        schema: { type: "array" },
+
         init: function () {
-            this.el.sceneEl.renderer.sortObjects = true;
-            this.el.object3D.renderOrder = this.nextData.order;
-            this.el.components.material.material.depthTest = false;
+            this.el.renderer.sortObjects = true;
+            console.log("system", this);
+        },
+
+        update: function () {
+            this.order = {};
+            for (let i = 0; i < this.data.length; i++) {
+                this.order[this.data[i]] = i;
+            }
+        },
+    });
+
+    AFRAME.registerComponent("render-order", {
+        schema: { type: "string" },
+
+        multiple: true,
+
+        init: function () {
+            console.log(this.system);
+            this.set = this.set.bind(this);
+            this.el.addEventListener("object3dset", (evt) => {
+                if (this.id !== "nonrecursive") {
+                    evt.detail.object.traverse(this.set);
+                }
+            });
+        },
+
+        update: function () {
+            if (this.id === "nonrecursive") {
+                this.set(this.el.object3D);
+            } else {
+                this.el.object3D.traverse(this.set);
+            }
+            this.el.sceneEl.renderer.clearDepth();
+        },
+
+        set: function (node) {
+            console.log("set", this.el.sceneEl.systems["render-order"].order);
+            // String (named order).
+            if (isNaN(this.data)) {
+                node.renderOrder =
+                    this.el.sceneEl.systems["render-order"].order[this.data];
+            } else {
+                node.renderOrder = parseFloat(this.data);
+            }
+        },
+    });
+
+    AFRAME.registerComponent("render-order-recursive", {
+        init: function () {
+            this.el.addEventListener("child-attached", (evt) => {
+                evt.detail.el.setAttribute(
+                    "render-order",
+                    this.el.getAttribute("render-order")
+                );
+            });
         },
     });
 }
