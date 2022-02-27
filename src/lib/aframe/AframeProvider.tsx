@@ -13,7 +13,15 @@ export default function AframeProvider({ children }) {
             <ColorizeSea />
 
             {/* Scene */}
-            <Scene vrModeUI={{ enabled: false }}>{children}</Scene>
+            <Scene
+                vrModeUI={{ enabled: false }}
+                render-order="bg, fg"
+                renderer={{
+                    logarithmicDepthBuffer: true,
+                }}
+            >
+                {children}
+            </Scene>
         </>
     );
 }

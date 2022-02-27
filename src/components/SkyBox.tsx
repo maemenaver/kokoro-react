@@ -16,12 +16,8 @@ export default function SkyBox() {
                 scale={{ x: 399, y: 399, z: 399 }}
                 material={{
                     transparent: true,
-                    depthTest: false,
                     side: "back",
                     src: "clouds.png",
-                }}
-                render-order={{
-                    order: 2,
                 }}
             />
             <GLTFModel
