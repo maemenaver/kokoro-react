@@ -19,7 +19,7 @@ export default function pointComponent() {
 
             const textureLoader = new THREE.TextureLoader();
             const particleTexture = textureLoader.load(
-                "/textures/particles/2.png"
+                "/textures/particles/1.png"
             );
 
             // Create geometry.
@@ -45,6 +45,7 @@ export default function pointComponent() {
                 transparent: true,
                 alphaMap: particleTexture,
                 depthWrite: false,
+                opacity: 0.5,
             });
 
             // Create mesh.

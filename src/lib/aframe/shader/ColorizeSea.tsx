@@ -29,7 +29,7 @@ export default function ColorizeSea() {
                 void main() {
                     float atmosphere = sqrt(1.0-vUv.y);
                     vec3 skyColor = uColor;
-                    vec3 scatterColor = mix(vec3(0.0),vec3(1.0,0.3,0.0) * 1.5,0.0);
+                    vec3 scatterColor = vec3(0.0,0.0,0.0);
                     vec3 sky = mix(skyColor, vec3(scatterColor), atmosphere / 0.9);
                     gl_FragColor = vec4(sky , 1.0);
             }
