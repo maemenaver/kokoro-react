@@ -6,12 +6,18 @@ import AframeProvider from "./lib/aframe/AframeProvider";
 import Space from "./components/Space";
 import SeaBox from "./components/SeaBox";
 import { useLocation } from "wouter";
+import Text from "./components/ZustandExample/Text";
+import CharacterCounter from "./components/ZustandExample/CharacterCounter";
+import TodoList from "./components/ZustandExample/Todo/TodoList";
 
 function App() {
     const [location] = useLocation();
 
     return (
         <div style={{ width: "100vw", height: "100vh" }}>
+            {/* <Text />
+            <CharacterCounter />
+            <TodoList /> */}
             <AframeProvider>
                 <Assets>
                     <AssetItem
@@ -38,6 +44,8 @@ function App() {
                     <SeaBox />
                 ) : location === "/sky" ? (
                     <SkyBox />
+                ) : location === "/space" ? (
+                    <Space />
                 ) : (
                     <Space />
                 )}
