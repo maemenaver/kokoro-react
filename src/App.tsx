@@ -9,6 +9,8 @@ import { useLocation } from "wouter";
 import Text from "./components/ZustandExample/Text";
 import CharacterCounter from "./components/ZustandExample/CharacterCounter";
 import TodoList from "./components/ZustandExample/Todo/TodoList";
+import CurrentUserInfo from "./components/ZustandExample/Todo/CurrentUserInfo";
+import Scratches from "./components/ZustandExample/Scratches";
 
 function App() {
     const [location] = useLocation();
@@ -17,7 +19,9 @@ function App() {
         <div style={{ width: "100vw", height: "100vh" }}>
             {/* <Text />
             <CharacterCounter />
-            <TodoList /> */}
+            <TodoList />
+            <CurrentUserInfo />
+            <Scratches /> */}
             <AframeProvider>
                 <Assets>
                     <AssetItem
