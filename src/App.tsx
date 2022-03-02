@@ -1,5 +1,4 @@
 import "aframe";
-import "./App.css";
 import { Camera } from "@belivvr/aframe-react";
 import SkyBox from "./components/SkyBox";
 import AframeProvider from "./lib/aframe/AframeProvider";
