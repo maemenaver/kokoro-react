@@ -1,15 +1,17 @@
 import "aframe";
 import { Camera } from "@belivvr/aframe-react";
-import SkyBox from "./components/SkyBox";
 import AframeProvider from "./lib/aframe/AframeProvider";
-import Space from "./components/Space";
-import SeaBox from "./components/SeaBox";
 import { useLocation } from "wouter";
 import Text from "./components/ZustandExample/Text";
 import CharacterCounter from "./components/ZustandExample/CharacterCounter";
 import TodoList from "./components/ZustandExample/Todo/TodoList";
 import CurrentUserInfo from "./components/ZustandExample/Todo/CurrentUserInfo";
 import Scratches from "./components/ZustandExample/Scratches";
+import SeaBox from "./lib/aframe/scene/SeaBox";
+import SkyBox from "./lib/aframe/scene/SkyBox";
+import Space from "./lib/aframe/scene/Space";
+import Root from "./lib/aframe/scene/Root";
+import { Intro } from "./components/Intro";
 
 function App() {
     const [location] = useLocation();
@@ -21,6 +23,7 @@ function App() {
             <TodoList />
             <CurrentUserInfo />
             <Scratches /> */}
+            {location === "/" && <Intro />}
             <AframeProvider>
                 <Camera />
                 {location === "/sea" ? (
@@ -30,7 +33,7 @@ function App() {
                 ) : location === "/space" ? (
                     <Space />
                 ) : (
-                    <Space />
+                    <Root />
                 )}
             </AframeProvider>
         </div>

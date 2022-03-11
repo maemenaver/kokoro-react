@@ -20,7 +20,12 @@ export default function AframeAssets() {
                     id="Balloon_Cluster_v1"
                     src="models/Balloon_Cluster_v1/Balloon_Cluster_v1.gltf"
                 />
+                <AssetItem
+                    id="saturn_1_120536"
+                    src="models/Saturn_1_120536.gltf"
+                />
                 <Image id="smoke" src="textures/smoke.png" />
+                <Image id="earth" src="textures/1_earth_8k.jpeg" />
                 <Image id="outCircle" src="textures/particles/2.png" />
             </Assets>
         </>
