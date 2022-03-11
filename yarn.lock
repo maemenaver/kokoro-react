@@ -1024,10 +1024,17 @@
     core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.0", "@babel/runtime@^7.16.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.17.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.0.tgz#b8d142fc0f7664fb3d9b5833fd40dcbab89276c0"
   integrity sha512-etcO/ohMNaNA2UBdaXBBSX/3aEzFMRrVfaPv8Ptc0k+cWpWW0QFiGZ2XnVqQZI1Cf734LbPGmqBKWESfW4x/dQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.16.0":
+  version "7.17.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.2.tgz#66f68591605e59da47523c631416b18508779941"
+  integrity sha512-hzeyJyMA1YGdJTuWU0e/j4wKXrU4OMFvY2MSlaI9B7VQb0r5cxTE3EAIS2Q7Tn2RIcDkRvTA/v2JsAEhxe99uw==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -1069,10 +1076,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@belivvr/aframe-react@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@belivvr/aframe-react/-/aframe-react-0.3.1.tgz#6bb9ee734ee3b7bee1fb083f7f2cc99a5b1fb933"
-  integrity sha512-/Udrn6p1qGDE3hiix1zfOYd6pKDWxkX7qsRoOJ6F6pC9YUwXHFwq8JN+reEnbFSWlj1py0Q90a/0smovPF/jHg==
+"@belivvr/aframe-react@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@belivvr/aframe-react/-/aframe-react-0.4.1.tgz#9d7bd01ab45396e5be31d0430583c9464fcd00d4"
+  integrity sha512-3Rbmk8vRSrkPupTEOxQB4Nh91fBKZa/sC3qHbfY7xzTHCl0W+i5PR3zivw870HDi8aphk45cMLqXAalIDimglA==
   dependencies:
     "@babel/runtime" "^7.16.0"
     react "^17.0.2"
