@@ -10,6 +10,7 @@ export default function AframeScene({ children }) {
                 renderer={{
                     logarithmicDepthBuffer: true,
                 }}
+                embedded
             >
                 <AframeAssets />
                 {children}
