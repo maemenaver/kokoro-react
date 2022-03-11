@@ -6,6 +6,7 @@ import renderOrder from "./renderOrder";
 
 export default function RegisterComponent() {
     useEffect(() => {
+        require("aframe-globe-component");
         renderOrder();
         modelMaterial();
         pointComponent();
