@@ -9,9 +9,10 @@ import CurrentUserInfo from "./components/ZustandExample/Todo/CurrentUserInfo";
 import Scratches from "./components/ZustandExample/Scratches";
 import SeaBox from "./lib/aframe/scene/SeaBox";
 import SkyBox from "./lib/aframe/scene/SkyBox";
-import Space from "./lib/aframe/scene/Space";
+// import Space from "./lib/aframe/scene/Space";
 import Root from "./lib/aframe/scene/Root";
 import { Intro } from "./components/Intro";
+import { Space } from "./lib/three/scene/Space";
 
 function App() {
     const [location] = useLocation();
