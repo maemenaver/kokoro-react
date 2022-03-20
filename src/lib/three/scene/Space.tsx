@@ -1,25 +1,29 @@
 import react, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Canvas, useLoader, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import SaturnModel from "../model/SaturnModel";
 import { TextureLoader } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
+import PointModel from "../PointModel";
 
 const Space = (props) => {
+    const { scene } = useThree();
+
     const cameraRef = useRef<any>();
 
-    const [CameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
+    const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
+    const [saturn, setSaturn] = useState<PointModel>(null);
 
-    const { scene } = useThree();
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
     const controlUi = useControls({
         cameraRotationY: {
             value: 0,
             min: -Math.PI / 2,
             max: Math.PI / 2,
-            step: Math.PI / 2,
+            step: 0.1,
+            // step: Math.PI / 2,
             onChange: (v) => {
                 setCameraRotationYTo(v);
             },
@@ -27,7 +31,7 @@ const Space = (props) => {
     });
 
     const { cameraRotationY } = useSpring({
-        cameraRotationY: CameraRotationYTo,
+        cameraRotationY: cameraRotationYTo,
         onChange: () => {
             console.log(cameraRotationY.get());
             cameraRef.current.rotation.y = Math.PI - cameraRotationY.get();
@@ -39,7 +43,24 @@ const Space = (props) => {
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(gridHelper);
         scene.add(axesHelper);
+
+        setSaturn(
+            new PointModel({
+                file: "./models/saturn.glb",
+                scene: scene,
+                color1: "red",
+                color2: "yellow",
+                placeOnLoad: true,
+            })
+        );
     }, []);
+
+    useFrame(({ clock }) => {
+        if (saturn?.particlesMaterial?.uniforms) {
+            saturn.particlesMaterial.uniforms.uTime.value =
+                clock.getElapsedTime();
+        }
+    });
 
     // useEffect(() => {
     //     scene.background = spaceBg;
@@ -59,7 +80,7 @@ const Space = (props) => {
                 ref={cameraRef}
             />
             <ambientLight />
-            <SaturnModel position={[30, 0, 0]} scale={[0.02, 0.02, 0.02]} />
+            {/* <SaturnModel position={[30, 0, 0]} scale={[0.02, 0.02, 0.02]} /> */}
             <mesh scale={399}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
