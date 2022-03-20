@@ -12,6 +12,7 @@
         "axios": "^0.26.0",
         "babel-plugin-glsl": "^1.0.0",
         "glslify": "^7.1.1",
+        "gsap": "^3.9.1",
         "leva": "^0.9.23",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
