@@ -54,17 +54,16 @@ void main() {
 }
 `;
 
-const PointShaderMaterial = (color1, color2) =>
-    shaderMaterial(
-        {
-            uColor1: new THREE.Color(color1),
-            uColor2: new THREE.Color(color2),
-            uTime: 0,
-            uScale: 0,
-        },
-        vertexShader,
-        fragmentShader
-    );
+// const PointShaderMaterial = shaderMaterial(
+//     {
+//         uColor1: new THREE.Color("red"),
+//         uColor2: new THREE.Color("blue"),
+//         uTime: 0,
+//         uScale: 0,
+//     },
+//     vertexShader,
+//     fragmentShader
+// );
 
 const PointShaderMaterialRaw = (color1, color2) =>
     new THREE.ShaderMaterial({
@@ -79,7 +78,7 @@ const PointShaderMaterialRaw = (color1, color2) =>
                 value: 0,
             },
             uScale: {
-                value: 0,
+                value: 1,
             },
         },
         vertexShader,
@@ -90,4 +89,4 @@ const PointShaderMaterialRaw = (color1, color2) =>
         blending: THREE.AdditiveBlending,
     });
 
-export { PointShaderMaterial, PointShaderMaterialRaw };
+export { PointShaderMaterialRaw };

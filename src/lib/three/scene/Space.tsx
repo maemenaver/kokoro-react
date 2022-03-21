@@ -9,9 +9,9 @@ import { useSpring, animated } from "@react-spring/three";
 import PointModel from "../PointModel";
 
 const Space = (props) => {
-    const { scene } = useThree();
+    const { scene, gl } = useThree();
 
-    const cameraRef = useRef<any>();
+    const cameraRef = useRef<any>(null);
 
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
     const [saturn, setSaturn] = useState<PointModel>(null);
@@ -44,15 +44,15 @@ const Space = (props) => {
         scene.add(gridHelper);
         scene.add(axesHelper);
 
-        setSaturn(
-            new PointModel({
-                file: "./models/saturn.glb",
-                scene: scene,
-                color1: "red",
-                color2: "yellow",
-                placeOnLoad: true,
-            })
-        );
+        // setSaturn(
+        //     new PointModel({
+        //         file: "./models/saturn.glb",
+        //         scene: scene,
+        //         color1: "red",
+        //         color2: "yellow",
+        //         placeOnLoad: true,
+        //     })
+        // );
     }, []);
 
     useFrame(({ clock }) => {
@@ -80,7 +80,7 @@ const Space = (props) => {
                 ref={cameraRef}
             />
             <ambientLight />
-            {/* <SaturnModel position={[30, 0, 0]} scale={[0.02, 0.02, 0.02]} /> */}
+            <SaturnModel position={[3, 1, 3]} />
             <mesh scale={399}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
