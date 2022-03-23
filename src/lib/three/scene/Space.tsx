@@ -11,8 +11,11 @@ import PointModel from "../PointModel";
 const Space = (props) => {
     const { scene, gl } = useThree();
 
-    const cameraCenterRef = useRef<THREE.Group>(null);
-    const camerasRef = useRef<any>(null);
+    const cameraLeftRef = useRef<THREE.PerspectiveCamera>(null);
+    const cameraCenterRef = useRef<THREE.PerspectiveCamera>(null);
+    const cameraRightRef = useRef<THREE.PerspectiveCamera>(null);
+
+    const camerasRef = useRef<THREE.Group>(null);
     const orbitRef = useRef<THREE.Group>(null);
 
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
@@ -65,13 +68,12 @@ const Space = (props) => {
             <group ref={orbitRef}>
                 <group ref={camerasRef} position={[0, 0, -30]}>
                     <PerspectiveCamera
-                        makeDefault
                         position={[0, 0, 0]}
                         rotation={[0, Math.PI + Math.PI / 2, 0]}
                         fov={58.5}
                         near={0.1}
                         far={20000}
-                        // ref={cameraCenterRef}
+                        ref={cameraLeftRef}
                     />
                     <PerspectiveCamera
                         makeDefault
@@ -83,13 +85,12 @@ const Space = (props) => {
                         ref={cameraCenterRef}
                     />
                     <PerspectiveCamera
-                        // makeDefault
                         position={[0, 0, 0]}
                         rotation={[0, Math.PI - Math.PI / 2, 0]}
                         fov={58.5}
                         near={0.1}
                         far={20000}
-                        // ref={cameraCenterRef}
+                        ref={cameraRightRef}
                     />
                 </group>
             </group>
