@@ -32,7 +32,7 @@ class SaturnModelProps {
 export default function Model({ ...props }: SaturnModelProps & PointsProps) {
     const { scene } = useThree();
 
-    const { nodes, materials } = useGLTF("/models/saturn.glb") as GLTFResult;
+    const { nodes } = useGLTF("/models/saturn.glb") as GLTFResult;
 
     const meshRef = useRef<THREE.Mesh>(null);
     const pointsRef = useRef<THREE.Points>(null);
@@ -111,11 +111,7 @@ export default function Model({ ...props }: SaturnModelProps & PointsProps) {
     return (
         <>
             <group ref={group} dispose={null} visible={false}>
-                <mesh
-                    ref={meshRef}
-                    geometry={nodes.Saturn001.geometry}
-                    material={materials["None.002"]}
-                />
+                <mesh ref={meshRef} geometry={nodes.Saturn001.geometry} />
             </group>
             <Points
                 {...props}

@@ -50,12 +50,14 @@ const Space = (props) => {
         scene.add(axesHelper);
     }, []);
 
-    useFrame(({ clock }) => {
-        orbitRef.current.rotation.y = clock.elapsedTime / 3;
-        // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
-        cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
-        cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
-    });
+    // useFrame(({ clock }) => {
+    //     orbitRef.current.rotation.y = clock.elapsedTime / 3;
+    //     // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
+    //     cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
+    //     cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
+    // });
+
+    const foo = useCallback(() => {}, []);
 
     return (
         <>
