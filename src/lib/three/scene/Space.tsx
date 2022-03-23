@@ -1,4 +1,4 @@
-import react, { useEffect, useRef, useState } from "react";
+import react, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import SaturnModel from "../model/SaturnModel";
@@ -11,7 +11,9 @@ import PointModel from "../PointModel";
 const Space = (props) => {
     const { scene, gl } = useThree();
 
-    const cameraRef = useRef<any>(null);
+    const cameraCenterRef = useRef<THREE.Group>(null);
+    const camerasRef = useRef<any>(null);
+    const orbitRef = useRef<THREE.Group>(null);
 
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
     const [saturn, setSaturn] = useState<PointModel>(null);
@@ -33,54 +35,64 @@ const Space = (props) => {
     const { cameraRotationY } = useSpring({
         cameraRotationY: cameraRotationYTo,
         onChange: () => {
-            console.log(cameraRotationY.get());
-            cameraRef.current.rotation.y = Math.PI - cameraRotationY.get();
+            cameraCenterRef.current.rotation.y =
+                Math.PI - cameraRotationY.get();
         },
     });
 
     useEffect(() => {
-        const gridHelper = new THREE.GridHelper(20, 20);
+        const gridHelper = new THREE.GridHelper(50, 50);
         const axesHelper = new THREE.AxesHelper(5);
         scene.add(gridHelper);
         scene.add(axesHelper);
-
-        // setSaturn(
-        //     new PointModel({
-        //         file: "./models/saturn.glb",
-        //         scene: scene,
-        //         color1: "red",
-        //         color2: "yellow",
-        //         placeOnLoad: true,
-        //     })
-        // );
     }, []);
 
     useFrame(({ clock }) => {
-        if (saturn?.particlesMaterial?.uniforms) {
-            saturn.particlesMaterial.uniforms.uTime.value =
-                clock.getElapsedTime();
-        }
+        orbitRef.current.rotation.y = clock.elapsedTime / 3;
+        // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
+        cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
+        cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
     });
-
-    // useEffect(() => {
-    //     scene.background = spaceBg;
-    //     scene.environment = spaceBg;
-    //     scene.environment.encoding = THREE.sRGBEncoding;
-    // }, [spaceBg]);
 
     return (
         <>
-            <PerspectiveCamera
-                makeDefault
-                position={[0, 1, 0]}
-                rotation={[0, 0, 0]}
-                fov={58.5}
-                near={0.1}
-                far={20000}
-                ref={cameraRef}
-            />
             <ambientLight />
-            <SaturnModel position={[3, 1, 3]} />
+            <SaturnModel
+                position={[0, 0, 0]}
+                scale={[10, 10, 10]}
+                numParticles={200000}
+            />
+            <group ref={orbitRef}>
+                <group ref={camerasRef} position={[0, 0, -30]}>
+                    <PerspectiveCamera
+                        makeDefault
+                        position={[0, 0, 0]}
+                        rotation={[0, Math.PI + Math.PI / 2, 0]}
+                        fov={58.5}
+                        near={0.1}
+                        far={20000}
+                        // ref={cameraCenterRef}
+                    />
+                    <PerspectiveCamera
+                        makeDefault
+                        position={[0, 0, 0]}
+                        rotation={[0, Math.PI, 0]}
+                        fov={58.5}
+                        near={0.1}
+                        far={20000}
+                        ref={cameraCenterRef}
+                    />
+                    <PerspectiveCamera
+                        // makeDefault
+                        position={[0, 0, 0]}
+                        rotation={[0, Math.PI - Math.PI / 2, 0]}
+                        fov={58.5}
+                        near={0.1}
+                        far={20000}
+                        // ref={cameraCenterRef}
+                    />
+                </group>
+            </group>
             <mesh scale={399}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
@@ -89,17 +101,6 @@ const Space = (props) => {
                     map={spaceBg}
                 />
             </mesh>
-            {/* <mesh>
-                <boxGeometry attach="geometry" args={[1, 1, 1]} />
-                <meshStandardMaterial
-                    attach="material"
-                    side={THREE.DoubleSide}
-                />
-            </mesh> */}
-            {/* <OrbitControls
-                target={new THREE.Vector3(0.01, 1, 0)}
-                rotation={[120, 0, 0]}
-            /> */}
         </>
     );
 };
