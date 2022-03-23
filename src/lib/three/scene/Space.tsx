@@ -1,12 +1,11 @@
 import react, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
-import SaturnModel from "../model/SaturnModel";
+import PointModel from "../model/PointModel";
 import { TextureLoader } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
-import PointModel from "../PointModel";
 
 const Space = (props) => {
     const { scene, gl } = useThree();
@@ -19,7 +18,6 @@ const Space = (props) => {
     const orbitRef = useRef<THREE.Group>(null);
 
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
-    const [saturn, setSaturn] = useState<PointModel>(null);
 
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
     const controlUi = useControls({
@@ -62,7 +60,8 @@ const Space = (props) => {
     return (
         <>
             <ambientLight />
-            <SaturnModel
+            <PointModel
+                path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
                 scale={[10, 10, 10]}
                 numParticles={200000}

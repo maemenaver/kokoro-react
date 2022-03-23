@@ -27,12 +27,15 @@ type GLTFResult = GLTF & {
 
 class SaturnModelProps {
     numParticles: number;
+    path: string;
 }
 
-export default function Model({ ...props }: SaturnModelProps & PointsProps) {
+export default function PointModel({
+    ...props
+}: SaturnModelProps & PointsProps) {
     const { scene } = useThree();
 
-    const { nodes } = useGLTF("/models/saturn.glb") as GLTFResult;
+    const { nodes } = useGLTF(props.path) as GLTFResult;
 
     const meshRef = useRef<THREE.Mesh>(null);
     const pointsRef = useRef<THREE.Points>(null);
@@ -123,4 +126,4 @@ export default function Model({ ...props }: SaturnModelProps & PointsProps) {
     );
 }
 
-useGLTF.preload("/models/saturn.glb");
+// useGLTF.preload("/models/saturn.glb");
