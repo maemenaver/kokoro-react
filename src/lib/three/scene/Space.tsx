@@ -17,11 +17,34 @@ const Space = (props) => {
     const camerasRef = useRef<THREE.Group>(null);
     const orbitRef = useRef<THREE.Group>(null);
 
+    const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
 
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
-    const controlUi = useControls({
-        cameraRotationY: {
+    useControls("camera", {
+        position: {
+            value: {
+                x: 0,
+                y: 0,
+                z: -30,
+            },
+            onChange: (v) => {
+                console.log("position", v);
+                const { x, y, z } = v;
+                camerasRef.current.position.set(x, y, z);
+            },
+        },
+        rotationX: {
+            value: 0,
+            min: -Math.PI / 2,
+            max: Math.PI / 2,
+            step: 0.1,
+            // step: Math.PI / 2,
+            onChange: (v) => {
+                setCameraRotationXTo(v);
+            },
+        },
+        rotationY: {
             value: 0,
             min: -Math.PI / 2,
             max: Math.PI / 2,
@@ -30,6 +53,13 @@ const Space = (props) => {
             onChange: (v) => {
                 setCameraRotationYTo(v);
             },
+        },
+    });
+
+    const { cameraRotationX } = useSpring({
+        cameraRotationX: cameraRotationXTo,
+        onChange: () => {
+            cameraCenterRef.current.rotation.x = cameraRotationX.get();
         },
     });
 
@@ -44,18 +74,43 @@ const Space = (props) => {
     useEffect(() => {
         const gridHelper = new THREE.GridHelper(50, 50);
         const axesHelper = new THREE.AxesHelper(5);
-        scene.add(gridHelper);
-        scene.add(axesHelper);
+        // scene.add(gridHelper);
+        // scene.add(axesHelper);
+
+        for (let i = 0; i < 500; i++) {
+            console.log(foo());
+            const obj = new THREE.Mesh(
+                new THREE.SphereGeometry(0.5),
+                new THREE.MeshBasicMaterial({
+                    color: new THREE.Color("red"),
+                })
+            );
+            const [x, y, z] = foo();
+            obj.position.set(x, y, z);
+            orbitRef.current.add(obj);
+        }
     }, []);
 
-    // useFrame(({ clock }) => {
-    //     orbitRef.current.rotation.y = clock.elapsedTime / 3;
-    //     // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
-    //     cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
-    //     cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
-    // });
+    useFrame(({ clock }) => {
+        orbitRef.current.rotation.y = clock.elapsedTime / 3;
+        // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
+        cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
+        cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
+    });
 
-    const foo = useCallback(() => {}, []);
+    const foo = useCallback(() => {
+        const distanceOffset = 30;
+        const distanceRange = 10;
+        const distance = distanceOffset + (Math.random() - 0.5) * distanceRange;
+
+        const angle = Math.random() * Math.PI * 2;
+
+        const x = Math.cos(angle) * distance;
+        const y = (Math.random() - 0.5) * 10;
+        const z = Math.sin(angle) * distance;
+
+        return [x, y, z];
+    }, []);
 
     return (
         <>
