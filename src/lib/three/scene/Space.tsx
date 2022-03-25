@@ -12,7 +12,7 @@ class SpaceProps {
 }
 
 const Space = (props: SpaceProps) => {
-    const { scene, gl } = useThree();
+    const { scene, gl, size } = useThree();
 
     const cameraLeftRef = useRef<THREE.PerspectiveCamera>(null);
     const cameraCenterRef = useRef<THREE.PerspectiveCamera>(null);
@@ -85,6 +85,18 @@ const Space = (props: SpaceProps) => {
         const orbitChildGroups = [];
         for (let i = 0; i < props.objCount; i++) {
             const [x, y, z] = foo();
+            let path: string;
+            let numParticles: number;
+            switch (Math.floor(Math.random() * 2)) {
+                case 0:
+                    path = "/models/horse.glb";
+                    numParticles = 500;
+                    break;
+                case 1:
+                    path = "/models/skull.glb";
+                    numParticles = 1000;
+                    break;
+            }
             orbitChildGroups.push(
                 <group
                     key={`orbitChildGroup_${i}`}
@@ -95,9 +107,11 @@ const Space = (props: SpaceProps) => {
                     }}
                 >
                     <PointModel
-                        path={"/models/horse.glb"}
-                        numParticles={500}
+                        path={path}
+                        numParticles={numParticles}
                         position={[x, y, z]}
+                        color1={"blue"}
+                        color2={"purple"}
                     ></PointModel>
                 </group>
             );
@@ -107,10 +121,11 @@ const Space = (props: SpaceProps) => {
     }, []);
 
     useFrame(({ clock }) => {
-        orbitRef.current.rotation.y = clock.elapsedTime / 3;
+        orbitRef.current.rotation.y = clock.elapsedTime / 20;
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
-        cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
-        cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
+        cameraCenterRef.current.rotation.z = clock.elapsedTime / 20;
+        cameraCenterRef.current.position.y =
+            Math.sin(clock.elapsedTime / 5) * 2;
 
         orbitRef.current.children.forEach((group) => {
             if (group.name !== "orbitChildGroup") return;
@@ -141,6 +156,8 @@ const Space = (props: SpaceProps) => {
                 position={[0, 0, 0]}
                 scale={[10, 10, 10]}
                 numParticles={200000}
+                color1={"red"}
+                color2={"yellow"}
             />
             <group ref={orbitRef}>
                 <group ref={camerasRef} position={[0, 0, -30]}>
@@ -172,7 +189,17 @@ const Space = (props: SpaceProps) => {
                 </group>
                 {orbitChildGroup.length > 0 && orbitChildGroup}
             </group>
-            <mesh scale={399}>
+            {/* <mesh scale={399}>
+                <sphereGeometry attach="geometry" />
+                <meshStandardMaterial
+                    attach="material"
+                    side={THREE.BackSide}
+                    transparent
+                    opacity={0.2}
+                    color={"green"}
+                />
+            </mesh> */}
+            <mesh scale={400}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
                     attach="material"

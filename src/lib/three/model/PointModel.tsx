@@ -12,6 +12,8 @@ import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 class SaturnModelProps {
     numParticles: number;
     path: string;
+    color1: THREE.ColorRepresentation;
+    color2: THREE.ColorRepresentation;
 }
 
 export default function PointModel({
@@ -107,7 +109,10 @@ export default function PointModel({
                 />
                 <Points
                     ref={pointsRef}
-                    material={PointShaderMaterialRaw("red", "yellow")}
+                    material={PointShaderMaterialRaw(
+                        props.color1,
+                        props.color2
+                    )}
                     geometry={particlesGeometry()}
                 />
             </group>

@@ -50,7 +50,7 @@ void main() {
     float depth = vPosition.z * 0.5 + 0.5;
     color = mix(uColor1, uColor2, depth);
     // color = vec3(vPosition.x, vPosition.y, vPosition.z);
-    gl_FragColor = vec4(color, depth * 0.3 + 0.2);
+    gl_FragColor = vec4(color, 1.0);
 }
 `;
 
@@ -65,7 +65,10 @@ void main() {
 //     fragmentShader
 // );
 
-const PointShaderMaterialRaw = (color1, color2) =>
+const PointShaderMaterialRaw = (
+    color1: THREE.ColorRepresentation,
+    color2: THREE.ColorRepresentation
+) =>
     new THREE.ShaderMaterial({
         uniforms: {
             uColor1: {
