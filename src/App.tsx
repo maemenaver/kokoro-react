@@ -34,7 +34,7 @@ function App() {
                             logarithmicDepthBuffer: true,
                         }}
                     >
-                        <Space />
+                        <Space objCount={500} />
                     </Canvas>
                 </Suspense>
             ) : location === "/" ? (
@@ -47,7 +47,7 @@ function App() {
                     ) : location === "/sky" ? (
                         <SkyBox />
                     ) : location === "/space" ? (
-                        <Space />
+                        <Space objCount={500} />
                     ) : (
                         <Root />
                     )}

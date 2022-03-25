@@ -1,13 +1,17 @@
 import react, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import PointModel from "../model/PointModel";
 import { TextureLoader } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 
-const Space = (props) => {
+class SpaceProps {
+    objCount: number;
+}
+
+const Space = (props: SpaceProps) => {
     const { scene, gl } = useThree();
 
     const cameraLeftRef = useRef<THREE.PerspectiveCamera>(null);
@@ -16,10 +20,10 @@ const Space = (props) => {
 
     const camerasRef = useRef<THREE.Group>(null);
     const orbitRef = useRef<THREE.Group>(null);
-    const orbitChildRef = useRef<THREE.Group[]>([]);
 
     const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
+    const [orbitChildGroup, setOrbitChildGroup] = useState<JSX.Element[]>([]);
 
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
     useControls("camera", {
@@ -78,28 +82,28 @@ const Space = (props) => {
         // scene.add(gridHelper);
         // scene.add(axesHelper);
 
-        for (let i = 0; i < 500; i++) {
-            console.log(foo());
-            const obj = new THREE.Mesh(
-                new THREE.SphereGeometry(0.5),
-                new THREE.MeshBasicMaterial({
-                    color: new THREE.Color("red"),
-                })
-            );
+        const orbitChildGroups = [];
+        for (let i = 0; i < props.objCount; i++) {
             const [x, y, z] = foo();
-            obj.position.set(x, y, z);
-
-            const orbitChildGroup = new THREE.Group();
-            orbitChildGroup.name = "orbitChild";
-            orbitChildGroup.position.set(0, 0, 0);
-            orbitChildGroup.add(obj);
-            orbitChildGroup.userData = {
-                orbitSpeed: Math.random() * 3,
-            };
-
-            orbitRef.current.add(orbitChildGroup);
-            orbitChildRef.current.push(orbitChildGroup);
+            orbitChildGroups.push(
+                <group
+                    key={`orbitChildGroup_${i}`}
+                    name={"orbitChildGroup"}
+                    position={[0, 0, 0]}
+                    userData={{
+                        orbitSpeed: Math.random() * 3,
+                    }}
+                >
+                    <PointModel
+                        path={"/models/horse.glb"}
+                        numParticles={500}
+                        position={[x, y, z]}
+                    ></PointModel>
+                </group>
+            );
         }
+
+        setOrbitChildGroup(orbitChildGroups);
     }, []);
 
     useFrame(({ clock }) => {
@@ -108,8 +112,10 @@ const Space = (props) => {
         cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
         cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
 
-        orbitChildRef.current.forEach((v) => {
-            v.rotation.y = (clock.elapsedTime / 9) * v.userData.orbitSpeed;
+        orbitRef.current.children.forEach((group) => {
+            if (group.name !== "orbitChildGroup") return;
+            group.rotation.y =
+                (clock.elapsedTime / 9) * group.userData.orbitSpeed;
         });
     });
 
@@ -164,6 +170,7 @@ const Space = (props) => {
                         ref={cameraRightRef}
                     />
                 </group>
+                {orbitChildGroup.length > 0 && orbitChildGroup}
             </group>
             <mesh scale={399}>
                 <sphereGeometry attach="geometry" />
