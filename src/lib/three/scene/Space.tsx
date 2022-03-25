@@ -16,6 +16,7 @@ const Space = (props) => {
 
     const camerasRef = useRef<THREE.Group>(null);
     const orbitRef = useRef<THREE.Group>(null);
+    const orbitChildRef = useRef<THREE.Group[]>([]);
 
     const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
@@ -87,7 +88,17 @@ const Space = (props) => {
             );
             const [x, y, z] = foo();
             obj.position.set(x, y, z);
-            orbitRef.current.add(obj);
+
+            const orbitChildGroup = new THREE.Group();
+            orbitChildGroup.name = "orbitChild";
+            orbitChildGroup.position.set(0, 0, 0);
+            orbitChildGroup.add(obj);
+            orbitChildGroup.userData = {
+                orbitSpeed: Math.random() * 3,
+            };
+
+            orbitRef.current.add(orbitChildGroup);
+            orbitChildRef.current.push(orbitChildGroup);
         }
     }, []);
 
@@ -96,6 +107,10 @@ const Space = (props) => {
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
         cameraCenterRef.current.rotation.z = clock.elapsedTime / 10;
         cameraCenterRef.current.position.y = Math.sin(clock.elapsedTime) * 2;
+
+        orbitChildRef.current.forEach((v) => {
+            v.rotation.y = (clock.elapsedTime / 9) * v.userData.orbitSpeed;
+        });
     });
 
     const foo = useCallback(() => {
