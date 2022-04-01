@@ -27,6 +27,7 @@ function App() {
             <TodoList />
             <CurrentUserInfo />
             <Scratches /> */}
+            {location === "/" && <Intro />}
             {location === "/space" ? (
                 <Suspense fallback={null}>
                     <Canvas
@@ -34,11 +35,9 @@ function App() {
                             logarithmicDepthBuffer: true,
                         }}
                     >
-                        <Space objCount={500} />
+                        <Space objCount={10} />
                     </Canvas>
                 </Suspense>
-            ) : location === "/" ? (
-                <Intro />
             ) : (
                 <AframeProvider>
                     <Camera />
@@ -46,8 +45,6 @@ function App() {
                         <SeaBox />
                     ) : location === "/sky" ? (
                         <SkyBox />
-                    ) : location === "/space" ? (
-                        <Space objCount={500} />
                     ) : (
                         <Root />
                     )}
