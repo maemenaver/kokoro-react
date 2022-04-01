@@ -6,6 +6,7 @@ import { TextureLoader } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
+import Effects from "../Effects";
 
 class SpaceProps {
     objCount: number;
@@ -189,6 +190,7 @@ const Space = (props: SpaceProps) => {
                 </group>
                 {orbitChildGroup.length > 0 && orbitChildGroup}
             </group>
+            <Effects />
             {/* <mesh scale={399}>
                 <sphereGeometry attach="geometry" />
                 <meshStandardMaterial
