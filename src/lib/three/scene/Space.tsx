@@ -7,6 +7,7 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 import Effects from "../Effects";
+import { GalaxyStars } from "../GalaxyStars";
 
 class SpaceProps {
     objCount: number;
@@ -21,6 +22,7 @@ const Space = (props: SpaceProps) => {
 
     const camerasRef = useRef<THREE.Group>(null);
     const orbitRef = useRef<THREE.Group>(null);
+    const galaxyRef = useRef(null);
 
     const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
@@ -151,7 +153,7 @@ const Space = (props: SpaceProps) => {
 
     return (
         <>
-            <ambientLight />
+            {/* <ambientLight /> */}
             <PointModel
                 path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
@@ -160,6 +162,7 @@ const Space = (props: SpaceProps) => {
                 color1={"red"}
                 color2={"yellow"}
             />
+            <GalaxyStars dof={galaxyRef} />
             <group ref={orbitRef}>
                 <group ref={camerasRef} position={[0, 0, -30]}>
                     <PerspectiveCamera
