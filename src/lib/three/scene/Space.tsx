@@ -93,11 +93,11 @@ const Space = (props: SpaceProps) => {
             switch (Math.floor(Math.random() * 2)) {
                 case 0:
                     path = "/models/horse.glb";
-                    numParticles = 500;
+                    numParticles = 3000;
                     break;
                 case 1:
                     path = "/models/skull.glb";
-                    numParticles = 1000;
+                    numParticles = 7500;
                     break;
             }
             orbitChildGroups.push(
@@ -106,13 +106,14 @@ const Space = (props: SpaceProps) => {
                     name={"orbitChildGroup"}
                     position={[0, 0, 0]}
                     userData={{
-                        orbitSpeed: Math.random() * 3,
+                        orbitSpeed: Math.random() * 1.2,
                     }}
                 >
                     <PointModel
                         path={path}
                         numParticles={numParticles}
                         position={[x, y, z]}
+                        scale={[5, 5, 5]}
                         color1={"blue"}
                         color2={"purple"}
                     ></PointModel>
@@ -145,7 +146,7 @@ const Space = (props: SpaceProps) => {
         const angle = Math.random() * Math.PI * 2;
 
         const x = Math.cos(angle) * distance;
-        const y = (Math.random() - 0.5) * 10;
+        const y = (Math.random() - 0.5) * 20;
         const z = Math.sin(angle) * distance;
 
         return [x, y, z];
@@ -157,13 +158,13 @@ const Space = (props: SpaceProps) => {
             <PointModel
                 path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
-                scale={[10, 10, 10]}
+                scale={[10, 11, 10]}
                 numParticles={200000}
                 color1={"red"}
                 color2={"yellow"}
             />
-            <GalaxyStars dof={galaxyRef} />
             <group ref={orbitRef}>
+                <GalaxyStars dof={galaxyRef} />
                 <group ref={camerasRef} position={[0, 0, -30]}>
                     <PerspectiveCamera
                         position={[0, 0, 0]}

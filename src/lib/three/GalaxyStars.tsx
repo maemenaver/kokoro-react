@@ -8,11 +8,11 @@ export function GalaxyStars({ dof }) {
     const parameters = useControls({
         Galaxy: folder({
             count: { min: 100, max: 1000000, value: 100000, step: 100 },
-            size: { min: 0.001, max: 0.1, value: 0.01, step: 0.001 },
-            radius: { min: 0.01, max: 50, value: 50, step: 0.01 },
-            branches: { min: 2, max: 20, value: 4, step: 1 },
-            spin: { min: -5, max: 5, value: 1.25, step: 0.001 },
-            randomness: { min: 0, max: 2, value: 0.3, step: 0.001 },
+            size: { min: 0.001, max: 0.1, value: 0.02, step: 0.001 },
+            radius: { min: 0.01, max: 50, value: 31, step: 0.01 },
+            branches: { min: 2, max: 20, value: 2, step: 1 },
+            spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
+            randomness: { min: 0, max: 2, value: 0.09, step: 0.001 },
             randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
             insideColor: { value: "#ff6030", label: "Inside Color" },
             outsideColor: { value: "#1b3984", label: "Outside Color" },
