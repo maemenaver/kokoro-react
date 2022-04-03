@@ -90,10 +90,10 @@ const Space = (props: SpaceProps) => {
             const [x, y, z] = foo();
             let path: string;
             let numParticles: number;
-            switch (Math.floor(Math.random() * 7)) {
+            switch (Math.floor(Math.random() * 1)) {
                 case 0:
-                    path = "/models/ukulele.glb";
-                    numParticles = 1000;
+                    path = "/models/cherry.glb";
+                    numParticles = 1500;
                     break;
                 case 1:
                     path = "/models/skull.glb";
@@ -118,6 +118,18 @@ const Space = (props: SpaceProps) => {
                 case 6:
                     path = "/models/sofa.glb";
                     numParticles = 3000;
+                    break;
+                case 7:
+                    path = "/models/ukulele.glb";
+                    numParticles = 1000;
+                    break;
+                case 8:
+                    path = "/models/aircraft.glb";
+                    numParticles = 2000;
+                    break;
+                case 9:
+                    path = "/models/mushroom.glb";
+                    numParticles = 1500;
                     break;
             }
             orbitChildGroups.push(
