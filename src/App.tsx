@@ -16,6 +16,9 @@ import SkyBox from "./lib/aframe/scene/SkyBox";
 import Space from "./lib/three/scene/Space";
 import Root from "./lib/aframe/scene/Root";
 import { Intro } from "./components/Intro";
+import { Color } from "./components/Color";
+import { Shape } from "./components/Shape";
+import { Music } from "./components/Music";
 
 function App() {
     const [location] = useLocation();
@@ -28,6 +31,9 @@ function App() {
             <CurrentUserInfo />
             <Scratches /> */}
             {location === "/" && <Intro />}
+            {location === "/color" && <Color />}
+            {location === "/shape" && <Shape />}
+            {location === "/music" && <Music />}
             {location === "/space" ? (
                 <Suspense fallback={null}>
                     <Canvas

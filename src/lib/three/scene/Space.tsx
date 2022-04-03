@@ -90,14 +90,34 @@ const Space = (props: SpaceProps) => {
             const [x, y, z] = foo();
             let path: string;
             let numParticles: number;
-            switch (Math.floor(Math.random() * 2)) {
+            switch (Math.floor(Math.random() * 7)) {
                 case 0:
-                    path = "/models/horse.glb";
-                    numParticles = 3000;
+                    path = "/models/ukulele.glb";
+                    numParticles = 1000;
                     break;
                 case 1:
                     path = "/models/skull.glb";
                     numParticles = 7500;
+                    break;
+                case 2:
+                    path = "/models/horse.glb";
+                    numParticles = 3000;
+                    break;
+                case 3:
+                    path = "/models/elephant.glb";
+                    numParticles = 3000;
+                    break;
+                case 4:
+                    path = "/models/marble_bust.glb";
+                    numParticles = 1500;
+                    break;
+                case 5:
+                    path = "/models/megaphone.glb";
+                    numParticles = 2000;
+                    break;
+                case 6:
+                    path = "/models/sofa.glb";
+                    numParticles = 3000;
                     break;
             }
             orbitChildGroups.push(
@@ -114,8 +134,8 @@ const Space = (props: SpaceProps) => {
                         numParticles={numParticles}
                         position={[x, y, z]}
                         scale={[5, 5, 5]}
-                        color1={"blue"}
-                        color2={"purple"}
+                        color1={"red"}
+                        color2={"orange"}
                     ></PointModel>
                 </group>
             );
@@ -160,8 +180,8 @@ const Space = (props: SpaceProps) => {
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
                 numParticles={200000}
-                color1={"red"}
-                color2={"yellow"}
+                color1={"green"}
+                color2={"green"}
             />
             <group ref={orbitRef}>
                 <GalaxyStars dof={galaxyRef} />

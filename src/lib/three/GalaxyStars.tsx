@@ -8,7 +8,7 @@ export function GalaxyStars({ dof }) {
     const parameters = useControls({
         Galaxy: folder({
             count: { min: 100, max: 1000000, value: 100000, step: 100 },
-            size: { min: 0.001, max: 0.1, value: 0.02, step: 0.001 },
+            size: { min: 0.001, max: 0.1, value: 0.01, step: 0.001 },
             radius: { min: 0.01, max: 50, value: 31, step: 0.01 },
             branches: { min: 2, max: 20, value: 2, step: 1 },
             spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
