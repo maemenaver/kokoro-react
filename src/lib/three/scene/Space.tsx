@@ -4,13 +4,16 @@ import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import PointModel from "../model/PointModel";
 import { TextureLoader } from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { useControls } from "leva";
+import { folder, useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 import Effects from "../Effects";
 import { GalaxyStars } from "../GalaxyStars";
 
 class SpaceProps {
     objCount: number;
+    primaryColor: string;
+    secondaryColor: string;
+    therapeuticColor: string;
 }
 
 const Space = (props: SpaceProps) => {
@@ -64,6 +67,25 @@ const Space = (props: SpaceProps) => {
         },
     });
 
+    const galaxyControl = useControls({
+        Galaxy: folder({
+            count: { min: 100, max: 1000000, value: 100000, step: 100 },
+            size: { min: 0.001, max: 0.1, value: 0.01, step: 0.001 },
+            radius: { min: 0.01, max: 50, value: 31, step: 0.01 },
+            branches: { min: 2, max: 20, value: 2, step: 1 },
+            spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
+            randomness: { min: 0, max: 2, value: 0.09, step: 0.001 },
+            randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
+            // insideColor: { value: "#ff6030", label: "Inside Color" },
+            // outsideColor: { value: "#1b3984", label: "Outside Color" },
+            insideColor: { value: props.secondaryColor, label: "Inside Color" },
+            outsideColor: {
+                value: props.secondaryColor,
+                label: "Outside Color",
+            },
+        }),
+    });
+
     const { cameraRotationX } = useSpring({
         cameraRotationX: cameraRotationXTo,
         onChange: () => {
@@ -85,12 +107,14 @@ const Space = (props: SpaceProps) => {
         // scene.add(gridHelper);
         // scene.add(axesHelper);
 
+        console.log(props);
+
         const orbitChildGroups = [];
         for (let i = 0; i < props.objCount; i++) {
             const [x, y, z] = foo();
             let path: string;
             let numParticles: number;
-            switch (Math.floor(Math.random() * 1)) {
+            switch (Math.floor(Math.random() * 10)) {
                 case 0:
                     path = "/models/cherry.glb";
                     numParticles = 1500;
@@ -146,8 +170,12 @@ const Space = (props: SpaceProps) => {
                         numParticles={numParticles}
                         position={[x, y, z]}
                         scale={[5, 5, 5]}
-                        color1={"red"}
-                        color2={"orange"}
+                        color1={props.therapeuticColor}
+                        color2={
+                            props.therapeuticColor === "black"
+                                ? "white"
+                                : props.therapeuticColor
+                        }
                     ></PointModel>
                 </group>
             );
@@ -192,11 +220,15 @@ const Space = (props: SpaceProps) => {
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
                 numParticles={200000}
-                color1={"green"}
-                color2={"green"}
+                color1={props.primaryColor}
+                color2={
+                    props.primaryColor === "black"
+                        ? "white"
+                        : props.primaryColor
+                }
             />
             <group ref={orbitRef}>
-                <GalaxyStars dof={galaxyRef} />
+                <GalaxyStars dof={galaxyRef} galaxyControl={galaxyControl} />
                 <group ref={camerasRef} position={[0, 0, -30]}>
                     <PerspectiveCamera
                         position={[0, 0, 0]}

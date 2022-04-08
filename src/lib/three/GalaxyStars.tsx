@@ -4,19 +4,8 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, DepthOfField } from "@react-three/postprocessing";
 import { useControls, folder } from "leva";
 
-export function GalaxyStars({ dof }) {
+export function GalaxyStars({ dof, galaxyControl }) {
     const parameters = useControls({
-        Galaxy: folder({
-            count: { min: 100, max: 1000000, value: 100000, step: 100 },
-            size: { min: 0.001, max: 0.1, value: 0.01, step: 0.001 },
-            radius: { min: 0.01, max: 50, value: 31, step: 0.01 },
-            branches: { min: 2, max: 20, value: 2, step: 1 },
-            spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
-            randomness: { min: 0, max: 2, value: 0.09, step: 0.001 },
-            randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
-            insideColor: { value: "#ff6030", label: "Inside Color" },
-            outsideColor: { value: "#1b3984", label: "Outside Color" },
-        }),
         Animation: folder({
             animate: true,
             mouse: false,
@@ -117,35 +106,37 @@ export function GalaxyStars({ dof }) {
     });
 
     const generateGalaxy = () => {
-        const positions = new Float32Array(parameters.count * 3);
-        const colors = new Float32Array(parameters.count * 3);
-        const colorInside = new THREE.Color(parameters.insideColor);
-        const colorOutside = new THREE.Color(parameters.outsideColor);
+        const positions = new Float32Array(galaxyControl.count * 3);
+        const colors = new Float32Array(galaxyControl.count * 3);
+        const colorInside = new THREE.Color(galaxyControl.insideColor);
+        const colorOutside = new THREE.Color(galaxyControl.outsideColor);
         // const colorInside = new THREE.Color(1.0, 0.3765, 0.1882);
         // const colorOutside = new THREE.Color(0.10588, 0.22353, 0.51765);
 
-        for (let i = 0; i < parameters.count; i++) {
+        for (let i = 0; i < galaxyControl.count; i++) {
             const i3 = i * 3;
 
-            const radius = Math.random() * parameters.radius;
-            const spinAngle = radius * parameters.spin;
+            const radius = Math.random() * galaxyControl.radius;
+            const spinAngle = radius * galaxyControl.spin;
             const branchAngle =
-                ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
+                ((i % galaxyControl.branches) / galaxyControl.branches) *
+                Math.PI *
+                2;
 
             const randomX =
-                Math.pow(Math.random(), parameters.randomnessPower) *
+                Math.pow(Math.random(), galaxyControl.randomnessPower) *
                 (Math.random() < 0.5 ? 1 : -1) *
-                parameters.randomness *
+                galaxyControl.randomness *
                 radius;
             const randomY =
-                Math.pow(Math.random(), parameters.randomnessPower) *
+                Math.pow(Math.random(), galaxyControl.randomnessPower) *
                 (Math.random() < 0.5 ? 1 : -1) *
-                parameters.randomness *
+                galaxyControl.randomness *
                 radius;
             const randomZ =
-                Math.pow(Math.random(), parameters.randomnessPower) *
+                Math.pow(Math.random(), galaxyControl.randomnessPower) *
                 (Math.random() < 0.5 ? 1 : -1) *
-                parameters.randomness *
+                galaxyControl.randomness *
                 radius;
 
             positions[i3] =
@@ -155,7 +146,7 @@ export function GalaxyStars({ dof }) {
                 Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
             const mixedColor = colorInside.clone();
-            mixedColor.lerp(colorOutside, radius / parameters.radius);
+            mixedColor.lerp(colorOutside, radius / galaxyControl.radius);
 
             colors[i3] = mixedColor.r;
             colors[i3 + 1] = mixedColor.g;
@@ -176,7 +167,7 @@ export function GalaxyStars({ dof }) {
         <points ref={particles}>
             <bufferGeometry />
             <pointsMaterial
-                size={parameters.size}
+                size={galaxyControl.size}
                 sizeAttenuation={true}
                 depthWrite={true}
                 vertexColors={true}

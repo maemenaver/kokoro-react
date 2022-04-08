@@ -88,7 +88,7 @@ const PointShaderMaterialRaw = (
         fragmentShader,
         transparent: true,
         depthTest: false,
-        depthWrite: false,
+        depthWrite: true,
         blending: THREE.AdditiveBlending,
     });
 
