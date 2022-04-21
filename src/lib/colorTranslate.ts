@@ -21,6 +21,9 @@ export default function colorTranslate(color: string) {
         case "파랑":
             return "blue";
 
+        case "회색":
+            return "grey";
+
         default:
             return color;
     }

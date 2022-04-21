@@ -67,6 +67,51 @@ const Space = (props: SpaceProps) => {
         },
     });
 
+    const saturnControl = useControls("Saturn", {
+        color1: {
+            value:
+                props.primaryColor === "orange"
+                    ? "#ff0a00"
+                    : props.primaryColor === "yellow"
+                    ? "orange"
+                    : props.primaryColor === "black"
+                    ? "#1d1d1d"
+                    : props.primaryColor === "red"
+                    ? "#b4274d"
+                    : props.primaryColor === "purple"
+                    ? "#231462"
+                    : props.primaryColor === "green"
+                    ? "#2c8624"
+                    : props.primaryColor === "blue"
+                    ? "#0019ff"
+                    : props.primaryColor === "grey"
+                    ? "#1a1821"
+                    : props.primaryColor,
+            label: "Color1",
+        },
+        color2: {
+            value:
+                props.primaryColor === "orange"
+                    ? "#ff3000"
+                    : props.primaryColor === "yellow"
+                    ? "orange"
+                    : props.primaryColor === "black"
+                    ? "#000000"
+                    : props.primaryColor === "red"
+                    ? "#0b0b0d"
+                    : props.primaryColor === "purple"
+                    ? "#10021d"
+                    : props.primaryColor === "green"
+                    ? "#022706"
+                    : props.primaryColor === "blue"
+                    ? "#0053ff"
+                    : props.primaryColor === "grey"
+                    ? "#000000"
+                    : props.primaryColor,
+            label: "Color2",
+        },
+    });
+
     const galaxyControl = useControls({
         Galaxy: folder({
             count: { min: 100, max: 1000000, value: 100000, step: 100 },
@@ -78,9 +123,46 @@ const Space = (props: SpaceProps) => {
             randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
             // insideColor: { value: "#ff6030", label: "Inside Color" },
             // outsideColor: { value: "#1b3984", label: "Outside Color" },
-            insideColor: { value: props.secondaryColor, label: "Inside Color" },
+            insideColor: {
+                value:
+                    props.secondaryColor === "orange"
+                        ? "#ff3000"
+                        : props.secondaryColor === "yellow"
+                        ? "orange"
+                        : props.secondaryColor === "black"
+                        ? "#000000"
+                        : props.secondaryColor === "red"
+                        ? "#ff00c9"
+                        : props.secondaryColor === "purple"
+                        ? "#1d0c30"
+                        : props.secondaryColor === "green"
+                        ? "#001c0c"
+                        : props.secondaryColor === "blue"
+                        ? "#0053ff"
+                        : props.secondaryColor === "grey"
+                        ? "#000000"
+                        : props.secondaryColor,
+                label: "Inside Color",
+            },
             outsideColor: {
-                value: props.secondaryColor,
+                value:
+                    props.secondaryColor === "orange"
+                        ? "#ff0a00"
+                        : props.secondaryColor === "yellow"
+                        ? "orange"
+                        : props.secondaryColor === "black"
+                        ? "#1d1d1d"
+                        : props.secondaryColor === "red"
+                        ? "#f830eb"
+                        : props.secondaryColor === "purple"
+                        ? "#291240"
+                        : props.secondaryColor === "green"
+                        ? "#002e14"
+                        : props.secondaryColor === "blue"
+                        ? "#0019ff"
+                        : props.secondaryColor === "grey"
+                        ? "#1a1821"
+                        : props.secondaryColor,
                 label: "Outside Color",
             },
         }),
@@ -170,10 +252,42 @@ const Space = (props: SpaceProps) => {
                         numParticles={numParticles}
                         position={[x, y, z]}
                         scale={[5, 5, 5]}
-                        color1={props.therapeuticColor}
+                        color1={
+                            props.therapeuticColor === "orange"
+                                ? "#ff0a00"
+                                : props.therapeuticColor === "yellow"
+                                ? "orange"
+                                : props.therapeuticColor === "black"
+                                ? "#1d1d1d"
+                                : props.therapeuticColor === "red"
+                                ? "#b4274d"
+                                : props.therapeuticColor === "purple"
+                                ? "#231462"
+                                : props.therapeuticColor === "green"
+                                ? "#2c8624"
+                                : props.therapeuticColor === "blue"
+                                ? "#0019ff"
+                                : props.therapeuticColor === "grey"
+                                ? "#1a1821"
+                                : props.therapeuticColor
+                        }
                         color2={
-                            props.therapeuticColor === "black"
-                                ? "white"
+                            props.therapeuticColor === "orange"
+                                ? "#ff3000"
+                                : props.therapeuticColor === "yellow"
+                                ? "orange"
+                                : props.therapeuticColor === "black"
+                                ? "#000000"
+                                : props.therapeuticColor === "red"
+                                ? "#0b0b0d"
+                                : props.therapeuticColor === "purple"
+                                ? "#10021d"
+                                : props.therapeuticColor === "green"
+                                ? "#022706"
+                                : props.therapeuticColor === "blue"
+                                ? "#0053ff"
+                                : props.therapeuticColor === "grey"
+                                ? "#000000"
                                 : props.therapeuticColor
                         }
                     ></PointModel>
@@ -220,12 +334,8 @@ const Space = (props: SpaceProps) => {
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
                 numParticles={200000}
-                color1={props.primaryColor}
-                color2={
-                    props.primaryColor === "black"
-                        ? "white"
-                        : props.primaryColor
-                }
+                color1={saturnControl.color1}
+                color2={saturnControl.color2}
             />
             <group ref={orbitRef}>
                 <GalaxyStars dof={galaxyRef} galaxyControl={galaxyControl} />
