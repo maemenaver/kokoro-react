@@ -29,3 +29,21 @@ export const getBoard = gql`
         }
     }
 `;
+
+export const getMusicPath = gql`
+    query GetMusicPath {
+        getMusicPath
+    }
+`;
+
+export const sendMusicGql = gql`
+    mutation Mutation($notes: [Int!]!) {
+        sendMusic(notes: $notes)
+    }
+`;
+
+export const subMusicGql = gql`
+    subscription Subscription {
+        subMusic
+    }
+`;

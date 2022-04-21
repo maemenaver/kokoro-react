@@ -15,13 +15,38 @@ import { Color } from "../components/Color";
 import { Shape } from "../components/Shape";
 import Space from "../lib/three/scene/Space";
 import colorTranslate from "../lib/colorTranslate";
+import { useMIDI } from "@react-midi/hooks";
+import { useControls } from "leva";
 
 function Main() {
     const [location] = useLocation();
 
+    const { inputs, outputs, hasMIDI } = useMIDI();
+
     const [primaryColor, setPrimaryColor] = useState<string>(null);
     const [secondaryColor, setSecondaryColor] = useState<string>(null);
     const [therapeuticColor, setTherapeuticColor] = useState<string>(null);
+
+    useControls("props", {
+        primaryColor: {
+            value: primaryColor,
+            onChange: (v) => {
+                setPrimaryColor(v);
+            },
+        },
+        secondaryColor: {
+            value: secondaryColor,
+            onChange: (v) => {
+                setSecondaryColor(v);
+            },
+        },
+        therapeuticColor: {
+            value: therapeuticColor,
+            onChange: (v) => {
+                setTherapeuticColor(v);
+            },
+        },
+    });
 
     const board = useQuery(getBoard, {
         onCompleted: (data) => {
@@ -77,7 +102,7 @@ function Main() {
             {location === "/" && <Intro />}
             {location === "/color" && <Color />}
             {location === "/shape" && <Shape />}
-            {location === "/music" && <Music />}
+            {location === "/music" && inputs[1] && <Music input={inputs[1]} />}
             {location === "/space" ? (
                 <Suspense fallback={null}>
                     <Canvas
