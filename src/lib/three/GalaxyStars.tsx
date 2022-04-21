@@ -169,9 +169,11 @@ export function GalaxyStars({ dof, galaxyControl }) {
             <pointsMaterial
                 size={galaxyControl.size}
                 sizeAttenuation={true}
+                depthTest={false}
                 depthWrite={true}
+                transparent={true}
                 vertexColors={true}
-                blending={THREE.AdditiveBlending}
+                // blending={THREE.AdditiveBlending}
             />
         </points>
     );

@@ -8,6 +8,10 @@ import { folder, useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 import Effects from "../Effects";
 import { GalaxyStars } from "../GalaxyStars";
+import {
+    skyFragmentShader,
+    skyVertexShader,
+} from "../../shader/SkyShaderMaterial";
 
 class SpaceProps {
     objCount: number;
@@ -368,23 +372,30 @@ const Space = (props: SpaceProps) => {
                 </group>
                 {orbitChildGroup.length > 0 && orbitChildGroup}
             </group>
-            <Effects />
-            {/* <mesh scale={399}>
-                <sphereGeometry attach="geometry" />
-                <meshStandardMaterial
-                    attach="material"
-                    side={THREE.BackSide}
-                    transparent
-                    opacity={0.2}
-                    color={"green"}
-                />
-            </mesh> */}
-            <mesh scale={400}>
+            {/* <Effects /> */}
+            {/* <mesh scale={400}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
                     attach="material"
                     side={THREE.BackSide}
                     map={spaceBg}
+                />
+            </mesh> */}
+            <mesh scale={40}>
+                <sphereGeometry attach="geometry" />
+                <shaderMaterial
+                    vertexShader={skyVertexShader}
+                    fragmentShader={skyFragmentShader}
+                    side={THREE.DoubleSide}
+                    // transparent={true}
+                    // opacity={1}
+                    depthTest={false}
+                    depthWrite={true}
+                    uniforms={{
+                        uColor: {
+                            value: new THREE.Color("#3366CC"),
+                        },
+                    }}
                 />
             </mesh>
         </>
