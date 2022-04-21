@@ -67,7 +67,8 @@ void main() {
 
 const PointShaderMaterialRaw = (
     color1: THREE.ColorRepresentation,
-    color2: THREE.ColorRepresentation
+    color2: THREE.ColorRepresentation,
+    blending?: THREE.Blending
 ) =>
     new THREE.ShaderMaterial({
         uniforms: {
@@ -89,7 +90,7 @@ const PointShaderMaterialRaw = (
         transparent: true,
         depthTest: false,
         depthWrite: true,
-        blending: THREE.AdditiveBlending,
+        blending: blending ?? THREE.AdditiveBlending,
     });
 
 export { PointShaderMaterialRaw };

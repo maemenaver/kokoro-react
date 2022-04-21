@@ -14,6 +14,7 @@ class SaturnModelProps {
     path: string;
     color1: THREE.ColorRepresentation;
     color2: THREE.ColorRepresentation;
+    blending?: THREE.Blending;
 }
 
 export default function PointModel({
@@ -111,7 +112,8 @@ export default function PointModel({
                     ref={pointsRef}
                     material={PointShaderMaterialRaw(
                         props.color1,
-                        props.color2
+                        props.color2,
+                        props.blending
                     )}
                     geometry={particlesGeometry()}
                 />
