@@ -1,9 +1,21 @@
-import react, { useCallback, useEffect, useRef, useState } from "react";
+import react, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import * as THREE from "three";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import PointModel from "../model/PointModel";
-import { TextureLoader } from "three";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { MathUtils, TextureLoader } from "three";
+import {
+    Cloud,
+    Environment,
+    OrbitControls,
+    PerspectiveCamera,
+    Sky,
+} from "@react-three/drei";
 import { folder, useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 import Effects from "../Effects";
@@ -12,6 +24,8 @@ import {
     skyFragmentShader,
     skyVertexShader,
 } from "../../shader/SkyShaderMaterial";
+import { Butterfly } from "../model/Butterfly";
+import { OrbitChildGroup } from "../model/OrbitChildGroup";
 
 class SpaceProps {
     objCount: number;
@@ -23,6 +37,44 @@ class SpaceProps {
 const Space = (props: SpaceProps) => {
     const { scene, gl, size } = useThree();
 
+    const orbitChild = useMemo(
+        () =>
+            new Array(props.objCount).fill(0).map((v) => {
+                const distanceOffset = 30;
+                const distanceRange = 10;
+                const distance =
+                    distanceOffset + (Math.random() - 0.5) * distanceRange;
+
+                const angle = Math.random() * Math.PI * 2;
+
+                const x = Math.cos(angle) * distance;
+                const y = (Math.random() - 0.5) * 20;
+                const z = Math.sin(angle) * distance;
+
+                return new THREE.Vector3(x, y, z);
+            }),
+        [props.objCount]
+    );
+
+    const butterflyPosition = useMemo(
+        () =>
+            new Array(1000).fill(0).map((v) => {
+                const distanceOffset = 25;
+                const distanceRange = 5;
+                const distance =
+                    distanceOffset + (Math.random() - 0.5) * distanceRange;
+
+                const angle = Math.random() * Math.PI * 2;
+
+                const x = Math.cos(angle) * distance;
+                const y = (Math.random() - 0.5) * 5;
+                const z = Math.sin(angle) * distance;
+
+                return new THREE.Vector3(x, y, z);
+            }),
+        []
+    );
+
     const cameraLeftRef = useRef<THREE.PerspectiveCamera>(null);
     const cameraCenterRef = useRef<THREE.PerspectiveCamera>(null);
     const cameraRightRef = useRef<THREE.PerspectiveCamera>(null);
@@ -30,10 +82,10 @@ const Space = (props: SpaceProps) => {
     const camerasRef = useRef<THREE.Group>(null);
     const orbitRef = useRef<THREE.Group>(null);
     const galaxyRef = useRef(null);
+    const cloudsRef = useRef<THREE.Group>(null);
 
     const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
-    const [orbitChildGroup, setOrbitChildGroup] = useState<JSX.Element[]>([]);
 
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
     useControls("camera", {
@@ -187,121 +239,6 @@ const Space = (props: SpaceProps) => {
         },
     });
 
-    useEffect(() => {
-        const gridHelper = new THREE.GridHelper(50, 50);
-        const axesHelper = new THREE.AxesHelper(5);
-        // scene.add(gridHelper);
-        // scene.add(axesHelper);
-
-        console.log(props);
-
-        const orbitChildGroups = [];
-        for (let i = 0; i < props.objCount; i++) {
-            const [x, y, z] = foo();
-            let path: string;
-            let numParticles: number;
-            switch (Math.floor(Math.random() * 10)) {
-                case 0:
-                    path = "/models/cherry.glb";
-                    numParticles = 1500;
-                    break;
-                case 1:
-                    path = "/models/skull.glb";
-                    numParticles = 7500;
-                    break;
-                case 2:
-                    path = "/models/horse.glb";
-                    numParticles = 3000;
-                    break;
-                case 3:
-                    path = "/models/elephant.glb";
-                    numParticles = 3000;
-                    break;
-                case 4:
-                    path = "/models/marble_bust.glb";
-                    numParticles = 1500;
-                    break;
-                case 5:
-                    path = "/models/megaphone.glb";
-                    numParticles = 2000;
-                    break;
-                case 6:
-                    path = "/models/sofa.glb";
-                    numParticles = 3000;
-                    break;
-                case 7:
-                    path = "/models/ukulele.glb";
-                    numParticles = 1000;
-                    break;
-                case 8:
-                    path = "/models/aircraft.glb";
-                    numParticles = 2000;
-                    break;
-                case 9:
-                    path = "/models/mushroom.glb";
-                    numParticles = 1500;
-                    break;
-            }
-            orbitChildGroups.push(
-                <group
-                    key={`orbitChildGroup_${i}`}
-                    name={"orbitChildGroup"}
-                    position={[0, 0, 0]}
-                    userData={{
-                        orbitSpeed: Math.random() * 1.2,
-                    }}
-                >
-                    <PointModel
-                        path={path}
-                        numParticles={numParticles}
-                        position={[x, y, z]}
-                        scale={[5, 5, 5]}
-                        color1={
-                            props.therapeuticColor === "orange"
-                                ? "#ff0a00"
-                                : props.therapeuticColor === "yellow"
-                                ? "orange"
-                                : props.therapeuticColor === "black"
-                                ? "#1d1d1d"
-                                : props.therapeuticColor === "red"
-                                ? "#b4274d"
-                                : props.therapeuticColor === "purple"
-                                ? "#231462"
-                                : props.therapeuticColor === "green"
-                                ? "#2c8624"
-                                : props.therapeuticColor === "blue"
-                                ? "#0019ff"
-                                : props.therapeuticColor === "grey"
-                                ? "#1a1821"
-                                : props.therapeuticColor
-                        }
-                        color2={
-                            props.therapeuticColor === "orange"
-                                ? "#ff3000"
-                                : props.therapeuticColor === "yellow"
-                                ? "orange"
-                                : props.therapeuticColor === "black"
-                                ? "#000000"
-                                : props.therapeuticColor === "red"
-                                ? "#0b0b0d"
-                                : props.therapeuticColor === "purple"
-                                ? "#10021d"
-                                : props.therapeuticColor === "green"
-                                ? "#022706"
-                                : props.therapeuticColor === "blue"
-                                ? "#0053ff"
-                                : props.therapeuticColor === "grey"
-                                ? "#000000"
-                                : props.therapeuticColor
-                        }
-                    ></PointModel>
-                </group>
-            );
-        }
-
-        setOrbitChildGroup(orbitChildGroups);
-    }, []);
-
     useFrame(({ clock }) => {
         orbitRef.current.rotation.y = clock.elapsedTime / 20;
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
@@ -316,20 +253,6 @@ const Space = (props: SpaceProps) => {
         });
     });
 
-    const foo = useCallback(() => {
-        const distanceOffset = 30;
-        const distanceRange = 10;
-        const distance = distanceOffset + (Math.random() - 0.5) * distanceRange;
-
-        const angle = Math.random() * Math.PI * 2;
-
-        const x = Math.cos(angle) * distance;
-        const y = (Math.random() - 0.5) * 20;
-        const z = Math.sin(angle) * distance;
-
-        return [x, y, z];
-    }, []);
-
     return (
         <>
             {/* <ambientLight /> */}
@@ -342,7 +265,7 @@ const Space = (props: SpaceProps) => {
                 color2={saturnControl.color2}
             />
             <group ref={orbitRef}>
-                <GalaxyStars dof={galaxyRef} galaxyControl={galaxyControl} />
+                {/* <GalaxyStars dof={galaxyRef} galaxyControl={galaxyControl} /> */}
                 <group ref={camerasRef} position={[0, 0, -30]}>
                     <PerspectiveCamera
                         position={[0, 0, 0]}
@@ -370,7 +293,62 @@ const Space = (props: SpaceProps) => {
                         ref={cameraRightRef}
                     />
                 </group>
-                {orbitChildGroup.length > 0 && orbitChildGroup}
+                {orbitChild.map((position, i) => {
+                    let path = "/models/cherry.glb";
+                    let numParticles = 1500;
+
+                    switch (i) {
+                        case 0:
+                            path = "/models/cherry.glb";
+                            numParticles = 1500;
+                            break;
+                        case 1:
+                            path = "/models/skull.glb";
+                            numParticles = 7500;
+                            break;
+                        case 2:
+                            path = "/models/horse.glb";
+                            numParticles = 3000;
+                            break;
+                        case 3:
+                            path = "/models/elephant.glb";
+                            numParticles = 3000;
+                            break;
+                        case 4:
+                            path = "/models/marble_bust.glb";
+                            numParticles = 1500;
+                            break;
+                        case 5:
+                            path = "/models/megaphone.glb";
+                            numParticles = 2000;
+                            break;
+                        case 6:
+                            path = "/models/sofa.glb";
+                            numParticles = 3000;
+                            break;
+                        case 7:
+                            path = "/models/ukulele.glb";
+                            numParticles = 1000;
+                            break;
+                        case 8:
+                            path = "/models/aircraft.glb";
+                            numParticles = 2000;
+                            break;
+                        case 9:
+                            path = "/models/mushroom.glb";
+                            numParticles = 1500;
+                            break;
+                    }
+
+                    return (
+                        <OrbitChildGroup
+                            path={path}
+                            numParticles={numParticles}
+                            position={position}
+                            therapeuticColor={props.therapeuticColor}
+                        />
+                    );
+                })}
             </group>
             {/* <Effects /> */}
             {/* <mesh scale={400}>
@@ -381,7 +359,19 @@ const Space = (props: SpaceProps) => {
                     map={spaceBg}
                 />
             </mesh> */}
-            <mesh scale={40}>
+            <group ref={cloudsRef}>
+                {/* <Cloud
+                    opacity={0.5}
+                    speed={0.4} // Rotation speed
+                    width={10} // Width of the full cloud
+                    depth={1.5} // Z-dir depth
+                    segments={20} // Number of particles
+                /> */}
+            </group>
+            {butterflyPosition.map((position, i) => (
+                <Butterfly key={i} position={position} scale={1} />
+            ))}
+            {/* <mesh scale={40}>
                 <sphereGeometry attach="geometry" />
                 <shaderMaterial
                     vertexShader={skyVertexShader}
@@ -397,7 +387,9 @@ const Space = (props: SpaceProps) => {
                         },
                     }}
                 />
-            </mesh>
+            </mesh> */}
+            <Sky />
+            <Environment preset="sunset" />
         </>
     );
 };
