@@ -9672,6 +9672,13 @@ three-mesh-bvh@^0.5.4:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.5.6.tgz#4e5f8316ecfc669c7f97478a359eb6b59e72af02"
   integrity sha512-vxY5amYZLwhsd2X5BtHNXXG0P4XKuIu03q57IynGrHOKXHrnfYLOSOtyi23rnlf8FoZcdlj2fe+bFgIrDxyrmw==
 
+three-noise@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/three-noise/-/three-noise-1.1.2.tgz#9de51da09cda9f290bfc1aa770946cd004bf4705"
+  integrity sha512-8RPBvmPhyMscyoCdFd9zBhpmedPXnjMU+fbP+QDnDAmrqqt5tWPJfv/B7RZoK7DUp04MYrkudp5Na7xmhW7Z4A==
+  dependencies:
+    three "^0.128.0"
+
 three-stdlib@^2.8.11:
   version "2.8.12"
   resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.8.12.tgz#28ffd240b76c2d08e6370538af91339de42a7175"
@@ -9708,6 +9715,11 @@ three@>=0.88.0:
   version "0.138.3"
   resolved "https://registry.yarnpkg.com/three/-/three-0.138.3.tgz#7be5153d79dcbf9e9baad82e7faf8c29edda4ed0"
   integrity sha512-4t1cKC8gimNyJChJbaklg8W/qj3PpsLJUIFm5LIuAy/hVxxNm1ru2FGTSfbTSsuHmC/7ipsyuGKqrSAKLNtkzg==
+
+three@^0.128.0:
+  version "0.128.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.128.0.tgz#884dacca6a330e45600a09ec5439283f50b76aa6"
+  integrity sha512-i0ap/E+OaSfzw7bD1TtYnPo3VEplkl70WX5fZqZnfZsE3k3aSFudqrrC9ldFZfYFkn1zwDmBcdGfiIm/hnbyZA==
 
 three@^0.137.5:
   version "0.137.5"

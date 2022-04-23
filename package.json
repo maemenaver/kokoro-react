@@ -24,6 +24,7 @@
         "react-scripts": "5.0.0",
         "react-spring": "^9.4.2",
         "three": "^0.137.5",
+        "three-noise": "^1.1.2",
         "web-vitals": "^2.1.4",
         "wouter": "^2.8.0-alpha.2",
         "zustand": "^3.7.1"
