@@ -1,131 +1,65 @@
-import react, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+import react, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import PointModel from "../model/PointModel";
-import { MathUtils, TextureLoader } from "three";
-import {
-    Cloud,
-    Environment,
-    OrbitControls,
-    PerspectiveCamera,
-    Sky,
-} from "@react-three/drei";
+import { TextureLoader } from "three";
 import { folder, useControls } from "leva";
-import { useSpring, animated } from "@react-spring/three";
-import Effects from "../Effects";
-import { GalaxyStars } from "../GalaxyStars";
-import {
-    skyFragmentShader,
-    skyVertexShader,
-} from "../../shader/SkyShaderMaterial";
 import { Butterfly } from "../model/Butterfly";
-import { OrbitChildGroup } from "../model/OrbitChildGroup";
+import { GalaxyStars } from "../GalaxyStars";
+import Effects from "../Effects";
+import { useColorStore } from "../../zustand/useColorStore";
+import { useSpring } from "@react-spring/three";
 
 class SpaceProps {
-    objCount: number;
     primaryColor: string;
     secondaryColor: string;
-    therapeuticColor: string;
 }
 
 const Space = (props: SpaceProps) => {
-    const { scene, gl, size } = useThree();
+    const { transitionDelay } = useColorStore();
 
-    const orbitChild = useMemo(
-        () =>
-            new Array(props.objCount).fill(0).map((v) => {
-                const distanceOffset = 30;
-                const distanceRange = 10;
-                const distance =
-                    distanceOffset + (Math.random() - 0.5) * distanceRange;
-
-                const angle = Math.random() * Math.PI * 2;
-
-                const x = Math.cos(angle) * distance;
-                const y = (Math.random() - 0.5) * 20;
-                const z = Math.sin(angle) * distance;
-
-                return new THREE.Vector3(x, y, z);
-            }),
-        [props.objCount]
-    );
-
-    const butterflyPosition = useMemo(
-        () =>
-            new Array(1000).fill(0).map((v) => {
-                const distanceOffset = 25;
-                const distanceRange = 5;
-                const distance =
-                    distanceOffset + (Math.random() - 0.5) * distanceRange;
-
-                const angle = Math.random() * Math.PI * 2;
-
-                const x = Math.cos(angle) * distance;
-                const y = (Math.random() - 0.5) * 5;
-                const z = Math.sin(angle) * distance;
-
-                return new THREE.Vector3(x, y, z);
-            }),
-        []
-    );
-
-    const cameraLeftRef = useRef<THREE.PerspectiveCamera>(null);
-    const cameraCenterRef = useRef<THREE.PerspectiveCamera>(null);
-    const cameraRightRef = useRef<THREE.PerspectiveCamera>(null);
-
-    const camerasRef = useRef<THREE.Group>(null);
-    const orbitRef = useRef<THREE.Group>(null);
     const galaxyRef = useRef(null);
-    const cloudsRef = useRef<THREE.Group>(null);
-
-    const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
-    const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
 
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
-    useControls("camera", {
-        position: {
-            value: {
-                x: 0,
-                y: 0,
-                z: -30,
-            },
-            onChange: (v) => {
-                console.log("position", v);
-                const { x, y, z } = v;
-                camerasRef.current.position.set(x, y, z);
-            },
-        },
-        rotationX: {
-            value: 0,
-            min: -Math.PI / 2,
-            max: Math.PI / 2,
-            step: 0.1,
-            // step: Math.PI / 2,
-            onChange: (v) => {
-                setCameraRotationXTo(v);
-            },
-        },
-        rotationY: {
-            value: 0,
-            min: -Math.PI / 2,
-            max: Math.PI / 2,
-            step: 0.1,
-            // step: Math.PI / 2,
-            onChange: (v) => {
-                setCameraRotationYTo(v);
-            },
-        },
-    });
 
-    const saturnControl = useControls("Saturn", {
+    const [saturnControl, setSaturnControl] = useControls("Saturn", () => ({
         color1: {
-            value:
+            value: props.primaryColor,
+            label: "Color1",
+        },
+        color2: {
+            value: props.primaryColor,
+            label: "Color2",
+        },
+    }));
+
+    const [galaxyControl, setGalaxyControl] = useControls(() => ({
+        Galaxy: folder({
+            count: { min: 100, max: 1000000, value: 100000, step: 100 },
+            size: { min: 0.001, max: 0.1, value: 0.01, step: 0.001 },
+            radius: { min: 0.01, max: 50, value: 31, step: 0.01 },
+            branches: { min: 2, max: 20, value: 2, step: 1 },
+            spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
+            randomness: { min: 0, max: 2, value: 0.09, step: 0.001 },
+            randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
+            // insideColor: { value: "#ff6030", label: "Inside Color" },
+            // outsideColor: { value: "#1b3984", label: "Outside Color" },
+            insideColor: {
+                value: props.secondaryColor,
+                label: "Inside Color",
+            },
+            outsideColor: {
+                value: props.secondaryColor,
+
+                label: "Outside Color",
+            },
+        }),
+    }));
+
+    useEffect(() => {
+        console.log(props.primaryColor);
+        setSaturnControl({
+            color1:
                 props.primaryColor === "orange"
                     ? "#ff0a00"
                     : props.primaryColor === "yellow"
@@ -143,10 +77,7 @@ const Space = (props: SpaceProps) => {
                     : props.primaryColor === "grey"
                     ? "#1a1821"
                     : props.primaryColor,
-            label: "Color1",
-        },
-        color2: {
-            value:
+            color2:
                 props.primaryColor === "orange"
                     ? "#ff3000"
                     : props.primaryColor === "yellow"
@@ -164,94 +95,50 @@ const Space = (props: SpaceProps) => {
                     : props.primaryColor === "grey"
                     ? "#000000"
                     : props.primaryColor,
-            label: "Color2",
-        },
-    });
-
-    const galaxyControl = useControls({
-        Galaxy: folder({
-            count: { min: 100, max: 1000000, value: 100000, step: 100 },
-            size: { min: 0.001, max: 0.1, value: 0.01, step: 0.001 },
-            radius: { min: 0.01, max: 50, value: 31, step: 0.01 },
-            branches: { min: 2, max: 20, value: 2, step: 1 },
-            spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
-            randomness: { min: 0, max: 2, value: 0.09, step: 0.001 },
-            randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
-            // insideColor: { value: "#ff6030", label: "Inside Color" },
-            // outsideColor: { value: "#1b3984", label: "Outside Color" },
-            insideColor: {
-                value:
-                    props.secondaryColor === "orange"
-                        ? "#ff3000"
-                        : props.secondaryColor === "yellow"
-                        ? "orange"
-                        : props.secondaryColor === "black"
-                        ? "#000000"
-                        : props.secondaryColor === "red"
-                        ? "#ff00c9"
-                        : props.secondaryColor === "purple"
-                        ? "#1d0c30"
-                        : props.secondaryColor === "green"
-                        ? "#001c0c"
-                        : props.secondaryColor === "blue"
-                        ? "#0053ff"
-                        : props.secondaryColor === "grey"
-                        ? "#000000"
-                        : props.secondaryColor,
-                label: "Inside Color",
-            },
-            outsideColor: {
-                value:
-                    props.secondaryColor === "orange"
-                        ? "#ff0a00"
-                        : props.secondaryColor === "yellow"
-                        ? "orange"
-                        : props.secondaryColor === "black"
-                        ? "#1d1d1d"
-                        : props.secondaryColor === "red"
-                        ? "#f830eb"
-                        : props.secondaryColor === "purple"
-                        ? "#291240"
-                        : props.secondaryColor === "green"
-                        ? "#002e14"
-                        : props.secondaryColor === "blue"
-                        ? "#0019ff"
-                        : props.secondaryColor === "grey"
-                        ? "#1a1821"
-                        : props.secondaryColor,
-                label: "Outside Color",
-            },
-        }),
-    });
-
-    const { cameraRotationX } = useSpring({
-        cameraRotationX: cameraRotationXTo,
-        onChange: () => {
-            cameraCenterRef.current.rotation.x = cameraRotationX.get();
-        },
-    });
-
-    const { cameraRotationY } = useSpring({
-        cameraRotationY: cameraRotationYTo,
-        onChange: () => {
-            cameraCenterRef.current.rotation.y =
-                Math.PI - cameraRotationY.get();
-        },
-    });
-
-    useFrame(({ clock }) => {
-        orbitRef.current.rotation.y = clock.elapsedTime / 20;
-        // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
-        cameraCenterRef.current.rotation.z = clock.elapsedTime / 20;
-        cameraCenterRef.current.position.y =
-            Math.sin(clock.elapsedTime / 5) * 2;
-
-        orbitRef.current.children.forEach((group) => {
-            if (group.name !== "orbitChildGroup") return;
-            group.rotation.y =
-                (clock.elapsedTime / 9) * group.userData.orbitSpeed;
         });
-    });
+    }, [props.primaryColor]);
+
+    useEffect(() => {
+        setGalaxyControl({
+            ...galaxyControl,
+            insideColor:
+                props.secondaryColor === "orange"
+                    ? "#ff3000"
+                    : props.secondaryColor === "yellow"
+                    ? "orange"
+                    : props.secondaryColor === "black"
+                    ? "#000000"
+                    : props.secondaryColor === "red"
+                    ? "#ff00c9"
+                    : props.secondaryColor === "purple"
+                    ? "#1d0c30"
+                    : props.secondaryColor === "green"
+                    ? "#001c0c"
+                    : props.secondaryColor === "blue"
+                    ? "#0053ff"
+                    : props.secondaryColor === "grey"
+                    ? "#000000"
+                    : props.secondaryColor,
+            outsideColor:
+                props.secondaryColor === "orange"
+                    ? "#ff0a00"
+                    : props.secondaryColor === "yellow"
+                    ? "orange"
+                    : props.secondaryColor === "black"
+                    ? "#1d1d1d"
+                    : props.secondaryColor === "red"
+                    ? "#f830eb"
+                    : props.secondaryColor === "purple"
+                    ? "#291240"
+                    : props.secondaryColor === "green"
+                    ? "#002e14"
+                    : props.secondaryColor === "blue"
+                    ? "#0019ff"
+                    : props.secondaryColor === "grey"
+                    ? "#1a1821"
+                    : props.secondaryColor,
+        });
+    }, [props.secondaryColor]);
 
     return (
         <>
@@ -264,132 +151,21 @@ const Space = (props: SpaceProps) => {
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
             />
-            <group ref={orbitRef}>
-                {/* <GalaxyStars dof={galaxyRef} galaxyControl={galaxyControl} /> */}
-                <group ref={camerasRef} position={[0, 0, -30]}>
-                    <PerspectiveCamera
-                        position={[0, 0, 0]}
-                        rotation={[0, Math.PI + Math.PI / 2, 0]}
-                        fov={58.5}
-                        near={0.1}
-                        far={20000}
-                        ref={cameraLeftRef}
-                    />
-                    <PerspectiveCamera
-                        makeDefault
-                        position={[0, 0, 0]}
-                        rotation={[0, Math.PI, 0]}
-                        fov={58.5}
-                        near={0.1}
-                        far={20000}
-                        ref={cameraCenterRef}
-                    />
-                    <PerspectiveCamera
-                        position={[0, 0, 0]}
-                        rotation={[0, Math.PI - Math.PI / 2, 0]}
-                        fov={58.5}
-                        near={0.1}
-                        far={20000}
-                        ref={cameraRightRef}
-                    />
-                </group>
-                {orbitChild.map((position, i) => {
-                    let path = "/models/cherry.glb";
-                    let numParticles = 1500;
-
-                    switch (i) {
-                        case 0:
-                            path = "/models/cherry.glb";
-                            numParticles = 1500;
-                            break;
-                        case 1:
-                            path = "/models/skull.glb";
-                            numParticles = 7500;
-                            break;
-                        case 2:
-                            path = "/models/horse.glb";
-                            numParticles = 3000;
-                            break;
-                        case 3:
-                            path = "/models/elephant.glb";
-                            numParticles = 3000;
-                            break;
-                        case 4:
-                            path = "/models/marble_bust.glb";
-                            numParticles = 1500;
-                            break;
-                        case 5:
-                            path = "/models/megaphone.glb";
-                            numParticles = 2000;
-                            break;
-                        case 6:
-                            path = "/models/sofa.glb";
-                            numParticles = 3000;
-                            break;
-                        case 7:
-                            path = "/models/ukulele.glb";
-                            numParticles = 1000;
-                            break;
-                        case 8:
-                            path = "/models/aircraft.glb";
-                            numParticles = 2000;
-                            break;
-                        case 9:
-                            path = "/models/mushroom.glb";
-                            numParticles = 1500;
-                            break;
-                    }
-
-                    return (
-                        <OrbitChildGroup
-                            path={path}
-                            numParticles={numParticles}
-                            position={position}
-                            therapeuticColor={props.therapeuticColor}
-                        />
-                    );
-                })}
-            </group>
-            {/* <Effects /> */}
-            {/* <mesh scale={400}>
+            <GalaxyStars
+                dof={galaxyRef}
+                galaxyControl={galaxyControl}
+                insideColor={galaxyControl.insideColor}
+                outsideColor={galaxyControl.outsideColor}
+            />
+            <Effects />
+            <mesh scale={400}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
                     attach="material"
                     side={THREE.BackSide}
                     map={spaceBg}
                 />
-            </mesh> */}
-            <group ref={cloudsRef}>
-                {/* <Cloud
-                    opacity={0.5}
-                    speed={0.4} // Rotation speed
-                    width={10} // Width of the full cloud
-                    depth={1.5} // Z-dir depth
-                    segments={20} // Number of particles
-                /> */}
-            </group>
-            {butterflyPosition.map((position, i) => (
-                <Butterfly key={i} position={position} scale={1} />
-            ))}
-            {/* <mesh scale={40}>
-                <sphereGeometry attach="geometry" />
-                <shaderMaterial
-                    vertexShader={skyVertexShader}
-                    fragmentShader={skyFragmentShader}
-                    side={THREE.DoubleSide}
-                    // transparent={true}
-                    // opacity={1}
-                    depthTest={false}
-                    depthWrite={true}
-                    uniforms={{
-                        uColor: {
-                            value: new THREE.Color("#3366CC"),
-                        },
-                    }}
-                />
-            </mesh> */}
-            <Sky />
-            <Environment preset="sunset" />
+            </mesh>
         </>
     );
 };

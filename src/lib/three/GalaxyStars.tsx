@@ -1,10 +1,32 @@
 import * as THREE from "three";
-import React, { Suspense, useRef, useState, useEffect } from "react";
+import React, {
+    Suspense,
+    useRef,
+    useState,
+    useEffect,
+    useCallback,
+    useMemo,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, DepthOfField } from "@react-three/postprocessing";
 import { useControls, folder } from "leva";
+import { useSpring } from "@react-spring/three";
+import { useColorStore } from "../zustand/useColorStore";
 
-export function GalaxyStars({ dof, galaxyControl }) {
+interface GalaxyStarsProps {
+    insideColor: THREE.ColorRepresentation;
+    outsideColor: THREE.ColorRepresentation;
+    dof: any;
+    galaxyControl: any;
+}
+
+export function GalaxyStars({
+    dof,
+    galaxyControl,
+    ...props
+}: GalaxyStarsProps) {
+    const { transitionDelay } = useColorStore();
+
     const parameters = useControls({
         Animation: folder({
             animate: true,
@@ -62,9 +84,101 @@ export function GalaxyStars({ dof, galaxyControl }) {
     const [temp] = useState(() => new THREE.Vector3());
     const [focus] = useState(() => new THREE.Vector3());
 
-    useEffect(() => {
-        generateGalaxy();
+    const randomSeed = useMemo(
+        () =>
+            new Array(galaxyControl.count).fill(0).map(() => ({
+                radius: Math.random() * galaxyControl.radius,
+                randomX:
+                    Math.pow(Math.random(), galaxyControl.randomnessPower) *
+                    (Math.random() < 0.5 ? 1 : -1) *
+                    galaxyControl.randomness,
+                randomY:
+                    Math.pow(Math.random(), galaxyControl.randomnessPower) *
+                    (Math.random() < 0.5 ? 1 : -1) *
+                    galaxyControl.randomness,
+                randomZ:
+                    Math.pow(Math.random(), galaxyControl.randomnessPower) *
+                    (Math.random() < 0.5 ? 1 : -1) *
+                    galaxyControl.randomness,
+            })),
+        [galaxyControl.count]
+    );
+
+    const { insideColor, outsideColor } = useSpring({
+        insideColor: props.insideColor,
+        outsideColor: props.outsideColor,
+        config: {
+            duration: transitionDelay,
+        },
+        onChange: () => {
+            const colors = new Float32Array(galaxyControl.count * 3);
+            const colorInside = new THREE.Color(insideColor.get());
+            const colorOutside = new THREE.Color(outsideColor.get());
+
+            for (let i = 0; i < galaxyControl.count; i++) {
+                const i3 = i * 3;
+
+                const radius = randomSeed[i].radius;
+
+                const mixedColor = colorInside.clone();
+                mixedColor.lerp(colorOutside, radius / galaxyControl.radius);
+
+                colors[i3] = mixedColor.r;
+                colors[i3 + 1] = mixedColor.g;
+                colors[i3 + 2] = mixedColor.b;
+            }
+            particles.current.geometry.setAttribute(
+                "color",
+                new THREE.BufferAttribute(colors, 3)
+            );
+        },
     });
+
+    useEffect(() => {
+        console.log("Color changed");
+
+        const positions = new Float32Array(galaxyControl.count * 3);
+        const colors = new Float32Array(galaxyControl.count * 3);
+        const colorInside = new THREE.Color(insideColor.get());
+        const colorOutside = new THREE.Color(outsideColor.get());
+
+        for (let i = 0; i < galaxyControl.count; i++) {
+            const i3 = i * 3;
+
+            const radius = randomSeed[i].radius;
+            const spinAngle = radius * galaxyControl.spin;
+            const branchAngle =
+                ((i % galaxyControl.branches) / galaxyControl.branches) *
+                Math.PI *
+                2;
+
+            const randomX = randomSeed[i].randomX * radius;
+            const randomY = randomSeed[i].randomY * radius;
+            const randomZ = randomSeed[i].randomZ * radius;
+
+            positions[i3] =
+                Math.cos(branchAngle + spinAngle) * radius + randomX;
+            positions[i3 + 1] = randomY;
+            positions[i3 + 2] =
+                Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+            const mixedColor = colorInside.clone();
+            mixedColor.lerp(colorOutside, radius / galaxyControl.radius);
+
+            colors[i3] = mixedColor.r;
+            colors[i3 + 1] = mixedColor.g;
+            colors[i3 + 2] = mixedColor.b;
+        }
+
+        particles.current.geometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(positions, 3)
+        );
+        particles.current.geometry.setAttribute(
+            "color",
+            new THREE.BufferAttribute(colors, 3)
+        );
+    }, [props.insideColor, props.outsideColor]);
 
     useFrame((state, delta) => {
         //dof.current.target = focus.lerp(particles.current.position, 0.05)
@@ -104,64 +218,6 @@ export function GalaxyStars({ dof, galaxyControl }) {
             particles.current.rotation.y = 0.05 * elapsedTime;
         }
     });
-
-    const generateGalaxy = () => {
-        const positions = new Float32Array(galaxyControl.count * 3);
-        const colors = new Float32Array(galaxyControl.count * 3);
-        const colorInside = new THREE.Color(galaxyControl.insideColor);
-        const colorOutside = new THREE.Color(galaxyControl.outsideColor);
-        // const colorInside = new THREE.Color(1.0, 0.3765, 0.1882);
-        // const colorOutside = new THREE.Color(0.10588, 0.22353, 0.51765);
-
-        for (let i = 0; i < galaxyControl.count; i++) {
-            const i3 = i * 3;
-
-            const radius = Math.random() * galaxyControl.radius;
-            const spinAngle = radius * galaxyControl.spin;
-            const branchAngle =
-                ((i % galaxyControl.branches) / galaxyControl.branches) *
-                Math.PI *
-                2;
-
-            const randomX =
-                Math.pow(Math.random(), galaxyControl.randomnessPower) *
-                (Math.random() < 0.5 ? 1 : -1) *
-                galaxyControl.randomness *
-                radius;
-            const randomY =
-                Math.pow(Math.random(), galaxyControl.randomnessPower) *
-                (Math.random() < 0.5 ? 1 : -1) *
-                galaxyControl.randomness *
-                radius;
-            const randomZ =
-                Math.pow(Math.random(), galaxyControl.randomnessPower) *
-                (Math.random() < 0.5 ? 1 : -1) *
-                galaxyControl.randomness *
-                radius;
-
-            positions[i3] =
-                Math.cos(branchAngle + spinAngle) * radius + randomX;
-            positions[i3 + 1] = randomY;
-            positions[i3 + 2] =
-                Math.sin(branchAngle + spinAngle) * radius + randomZ;
-
-            const mixedColor = colorInside.clone();
-            mixedColor.lerp(colorOutside, radius / galaxyControl.radius);
-
-            colors[i3] = mixedColor.r;
-            colors[i3 + 1] = mixedColor.g;
-            colors[i3 + 2] = mixedColor.b;
-        }
-
-        particles.current.geometry.setAttribute(
-            "position",
-            new THREE.BufferAttribute(positions, 3)
-        );
-        particles.current.geometry.setAttribute(
-            "color",
-            new THREE.BufferAttribute(colors, 3)
-        );
-    };
 
     return (
         <points ref={particles}>

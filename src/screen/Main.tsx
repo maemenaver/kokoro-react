@@ -17,17 +17,26 @@ import Space from "../lib/three/scene/Space";
 import colorTranslate from "../lib/colorTranslate";
 import { useMIDI } from "@react-midi/hooks";
 import { useControls } from "leva";
+import Place from "../lib/three/scene/Place";
+import { useColorStore } from "../lib/zustand/useColorStore";
 
 function Main() {
     const [location] = useLocation();
 
     const { inputs, outputs, hasMIDI } = useMIDI();
 
-    const [primaryColor, setPrimaryColor] = useState<string>(null);
-    const [secondaryColor, setSecondaryColor] = useState<string>(null);
-    const [therapeuticColor, setTherapeuticColor] = useState<string>(null);
+    const {
+        primaryColor,
+        secondaryColor,
+        therapeuticColor,
+        transitionDelay,
+        setPrimaryColor,
+        setSecondaryColor,
+        setTherapeuticColor,
+        setTransitionDelay,
+    } = useColorStore();
 
-    useControls("props", {
+    const [, setColors] = useControls("colors", () => ({
         primaryColor: {
             value: primaryColor,
             onChange: (v) => {
@@ -46,20 +55,32 @@ function Main() {
                 setTherapeuticColor(v);
             },
         },
-    });
+        delay: {
+            value: transitionDelay,
+            onChange: (v) => {
+                setTransitionDelay(v);
+            },
+        },
+    }));
 
     const board = useQuery(getBoard, {
         onCompleted: (data) => {
             console.log(data);
-            setPrimaryColor(
-                colorTranslate(data["getBoard"][0]["primaryColor"])
+            const primary = colorTranslate(data["getBoard"][0]["primaryColor"]);
+            const secondary = colorTranslate(
+                data["getBoard"][0]["secondaryColor"]
             );
-            setSecondaryColor(
-                colorTranslate(data["getBoard"][0]["secondaryColor"])
+            const therapeutic = colorTranslate(
+                data["getBoard"][0]["therapeuticColor"]
             );
-            setTherapeuticColor(
-                colorTranslate(data["getBoard"][0]["therapeuticColor"])
-            );
+            setColors({
+                primaryColor: primary,
+                secondaryColor: secondary,
+                therapeuticColor: therapeutic,
+            });
+            setPrimaryColor(primary);
+            setSecondaryColor(secondary);
+            setTherapeuticColor(therapeuticColor);
         },
     });
 
@@ -69,21 +90,23 @@ function Main() {
             updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
                 console.log(subscriptionData);
-                setPrimaryColor(
-                    colorTranslate(
-                        subscriptionData.data["subBoard"]["primaryColor"]
-                    )
+                const primary = colorTranslate(
+                    subscriptionData.data["getBoard"][0]["primaryColor"]
                 );
-                setSecondaryColor(
-                    colorTranslate(
-                        subscriptionData.data["subBoard"]["secondaryColor"]
-                    )
+                const secondary = colorTranslate(
+                    subscriptionData.data["getBoard"][0]["secondaryColor"]
                 );
-                setTherapeuticColor(
-                    colorTranslate(
-                        subscriptionData.data["subBoard"]["therapeuticColor"]
-                    )
+                const therapeutic = colorTranslate(
+                    subscriptionData.data["getBoard"][0]["therapeuticColor"]
                 );
+                setColors({
+                    primaryColor: primary,
+                    secondaryColor: secondary,
+                    therapeuticColor: therapeutic,
+                });
+                setPrimaryColor(primary);
+                setSecondaryColor(secondary);
+                setTherapeuticColor(therapeuticColor);
             },
         });
 
@@ -110,7 +133,7 @@ function Main() {
                             logarithmicDepthBuffer: true,
                         }}
                     >
-                        <Space
+                        <Place
                             objCount={10}
                             primaryColor={primaryColor}
                             secondaryColor={secondaryColor}
@@ -119,16 +142,20 @@ function Main() {
                     </Canvas>
                 </Suspense>
             ) : (
-                <AframeProvider>
-                    <Camera />
-                    {location === "/sea" ? (
-                        <SeaBox />
-                    ) : location === "/sky" ? (
-                        <SkyBox />
-                    ) : (
-                        <Root />
-                    )}
-                </AframeProvider>
+                <Suspense fallback={null}>
+                    <Canvas
+                        gl={{
+                            logarithmicDepthBuffer: true,
+                        }}
+                    >
+                        <Place
+                            objCount={10}
+                            primaryColor={primaryColor}
+                            secondaryColor={secondaryColor}
+                            therapeuticColor={therapeuticColor}
+                        />
+                    </Canvas>
+                </Suspense>
             )}
         </div>
     );

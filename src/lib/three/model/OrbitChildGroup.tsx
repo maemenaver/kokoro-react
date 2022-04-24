@@ -1,65 +1,73 @@
 import React, { useRef, useEffect, useMemo, useState } from "react";
+import { useColorStore } from "../../zustand/useColorStore";
 import PointModel from "./PointModel";
 
 class OrbitChildGroupProps {
     path: string;
     numParticles: number;
     position: THREE.Vector3;
-    therapeuticColor: string;
+    therapeuticColor?: string;
 }
 
 export function OrbitChildGroup(props: OrbitChildGroupProps) {
+    const { therapeuticColor } = useColorStore();
+
+    const groupRef = useRef<THREE.Group>(null);
+
+    const orbitSpeed = useMemo(() => Math.random() * 1.2, []);
+    const position = useMemo(() => props.position, []);
+
     return (
         <group
             name={"orbitChildGroup"}
-            position={[0, 0, 0]}
             userData={{
-                orbitSpeed: Math.random() * 1.2,
+                orbitSpeed,
             }}
         >
             <PointModel
                 path={props.path}
                 numParticles={props.numParticles}
-                position={props.position}
                 scale={[5, 5, 5]}
+                position={position}
                 color1={
-                    props.therapeuticColor === "orange"
+                    therapeuticColor === "orange"
                         ? "#ff0a00"
-                        : props.therapeuticColor === "yellow"
+                        : therapeuticColor === "yellow"
                         ? "orange"
-                        : props.therapeuticColor === "black"
+                        : therapeuticColor === "black"
                         ? "#1d1d1d"
-                        : props.therapeuticColor === "red"
+                        : therapeuticColor === "red"
                         ? "#b4274d"
-                        : props.therapeuticColor === "purple"
+                        : therapeuticColor === "purple"
                         ? "#231462"
-                        : props.therapeuticColor === "green"
+                        : therapeuticColor === "green"
                         ? "#2c8624"
-                        : props.therapeuticColor === "blue"
+                        : therapeuticColor === "blue"
                         ? "#0019ff"
-                        : props.therapeuticColor === "grey"
+                        : therapeuticColor === "grey"
                         ? "#1a1821"
-                        : props.therapeuticColor
+                        : therapeuticColor
                 }
                 color2={
-                    props.therapeuticColor === "orange"
+                    therapeuticColor === "orange"
                         ? "#ff3000"
-                        : props.therapeuticColor === "yellow"
+                        : therapeuticColor === "yellow"
                         ? "orange"
-                        : props.therapeuticColor === "black"
+                        : therapeuticColor === "black"
                         ? "#000000"
-                        : props.therapeuticColor === "red"
+                        : therapeuticColor === "red"
                         ? "#0b0b0d"
-                        : props.therapeuticColor === "purple"
+                        : therapeuticColor === "purple"
                         ? "#10021d"
-                        : props.therapeuticColor === "green"
+                        : therapeuticColor === "green"
                         ? "#022706"
-                        : props.therapeuticColor === "blue"
+                        : therapeuticColor === "blue"
                         ? "#0053ff"
-                        : props.therapeuticColor === "grey"
+                        : therapeuticColor === "grey"
                         ? "#000000"
-                        : props.therapeuticColor
+                        : therapeuticColor
                 }
+                ref={groupRef}
             />
         </group>
     );
