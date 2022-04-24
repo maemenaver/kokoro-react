@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useMemo } from "react";
+import * as THREE from "three";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Vector2 } from "three";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
 import { MathUtils } from "three";
 import { FBM } from "three-noise";
+import { useSpring } from "@react-spring/three";
 
 const vec = new Vector2();
 export function Butterfly(props) {
@@ -18,7 +20,16 @@ export function Butterfly(props) {
     );
     const { actions } = useAnimations(animations, group);
     const fbm = useMemo(() => new FBM({ seed: Math.random() }), []);
-    const offset = useMemo(() => Math.random() * 100, []);
+    const offset = useMemo(() => Math.random() * Math.PI * 2, []);
+
+    // const { posX, posY, posZ } = useSpring({
+    //     posX: group?.current?.position.x || 0,
+    //     posY: group?.current?.position.y || 0,
+    //     posZ: group?.current?.position.z || 0,
+    //     onChange: () => {
+    //         group.current.position.set(posX.get(), posY.get(), posZ.get());
+    //     },
+    // });
 
     useEffect(() => {
         for (const key in actions) {
@@ -30,11 +41,11 @@ export function Butterfly(props) {
         group.current.rotation.y = offset;
     }, []);
 
-    // useFrame(({ clock }, dt) => {
-    //     vec.set(clock.elapsedTime, clock.elapsedTime);
-    //     group.current.position.set(0, fbm.get2(vec), 0);
-    //     group.current.rotation.y -= dt;
-    // });
+    useFrame(({ clock }, dt) => {
+        vec.set(clock.elapsedTime, clock.elapsedTime);
+        group.current.position.set(0, fbm.get2(vec), 0);
+        // group.current.rotation.y -= dt;
+    });
 
     return (
         <group ref={group} dispose={null}>
