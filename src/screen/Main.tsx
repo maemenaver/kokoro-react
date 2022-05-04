@@ -91,13 +91,13 @@ function Main() {
                 if (!subscriptionData.data) return prev;
                 console.log(subscriptionData);
                 const primary = colorTranslate(
-                    subscriptionData.data["getBoard"][0]["primaryColor"]
+                    subscriptionData.data["subBoard"]["primaryColor"]
                 );
                 const secondary = colorTranslate(
-                    subscriptionData.data["getBoard"][0]["secondaryColor"]
+                    subscriptionData.data["subBoard"]["secondaryColor"]
                 );
                 const therapeutic = colorTranslate(
-                    subscriptionData.data["getBoard"][0]["therapeuticColor"]
+                    subscriptionData.data["subBoard"]["therapeuticColor"]
                 );
                 setColors({
                     primaryColor: primary,
