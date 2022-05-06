@@ -8,6 +8,7 @@ class OrbitChildGroupProps {
     numParticles: number;
     position: THREE.Vector3;
     therapeuticColor?: string;
+    colorType?: "therapeuticColor" | "primaryColor" | "secondaryColor";
 }
 
 export function OrbitChildGroup(props: OrbitChildGroupProps) {
@@ -68,6 +69,7 @@ export function OrbitChildGroup(props: OrbitChildGroupProps) {
                         ? "#000000"
                         : therapeuticColor
                 }
+                colorType={props.colorType}
                 ref={groupRef}
             />
         </group>

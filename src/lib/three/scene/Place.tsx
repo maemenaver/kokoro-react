@@ -92,6 +92,7 @@ const Place = (props: PlaceProps) => {
                     numParticles={numParticles}
                     position={new THREE.Vector3(x, y, z)}
                     therapeuticColor={props.therapeuticColor}
+                    colorType={"therapeuticColor"}
                 />
             );
         })
@@ -208,12 +209,12 @@ const Place = (props: PlaceProps) => {
                         far={20000}
                         ref={cameraRightRef}
                     />
-                    {/* <GodRay /> */}
+                    {location === "/sea" && <GodRay />}
                 </group>
 
                 {orbitChild.current}
             </group>
-            {/* <Bubble numParticles={2000} /> */}
+
             {location === "/space" && (
                 <>
                     <Effects />
@@ -230,10 +231,13 @@ const Place = (props: PlaceProps) => {
                 />
             )}
             {location === "/sea" && (
-                <Sea
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
+                <>
+                    <Bubble numParticles={2000} />
+                    <Sea
+                        primaryColor={props.primaryColor}
+                        secondaryColor={props.secondaryColor}
+                    />
+                </>
             )}
             {/* {location === "/sea" && <Shape />} */}
         </>

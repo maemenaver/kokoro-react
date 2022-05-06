@@ -16,7 +16,7 @@ class SpaceProps {
 }
 
 const Space = (props: SpaceProps) => {
-    const { transitionDelay } = useColorStore();
+    // const { transitionDelay } = useColorStore();
 
     const galaxyRef = useRef(null);
 
