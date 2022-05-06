@@ -91,7 +91,7 @@ const PointShaderMaterialRaw = (
         depthTest: false,
         depthWrite: false,
         side: THREE.DoubleSide,
-        // blending: blending ?? THREE.AdditiveBlending,
+        blending: blending ?? THREE.AdditiveBlending,
     });
 
 export { PointShaderMaterialRaw };

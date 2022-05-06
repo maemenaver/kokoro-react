@@ -13,11 +13,12 @@ class PointModelProps {
     color1: THREE.ColorRepresentation;
     color2: THREE.ColorRepresentation;
     blending?: THREE.Blending;
+    colorType?: "therapeuticColor" | "primaryColor" | "secondaryColor";
 }
 
 const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
     (props, ref) => {
-        const { transitionDelay } = useColorStore();
+        const { transitionDelay, therapeuticColor } = useColorStore();
 
         const gltf = useGLTF(props.path);
 
@@ -129,7 +130,10 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                         material={PointShaderMaterialRaw(
                             props.color1,
                             props.color2,
-                            props.blending
+                            props.colorType === "therapeuticColor" &&
+                                therapeuticColor === "#000000"
+                                ? THREE.NormalBlending
+                                : props.blending
                         )}
                         geometry={particlesGeometry()}
                     />

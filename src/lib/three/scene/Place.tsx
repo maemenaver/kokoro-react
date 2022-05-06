@@ -98,6 +98,7 @@ const Place = (props: PlaceProps) => {
                     numParticles={numParticles}
                     position={new THREE.Vector3(x, y, z)}
                     therapeuticColor={props.therapeuticColor}
+                    colorType={"therapeuticColor"}
                 />
             );
         })
@@ -164,14 +165,12 @@ const Place = (props: PlaceProps) => {
         },
     });
 
-    // useEffect(() => {
-    // scene.fog = new THREE.Fog(206145, 0.1, 70);
-    // scene.background = new THREE.Color("#072b4a");
-    // gl.setClearColor("#000000", 0);
-    // gl.setClearAlpha(0);
-    // addSelectedLight(ambientLightRef);
-    // return () => removeSelectedLight(ambientLightRef);
-    // }, []);
+    useEffect(() => {
+        if (location === "/sea") {
+            scene.fog = new THREE.Fog(206145, 0.1, 70);
+            scene.background = new THREE.Color("#203455");
+        }
+    }, []);
 
     useFrame(({ clock }) => {
         useUniformsStore.getState().setUTime(clock.getElapsedTime());
@@ -229,6 +228,26 @@ const Place = (props: PlaceProps) => {
                     </>
                 )}
             </group>
+            <Bubble numParticles={2000} />
+            {location === "/space" && (
+                <Space
+                    primaryColor={props.primaryColor}
+                    secondaryColor={props.secondaryColor}
+                />
+            )}
+            {location === "/ether" && (
+                <Ether
+                    primaryColor={props.primaryColor}
+                    secondaryColor={props.secondaryColor}
+                />
+            )}
+            {location === "/sea" && (
+                <Sea
+                    primaryColor={props.primaryColor}
+                    secondaryColor={props.secondaryColor}
+                />
+            )}
+            {/* {location === "/sea" && <Shape />} */}
         </>
     );
 };

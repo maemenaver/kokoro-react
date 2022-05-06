@@ -32,7 +32,6 @@ const Sea = (props: SeaProps) => {
     }));
 
     useEffect(() => {
-        scene.background = new THREE.Color("#203455");
         // scene.fog = new THREE.Fog(new THREE.Color("#203455"), 0.1, 40);
 
         console.log(castleRef);
