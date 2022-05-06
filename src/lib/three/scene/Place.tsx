@@ -26,8 +26,6 @@ const Place = (props: PlaceProps) => {
     const [location] = useLocation();
     const scene = useThree((state) => state.scene);
 
-    const uniformsStore = useUniformsStore();
-
     const orbitChild = useRef<JSX.Element[]>(
         new Array(props.objCount).fill(0).map((v, i) => {
             const distanceOffset = 30;
@@ -160,11 +158,14 @@ const Place = (props: PlaceProps) => {
     });
 
     useEffect(() => {
-        scene.fog = new THREE.Fog(206145, 0.1, 70);
+        if (location === "/sea") {
+            scene.fog = new THREE.Fog(206145, 0.1, 70);
+            scene.background = new THREE.Color("#203455");
+        }
     }, []);
 
     useFrame(({ clock }) => {
-        uniformsStore.setUTime(clock.getElapsedTime());
+        useUniformsStore.getState().setUTime(clock.getElapsedTime());
 
         orbitRef.current.rotation.y = clock.elapsedTime / 20;
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
@@ -207,17 +208,20 @@ const Place = (props: PlaceProps) => {
                         far={20000}
                         ref={cameraRightRef}
                     />
-                    <GodRay />
+                    {/* <GodRay /> */}
                 </group>
 
                 {orbitChild.current}
             </group>
-            <Bubble numParticles={2000} />
+            {/* <Bubble numParticles={2000} /> */}
             {location === "/space" && (
-                <Space
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
+                <>
+                    <Effects />
+                    <Space
+                        primaryColor={props.primaryColor}
+                        secondaryColor={props.secondaryColor}
+                    />
+                </>
             )}
             {location === "/ether" && (
                 <Ether
