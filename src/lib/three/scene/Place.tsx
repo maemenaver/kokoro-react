@@ -1,7 +1,7 @@
 import react, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
+import { CameraShake, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 import Effects from "../Effects";
@@ -14,6 +14,10 @@ import Bubble from "../model/Bubble";
 import { AquariumCastle } from "../model/AquariumCastle";
 import { useUniformsStore } from "../../zustand/useUniformsStore";
 import { GodRay } from "../model/GodRay";
+import { Select, Selection } from "@react-three/postprocessing";
+import { useBloomStore } from "../../zustand/useBloomStore";
+import { useCameraStore } from "../../zustand/useCameraStore";
+import BackgroundEffects from "../effects/backgroundEffects";
 
 class PlaceProps {
     objCount: number;
@@ -24,9 +28,9 @@ class PlaceProps {
 
 const Place = (props: PlaceProps) => {
     const [location] = useLocation();
-    const scene = useThree((state) => state.scene);
+    // const gl = useThree((state) => state.gl);
 
-    const uniformsStore = useUniformsStore();
+    // const { addSelectedLight, removeSelectedLight } = useBloomStore();
 
     const orbitChild = useRef<JSX.Element[]>(
         new Array(props.objCount).fill(0).map((v, i) => {
@@ -99,12 +103,12 @@ const Place = (props: PlaceProps) => {
         })
     );
 
-    const cameraLeftRef = useRef<THREE.PerspectiveCamera>(null);
-    const cameraCenterRef = useRef<THREE.PerspectiveCamera>(null);
-    const cameraRightRef = useRef<THREE.PerspectiveCamera>(null);
+    const ambientLightRef = useRef<THREE.Light>();
 
-    const camerasRef = useRef<THREE.Group>(null);
-    const orbitRef = useRef<THREE.Group>(null);
+    const cameraCenterRef = useRef<THREE.PerspectiveCamera>();
+
+    const groupRef = useRef<THREE.Group>();
+    const orbitRef = useRef<THREE.Group>();
 
     const [cameraRotationXTo, setCameraRotationXTo] = useState<number>(0);
     const [cameraRotationYTo, setCameraRotationYTo] = useState<number>(0);
@@ -114,12 +118,13 @@ const Place = (props: PlaceProps) => {
             value: {
                 x: 0,
                 y: 0,
-                z: -30,
+                z: 0,
             },
+            step: 1,
             onChange: (v) => {
                 console.log("position", v);
                 const { x, y, z } = v;
-                camerasRef.current.position.set(x, y, z);
+                cameraCenterRef.current.position.set(x, y, z);
             },
         },
         rotationX: {
@@ -159,17 +164,22 @@ const Place = (props: PlaceProps) => {
         },
     });
 
-    useEffect(() => {
-        scene.fog = new THREE.Fog(206145, 0.1, 70);
-    }, []);
+    // useEffect(() => {
+    // scene.fog = new THREE.Fog(206145, 0.1, 70);
+    // scene.background = new THREE.Color("#072b4a");
+    // gl.setClearColor("#000000", 0);
+    // gl.setClearAlpha(0);
+    // addSelectedLight(ambientLightRef);
+    // return () => removeSelectedLight(ambientLightRef);
+    // }, []);
 
     useFrame(({ clock }) => {
-        uniformsStore.setUTime(clock.getElapsedTime());
+        useUniformsStore.getState().setUTime(clock.getElapsedTime());
 
         orbitRef.current.rotation.y = clock.elapsedTime / 20;
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
         // cameraCenterRef.current.rotation.z = clock.elapsedTime / 20;
-        camerasRef.current.position.y = Math.sin(clock.elapsedTime / 5) * 2;
+        groupRef.current.position.y = Math.sin(clock.elapsedTime / 5) * 1;
 
         orbitRef.current.children.forEach((group) => {
             if (group.name !== "orbitChildGroup") return;
@@ -180,58 +190,45 @@ const Place = (props: PlaceProps) => {
 
     return (
         <>
-            <group ref={orbitRef}>
-                <group ref={camerasRef} position={[0, 0, -30]}>
-                    <PerspectiveCamera
-                        position={[0, 0, 0]}
-                        rotation={[0, Math.PI + Math.PI / 2, 0]}
-                        fov={58.5}
-                        near={0.1}
-                        far={20000}
-                        ref={cameraLeftRef}
-                    />
-                    <PerspectiveCamera
-                        makeDefault
-                        position={[0, 0, 0]}
-                        rotation={[0, Math.PI, 0]}
-                        fov={58.5}
-                        near={0.1}
-                        far={20000}
-                        ref={cameraCenterRef}
-                    />
-                    <PerspectiveCamera
-                        position={[0, 0, 0]}
-                        rotation={[0, Math.PI - Math.PI / 2, 0]}
-                        fov={58.5}
-                        near={0.1}
-                        far={20000}
-                        ref={cameraRightRef}
-                    />
-                    <GodRay />
-                </group>
+            <ambientLight ref={ambientLightRef} />
+            <PerspectiveCamera
+                makeDefault
+                position={[0, 0, 0]}
+                rotation={[0, 0, 0]}
+                fov={58.5}
+                near={0.1}
+                far={500}
+                ref={cameraCenterRef}
+            />
+            <CameraShake />
+            {/* <BackgroundEffects /> */}
+            {/* <Effects /> */}
 
-                {orbitChild.current}
+            <group ref={groupRef} position={[0, 0, -30]}>
+                <group ref={orbitRef}>{orbitChild.current}</group>
+
+                {location === "/space" && (
+                    <Space
+                        primaryColor={props.primaryColor}
+                        secondaryColor={props.secondaryColor}
+                    />
+                )}
+                {location === "/ether" && (
+                    <Ether
+                        primaryColor={props.primaryColor}
+                        secondaryColor={props.secondaryColor}
+                    />
+                )}
+                {location === "/sea" && (
+                    <>
+                        <Bubble numParticles={2000} />
+                        <Sea
+                            primaryColor={props.primaryColor}
+                            secondaryColor={props.secondaryColor}
+                        />
+                    </>
+                )}
             </group>
-            <Bubble numParticles={2000} />
-            {location === "/space" && (
-                <Space
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
-            )}
-            {location === "/ether" && (
-                <Ether
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
-            )}
-            {location === "/sea" && (
-                <Sea
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
-            )}
-            {/* {location === "/sea" && <Shape />} */}
         </>
     );
 };
