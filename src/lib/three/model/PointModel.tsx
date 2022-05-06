@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { GroupProps, useFrame, useThree } from "@react-three/fiber";
-import { Points, useGLTF } from "@react-three/drei";
+import { Points, useGLTF, useHelper } from "@react-three/drei";
 import { PointShaderMaterialRaw } from "../../shader/PointShaderMaterial";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 import { useSpring } from "@react-spring/three";
@@ -63,7 +63,10 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
 
         useEffect(() => {
             console.log("SaturnModel useEffect");
-            // console.log(gltf);
+            if (props.path === "/models/Shark.glb") {
+                console.log(gltf);
+            }
+
             sampler.current = new MeshSurfaceSampler(meshRef.current).build();
             // setSampler(new MeshSurfaceSampler(meshRef.current).build());
 

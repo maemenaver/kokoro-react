@@ -5,6 +5,7 @@ import { devtools } from "zustand/middleware";
 
 export interface IGlobalUniforms {
     uTime: IUniform<number>;
+    setUTime: (v: number) => void;
     uResolution: IUniform;
     fogNear: IUniform<number>;
     fogFar: IUniform<number>;
@@ -19,6 +20,7 @@ export const useUniformsStore = create<IGlobalUniforms>(
         uTime: {
             value: 0,
         },
+        setUTime: (v) => set((state) => ({ uTime: { value: v } })),
         uResolution: {
             value: undefined,
         },
@@ -26,16 +28,16 @@ export const useUniformsStore = create<IGlobalUniforms>(
             value: 0.1,
         },
         fogFar: {
-            value: 20,
+            value: 70,
         },
         fogFarColor: {
-            value: new THREE.Color("#7aaf"),
+            value: new THREE.Color(206145),
         },
         fogNearColor: {
-            value: new THREE.Color("#7facff"),
+            value: new THREE.Color(2127011),
         },
         uShadowColor: {
-            value: new THREE.Color("#1e1e"),
+            value: new THREE.Color("#1e1e1e"),
         },
         uShadowIntensity: {
             value: 0.7,

@@ -18,22 +18,23 @@ extend({
 });
 
 export default function Effects() {
-    const composer = useRef<any>(null);
-    const { scene, gl, size, camera } = useThree();
-    const aspect = useMemo(() => new THREE.Vector2(512, 512), []);
-    useEffect(
-        () => void composer.current.setSize(size.width, size.height),
-        [size]
-    );
-    useFrame(() => composer.current.render(), 1);
+    // const composer = useRef<any>(null);
+    // const { scene, gl, size, camera } = useThree();
+    // const aspect = useMemo(() => new THREE.Vector2(512, 512), []);
+    // useEffect(
+    //     () => void composer.current.setSize(size.width, size.height),
+    //     [size]
+    // );
+    // useFrame(() => composer.current.render(), 1);
 
     return (
-        <effectComposer ref={composer} args={[gl]}>
-            <renderPass attachArray="passes" scene={scene} camera={camera} />
-            {/* @ts-ignore */}
-            {/* <waterPass attachArray="passes" factor={1.5} /> */}
-            {/* @ts-ignore */}
-            <unrealBloomPass attachArray="passes" args={[aspect, 0.5, 1, 0]} />
-        </effectComposer>
+        <></>
+        // <effectComposer ref={composer} args={[gl]}>
+        //     <renderPass attachArray="passes" scene={scene} camera={camera} />
+        //     {/* @ts-ignore */}
+        //     {/* <waterPass attachArray="passes" factor={1.5} /> */}
+        //     {/* @ts-ignore */}
+        //     <unrealBloomPass attachArray="passes" args={[aspect, 0.5, 1, 0]} />
+        // </effectComposer>
     );
 }

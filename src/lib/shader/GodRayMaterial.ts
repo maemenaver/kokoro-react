@@ -64,11 +64,12 @@ const godRayFragmentShader = glsl`
 
         gl_FragColor = vec4(uLightColor, alpha);
 
-        gl_FragColor.a *= smoothstep(0., 5., cameraPosition.z - 2.5 - vWorldPosition.z);
+        // gl_FragColor.a *= smoothstep(0., 5., cameraPosition.z - 2.5 - vWorldPosition.z);
 
-        float fogDepth = gl_FragCoord.z / gl_FragCoord.w;
-        float fogFactor = smoothstep(fogNear, fogFar, fogDepth);
-        gl_FragColor.a = mix(gl_FragColor.a, 0., fogFactor);
+        // float fogDepth = gl_FragCoord.z / gl_FragCoord.w;
+        // float fogFactor = smoothstep(fogNear, fogFar, fogDepth);
+        // gl_FragColor.a = mix(gl_FragColor.a, 0., fogFactor);
+
     }
 `;
 

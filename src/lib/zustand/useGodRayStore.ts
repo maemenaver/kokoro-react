@@ -9,7 +9,7 @@ export interface IGodRay {
     fadeSmoothness: number;
     scale: number;
     speed: number;
-    color: string;
+    color: string | number;
 }
 
 export const useGodRayStore = create<IGodRay>(
@@ -21,6 +21,6 @@ export const useGodRayStore = create<IGodRay>(
         fadeSmoothness: 0.27,
         scale: 0.26,
         speed: 0.45,
-        color: "#28c9fc",
+        color: 2673148,
     }))
 );

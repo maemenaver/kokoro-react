@@ -1,6 +1,6 @@
-import react, { useMemo, useRef, useState } from "react";
+import react, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
@@ -9,6 +9,11 @@ import { OrbitChildGroup } from "../model/OrbitChildGroup";
 import { useLocation } from "wouter";
 import Space from "./Space";
 import Ether from "./Ether";
+import Sea from "./Sea";
+import Bubble from "../model/Bubble";
+import { AquariumCastle } from "../model/AquariumCastle";
+import { useUniformsStore } from "../../zustand/useUniformsStore";
+import { GodRay } from "../model/GodRay";
 
 class PlaceProps {
     objCount: number;
@@ -19,6 +24,9 @@ class PlaceProps {
 
 const Place = (props: PlaceProps) => {
     const [location] = useLocation();
+    const scene = useThree((state) => state.scene);
+
+    const uniformsStore = useUniformsStore();
 
     const orbitChild = useRef<JSX.Element[]>(
         new Array(props.objCount).fill(0).map((v, i) => {
@@ -82,6 +90,7 @@ const Place = (props: PlaceProps) => {
             return (
                 <OrbitChildGroup
                     path={path}
+                    key={i}
                     numParticles={numParticles}
                     position={new THREE.Vector3(x, y, z)}
                     therapeuticColor={props.therapeuticColor}
@@ -150,12 +159,17 @@ const Place = (props: PlaceProps) => {
         },
     });
 
+    useEffect(() => {
+        scene.fog = new THREE.Fog(206145, 0.1, 70);
+    }, []);
+
     useFrame(({ clock }) => {
+        uniformsStore.setUTime(clock.getElapsedTime());
+
         orbitRef.current.rotation.y = clock.elapsedTime / 20;
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
         // cameraCenterRef.current.rotation.z = clock.elapsedTime / 20;
-        cameraCenterRef.current.position.y =
-            Math.sin(clock.elapsedTime / 5) * 2;
+        camerasRef.current.position.y = Math.sin(clock.elapsedTime / 5) * 2;
 
         orbitRef.current.children.forEach((group) => {
             if (group.name !== "orbitChildGroup") return;
@@ -193,9 +207,12 @@ const Place = (props: PlaceProps) => {
                         far={20000}
                         ref={cameraRightRef}
                     />
+                    <GodRay />
                 </group>
+
                 {orbitChild.current}
             </group>
+            <Bubble numParticles={2000} />
             {location === "/space" && (
                 <Space
                     primaryColor={props.primaryColor}
@@ -204,6 +221,12 @@ const Place = (props: PlaceProps) => {
             )}
             {location === "/ether" && (
                 <Ether
+                    primaryColor={props.primaryColor}
+                    secondaryColor={props.secondaryColor}
+                />
+            )}
+            {location === "/sea" && (
+                <Sea
                     primaryColor={props.primaryColor}
                     secondaryColor={props.secondaryColor}
                 />

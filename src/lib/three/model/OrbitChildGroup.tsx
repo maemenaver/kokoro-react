@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import React, { useRef, useEffect, useMemo, useState } from "react";
 import { useColorStore } from "../../zustand/useColorStore";
 import PointModel from "./PointModel";
