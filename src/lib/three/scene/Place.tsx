@@ -1,23 +1,17 @@
-import react, { useEffect, useMemo, useRef, useState } from "react";
+import react, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { CameraShake, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
-import { useSpring, animated } from "@react-spring/three";
-import Effects from "../Effects";
+import { useSpring } from "@react-spring/three";
 import { OrbitChildGroup } from "../model/OrbitChildGroup";
 import { useLocation } from "wouter";
 import Space from "./Space";
 import Ether from "./Ether";
 import Sea from "./Sea";
 import Bubble from "../model/Bubble";
-import { AquariumCastle } from "../model/AquariumCastle";
 import { useUniformsStore } from "../../zustand/useUniformsStore";
-import { GodRay } from "../model/GodRay";
-import { Select, Selection } from "@react-three/postprocessing";
-import { useBloomStore } from "../../zustand/useBloomStore";
-import { useCameraStore } from "../../zustand/useCameraStore";
-import BackgroundEffects from "../effects/backgroundEffects";
+import PostProcessing from "../effects/PostProcessing";
 
 class PlaceProps {
     objCount: number;
@@ -28,7 +22,8 @@ class PlaceProps {
 
 const Place = (props: PlaceProps) => {
     const [location] = useLocation();
-    // const gl = useThree((state) => state.gl);
+    const scene = useThree((state) => state.scene);
+    const set = useThree((state) => state.set);
 
     // const { addSelectedLight, removeSelectedLight } = useBloomStore();
 
@@ -92,14 +87,24 @@ const Place = (props: PlaceProps) => {
             }
 
             return (
-                <OrbitChildGroup
-                    path={path}
-                    key={i}
-                    numParticles={numParticles}
-                    position={new THREE.Vector3(x, y, z)}
-                    therapeuticColor={props.therapeuticColor}
-                    colorType={"therapeuticColor"}
-                />
+                <>
+                    <mesh position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                        <ringGeometry args={[distance, distance + 1, 30]} />
+                        <meshBasicMaterial
+                            transparent
+                            opacity={0.2}
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
+                    <OrbitChildGroup
+                        path={path}
+                        key={i}
+                        numParticles={numParticles}
+                        position={new THREE.Vector3(x, y, z)}
+                        therapeuticColor={props.therapeuticColor}
+                        colorType={"therapeuticColor"}
+                    />
+                </>
             );
         })
     );
@@ -160,8 +165,7 @@ const Place = (props: PlaceProps) => {
     const { cameraRotationY } = useSpring({
         cameraRotationY: cameraRotationYTo,
         onChange: () => {
-            cameraCenterRef.current.rotation.y =
-                Math.PI - cameraRotationY.get();
+            cameraCenterRef.current.rotation.y = cameraRotationY.get();
         },
     });
 
@@ -185,6 +189,8 @@ const Place = (props: PlaceProps) => {
             group.rotation.y =
                 (clock.elapsedTime / 9) * group.userData.orbitSpeed;
         });
+
+        set({ camera: cameraCenterRef.current });
     });
 
     return (
@@ -200,9 +206,6 @@ const Place = (props: PlaceProps) => {
                 ref={cameraCenterRef}
             />
             <CameraShake />
-            {/* <BackgroundEffects /> */}
-            {/* <Effects /> */}
-
             <group ref={groupRef} position={[0, 0, -30]}>
                 <group ref={orbitRef}>{orbitChild.current}</group>
 
@@ -228,26 +231,7 @@ const Place = (props: PlaceProps) => {
                     </>
                 )}
             </group>
-            <Bubble numParticles={2000} />
-            {location === "/space" && (
-                <Space
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
-            )}
-            {location === "/ether" && (
-                <Ether
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
-            )}
-            {location === "/sea" && (
-                <Sea
-                    primaryColor={props.primaryColor}
-                    secondaryColor={props.secondaryColor}
-                />
-            )}
-            {/* {location === "/sea" && <Shape />} */}
+            <PostProcessing />
         </>
     );
 };
