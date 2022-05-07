@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useLocation } from "wouter";
-import { Camera } from "@belivvr/aframe-react";
 import { useQuery } from "@apollo/client";
 import { getBoard, subBoard } from "../lib/apollo/gql";
 import { Intro } from "../components/Intro";
 import { Music } from "../components/Music";
-import AframeProvider from "../lib/aframe/AframeProvider";
-import Root from "../lib/aframe/scene/Root";
-import SeaBox from "../lib/aframe/scene/SeaBox";
-import SkyBox from "../lib/aframe/scene/SkyBox";
 import { Color } from "../components/Color";
 import { Shape } from "../components/Shape";
-import Space from "../lib/three/scene/Space";
 import colorTranslate from "../lib/colorTranslate";
 import { useMIDI } from "@react-midi/hooks";
 import { useControls } from "leva";
@@ -23,7 +17,7 @@ import { useColorStore } from "../lib/zustand/useColorStore";
 function Main() {
     const [location] = useLocation();
 
-    const { inputs, outputs, hasMIDI } = useMIDI();
+    const { inputs } = useMIDI();
 
     const {
         primaryColor,
@@ -117,35 +111,22 @@ function Main() {
 
     return (
         <div style={{ width: "100vw", height: "100vh" }}>
-            {/* <Text />
-    <CharacterCounter />
-    <TodoList />
-    <CurrentUserInfo />
-    <Scratches /> */}
             {location === "/" && <Intro />}
             {location === "/color" && <Color />}
             {location === "/shape" && <Shape />}
             {location === "/music" && inputs[1] && <Music input={inputs[1]} />}
-            {location === "/space" ? (
+            {(location === "/space" ||
+                location === "/sea" ||
+                location === "/ether") && (
                 <Suspense fallback={null}>
                     <Canvas
                         gl={{
                             logarithmicDepthBuffer: true,
-                        }}
-                    >
-                        <Place
-                            objCount={10}
-                            primaryColor={primaryColor}
-                            secondaryColor={secondaryColor}
-                            therapeuticColor={therapeuticColor}
-                        />
-                    </Canvas>
-                </Suspense>
-            ) : (
-                <Suspense fallback={null}>
-                    <Canvas
-                        gl={{
-                            logarithmicDepthBuffer: true,
+                            alpha: true,
+                            powerPreference: "high-performance",
+                            antialias: false,
+                            stencil: false,
+                            depth: false,
                         }}
                     >
                         <Place
