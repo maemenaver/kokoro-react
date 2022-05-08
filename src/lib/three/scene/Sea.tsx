@@ -110,7 +110,7 @@ const Sea = (props: SeaProps) => {
                     }}
                 />
             </mesh> */}
-            {/* <GodRay /> */}
+            <GodRay />
             {/* <AquariumCastle
                 position={[150, -100, 100]}
                 rotation={[-Math.PI / 2, 0, Math.PI]}

@@ -24,7 +24,7 @@ import {
     godRayVertexShader,
 } from "../../shader/GodRayMaterial";
 
-export function GodRay(props) {
+export function BubbleFlow(props) {
     const group = useRef<THREE.Group>();
     const mesh = useRef<THREE.Mesh>();
 
@@ -61,19 +61,27 @@ export function GodRay(props) {
             // mesh.current.rotation.x += clock.getElapsedTime() * 0.01;
             // mesh.current.rotation.y += clock.getElapsedTime() * 0.01;
             // mesh.current.rotation.z += clock.getElapsedTime() * 0.01;
-            mesh.current.material["uniforms"].uTime.value = Math.sin(
-                clock.getElapsedTime() / 5
-            );
         }
     });
 
     return (
         <group>
+            <instancedMesh count={21000}>
+                <instancedBufferAttribute
+                    attach={"curveArray"}
+                    array={
+                        [
+                            // new THREE.CatmullRomCurve3()
+                        ]
+                    }
+                />
+            </instancedMesh>
             <mesh
                 ref={mesh}
                 position={[0, 0, 0]}
                 // rotation={[0, 0, 0]}
                 scale={[80, 80, 1]}
+                renderOrder={-1}
             >
                 <planeBufferGeometry>
                     {/* <bufferAttribute attachObject={["attributes", "aOffset"]} array={} /> */}
@@ -86,9 +94,7 @@ export function GodRay(props) {
                     vertexShader={godRayVertexShader}
                     fragmentShader={godRayFragmentShader}
                     uniforms={{
-                        uTime: {
-                            value: 0,
-                        },
+                        uTime: useUniformsStore.getState().uTime,
                         uNoiseTexture: {
                             value: gradientNoise,
                         },

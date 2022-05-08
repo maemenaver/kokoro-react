@@ -6,6 +6,7 @@ import { PointShaderMaterialRaw } from "../../shader/PointShaderMaterial";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
+import { useBloomStore } from "../../zustand/useBloomStore";
 
 class PointModelProps {
     numParticles: number;
@@ -63,10 +64,10 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
         });
 
         useEffect(() => {
-            console.log("SaturnModel useEffect");
-            if (props.path === "/models/Shark.glb") {
-                console.log(gltf);
-            }
+            // console.log("SaturnModel useEffect");
+            // if (props.path === "/models/Shark.glb") {
+            //     console.log(gltf);
+            // }
 
             sampler.current = new MeshSurfaceSampler(meshRef.current).build();
             // setSampler(new MeshSurfaceSampler(meshRef.current).build());
@@ -96,8 +97,9 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
             setParticlesPosition(particlesPosition);
             setParticlesRandomness(particlesRandomness);
             setLoading(false);
-        }, []);
 
+            useBloomStore.getState().addSelectedMesh(pointsRef.current);
+        }, []);
         // useEffect(() => {
         //     console.log("color changed", props.color1, props.color2);
         // }, [props.color1, props.color2]);
@@ -137,6 +139,22 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                         )}
                         geometry={particlesGeometry()}
                     />
+                    {/* {props.colorType === "therapeuticColor" &&
+                        therapeuticColor === "#000000" && (
+                            <pointLight
+                                renderOrder={-1}
+                                args={["#000000", 100, 100]}
+                            >
+                                <mesh>
+                                    <sphereGeometry args={[0.5, 16, 8]} />
+                                    <meshBasicMaterial
+                                        color={"#ffffff"}
+                                        transparent
+                                        side={THREE.BackSide}
+                                    />
+                                </mesh>
+                            </pointLight>
+                        )} */}
                 </group>
             </>
         );

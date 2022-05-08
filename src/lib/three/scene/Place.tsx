@@ -88,14 +88,23 @@ const Place = (props: PlaceProps) => {
 
             return (
                 <>
-                    <mesh position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
-                        <ringGeometry args={[distance, distance + 1, 30]} />
-                        <meshBasicMaterial
-                            transparent
-                            opacity={0.2}
-                            side={THREE.DoubleSide}
-                        />
-                    </mesh>
+                    {location !== "/ether" && (
+                        <mesh
+                            name="visualOrbit"
+                            position={[0, y, 0]}
+                            rotation={[Math.PI / 2, 0, 0]}
+                        >
+                            <ringGeometry
+                                args={[distance, distance + 0.2, 30]}
+                            />
+                            <meshBasicMaterial
+                                transparent
+                                opacity={1.0}
+                                side={THREE.DoubleSide}
+                            />
+                        </mesh>
+                    )}
+
                     <OrbitChildGroup
                         path={path}
                         key={i}
@@ -183,6 +192,7 @@ const Place = (props: PlaceProps) => {
         // cameraCenterRef.current.rotation.x = clock.elapsedTime / 10;
         // cameraCenterRef.current.rotation.z = clock.elapsedTime / 20;
         groupRef.current.position.y = Math.sin(clock.elapsedTime / 5) * 1;
+        // groupRef.current.rotation.y = clock.elapsedTime / 20;
 
         orbitRef.current.children.forEach((group) => {
             if (group.name !== "orbitChildGroup") return;
@@ -206,8 +216,10 @@ const Place = (props: PlaceProps) => {
                 ref={cameraCenterRef}
             />
             <CameraShake />
-            <group ref={groupRef} position={[0, 0, -30]}>
-                <group ref={orbitRef}>{orbitChild.current}</group>
+            <group name={"mainGroup"} ref={groupRef} position={[0, 0, -30]}>
+                <group name={"orbitGroup"} ref={orbitRef}>
+                    {orbitChild.current}
+                </group>
 
                 {location === "/space" && (
                     <Space
@@ -231,7 +243,7 @@ const Place = (props: PlaceProps) => {
                     </>
                 )}
             </group>
-            <PostProcessing />
+            {location !== "/ether" && <PostProcessing />}
         </>
     );
 };

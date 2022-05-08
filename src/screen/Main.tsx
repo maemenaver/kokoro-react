@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import React, { useEffect } from "react";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
@@ -121,6 +122,8 @@ function Main() {
                 <Suspense fallback={null}>
                     <Canvas
                         gl={{
+                            outputEncoding: THREE.LinearEncoding,
+                            autoClear: false,
                             logarithmicDepthBuffer: true,
                             alpha: true,
                             powerPreference: "high-performance",

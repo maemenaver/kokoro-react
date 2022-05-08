@@ -25,7 +25,7 @@ export function GalaxyStars({
     galaxyControl,
     ...props
 }: GalaxyStarsProps) {
-    const { transitionDelay } = useColorStore();
+    const transitionDelay = useColorStore((state) => state.transitionDelay);
 
     const parameters = useControls({
         Animation: folder({
