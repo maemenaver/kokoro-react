@@ -5,10 +5,10 @@ import { Canvas } from "@react-three/fiber";
 import { useLocation } from "wouter";
 import { useQuery } from "@apollo/client";
 import { getBoard, subBoard } from "../lib/apollo/gql";
-import { Intro } from "../components/Intro";
-import { Music } from "../components/Music";
-import { Color } from "../components/Color";
-import { Shape } from "../components/Shape";
+import { Intro } from "./Intro";
+import { Music } from "./Music";
+import { Color } from "./Color";
+import { Shape } from "./Shape";
 import colorTranslate from "../lib/colorTranslate";
 import { useMIDI } from "@react-midi/hooks";
 import { useControls } from "leva";
@@ -111,11 +111,18 @@ function Main() {
     }, []);
 
     return (
-        <div style={{ width: "100vw", height: "100vh" }}>
+        <div
+            style={{
+                width: "100vw",
+                height: "100vh",
+                overflow: "hidden",
+                backgroundColor: "#000000",
+            }}
+        >
             {location === "/" && <Intro />}
             {location === "/color" && <Color />}
             {location === "/shape" && <Shape />}
-            {location === "/music" && inputs[1] && <Music input={inputs[1]} />}
+            {location === "/music" && <Music input={inputs[1]} />}
             {(location === "/space" ||
                 location === "/sea" ||
                 location === "/ether") && (
