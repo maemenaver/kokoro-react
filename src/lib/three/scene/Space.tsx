@@ -6,7 +6,6 @@ import { TextureLoader } from "three";
 import { folder, useControls } from "leva";
 import { Butterfly } from "../model/Butterfly";
 import { GalaxyStars } from "../GalaxyStars";
-import Effects from "../Effects";
 import { useColorStore } from "../../zustand/useColorStore";
 import { useSpring } from "@react-spring/three";
 
@@ -157,7 +156,7 @@ const Space = (props: SpaceProps) => {
                 insideColor={galaxyControl.insideColor}
                 outsideColor={galaxyControl.outsideColor}
             />
-            <Effects />
+            {/* <Effects /> */}
             <mesh scale={400}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
