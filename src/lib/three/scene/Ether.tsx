@@ -56,39 +56,39 @@ const Ether = (props: EtherProps) => {
         setSaturnControl({
             color1:
                 props.primaryColor === "orange"
-                    ? "#ff0a00"
+                    ? "#e2b972"
                     : props.primaryColor === "yellow"
-                    ? "orange"
+                    ? "#c2dae8"
                     : props.primaryColor === "black"
                     ? "#1d1d1d"
                     : props.primaryColor === "red"
-                    ? "#b4274d"
+                    ? "#db5a7d"
                     : props.primaryColor === "purple"
-                    ? "#231462"
+                    ? "#6883be"
                     : props.primaryColor === "green"
-                    ? "#2c8624"
+                    ? "#40a73a"
                     : props.primaryColor === "blue"
-                    ? "#0019ff"
+                    ? "#98c5e5"
                     : props.primaryColor === "grey"
-                    ? "#1a1821"
+                    ? "#767e80"
                     : props.primaryColor,
             color2:
                 props.primaryColor === "orange"
-                    ? "#ff3000"
+                    ? "#d86d58"
                     : props.primaryColor === "yellow"
-                    ? "orange"
+                    ? "#dbc458"
                     : props.primaryColor === "black"
                     ? "#000000"
                     : props.primaryColor === "red"
-                    ? "#0b0b0d"
+                    ? "#efceba"
                     : props.primaryColor === "purple"
-                    ? "#10021d"
+                    ? "#b4a3d5"
                     : props.primaryColor === "green"
-                    ? "#022706"
+                    ? "#92d1a7"
                     : props.primaryColor === "blue"
-                    ? "#0053ff"
+                    ? "#528dd9"
                     : props.primaryColor === "grey"
-                    ? "#000000"
+                    ? "#695f5f"
                     : props.primaryColor,
         });
     }, [props.primaryColor]);
@@ -100,9 +100,10 @@ const Ether = (props: EtherProps) => {
                 path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
-                numParticles={200000}
+                numParticles={400000}
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
+                blending={THREE.NormalBlending}
             />
             {/* <Effects /> */}
             <group ref={cloudsRef}>
@@ -117,16 +118,17 @@ const Ether = (props: EtherProps) => {
             {butterflyPosition.map((position, i) => (
                 <Butterfly key={i} position={position} scale={1} />
             ))}
-            {/* <mesh scale={40}>
-                <sphereGeometry attach="geometry" />
+            {/* <mesh scale={80} position={[0, 0, -40]}>
+                <planeGeometry  attach="geometry" />
                 <shaderMaterial
                     vertexShader={skyVertexShader}
                     fragmentShader={skyFragmentShader}
                     side={THREE.DoubleSide}
-                    // transparent={true}
-                    // opacity={1}
+                    transparent={true}
+                    opacity={1}
                     depthTest={false}
                     depthWrite={true}
+                    
                     uniforms={{
                         uColor: {
                             value: new THREE.Color("#3366CC"),
@@ -141,13 +143,14 @@ const Ether = (props: EtherProps) => {
                     side={THREE.BackSide}
                     map={clouds}
                     transparent={true}
-                    opacity={1}
+                    opacity={1.0}
+                    // blendSrc={THREE.SrcAlphaSaturateFactor}
                     depthTest={false}
                     depthWrite={true}
                 />
             </mesh>
             <Sky />
-            <Environment preset="sunset" />
+            {/* <Environment preset="sunset" /> */}
         </>
     );
 };
