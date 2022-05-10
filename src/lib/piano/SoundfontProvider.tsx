@@ -12,6 +12,9 @@ class SoundfontProvider extends React.Component<any, any> {
         soundfont: PropTypes.oneOf(["MusyngKite", "FluidR3_GM"]),
         audioContext: PropTypes.instanceOf(window.AudioContext),
         render: PropTypes.func,
+        data: PropTypes.array,
+        setData: PropTypes.any,
+        message: PropTypes.any,
     };
 
     static defaultProps = {
@@ -25,6 +28,7 @@ class SoundfontProvider extends React.Component<any, any> {
         this.state = {
             activeAudioNodes: {},
             instrument: null,
+            activeNodes: [],
         };
     }
 
@@ -35,6 +39,20 @@ class SoundfontProvider extends React.Component<any, any> {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.instrumentName !== this.props.instrumentName) {
             this.loadInstrument(this.props.instrumentName);
+        }
+
+        if (prevProps.message !== this.props.message) {
+            const receivedData = this.props.message.data[1];
+
+            switch (!!this.state.activeAudioNodes[receivedData]) {
+                case true:
+                    this.stopNote(receivedData);
+                    break;
+
+                case false:
+                    this.playNote(receivedData);
+                    break;
+            }
         }
     }
 
@@ -57,6 +75,9 @@ class SoundfontProvider extends React.Component<any, any> {
     };
 
     playNote = (midiNumber) => {
+        if (!!this.state.activeAudioNodes[midiNumber]) {
+            return;
+        }
         this.props.audioContext.resume().then(() => {
             const audioNode = this.state.instrument.play(midiNumber);
             this.setState({
@@ -67,7 +88,12 @@ class SoundfontProvider extends React.Component<any, any> {
                         [midiNumber]: audioNode,
                     }
                 ),
+                activeNodes: [
+                    ...this.state.activeNodes.filter((v) => v !== midiNumber),
+                    midiNumber,
+                ],
             });
+            this.props.setData((prev) => [...prev, midiNumber]);
         });
     };
 
@@ -86,7 +112,11 @@ class SoundfontProvider extends React.Component<any, any> {
                         [midiNumber]: null,
                     }
                 ),
+                activeNodes: this.state.activeNodes.filter(
+                    (v) => v !== midiNumber
+                ),
             });
+            this.props.setData((prev) => [...prev, midiNumber]);
         });
     };
 
@@ -112,6 +142,7 @@ class SoundfontProvider extends React.Component<any, any> {
             playNote: this.playNote,
             stopNote: this.stopNote,
             stopAllNotes: this.stopAllNotes,
+            activeNotes: this.state.activeNodes,
         });
     }
 }
