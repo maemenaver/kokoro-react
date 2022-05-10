@@ -3,8 +3,13 @@ import React, { useEffect } from "react";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useLocation } from "wouter";
-import { useQuery } from "@apollo/client";
-import { getBoard, subBoard } from "../lib/apollo/gql";
+import { useQuery, useSubscription } from "@apollo/client";
+import {
+    getBoard,
+    getMusicPath,
+    subBoard,
+    subMusicGql,
+} from "../lib/apollo/gql";
 import { Intro } from "./Intro";
 import { Music } from "./Music";
 import { Color } from "./Color";
@@ -79,6 +84,20 @@ function Main() {
         },
     });
 
+    const { data: subMusicData } = useSubscription(subMusicGql, {
+        // onSubscriptionData: ({ subscriptionData }) => {
+        //     setResult(subscriptionData.data["subMusic"]);
+        // },
+    });
+
+    const musicPath = useQuery(getMusicPath, {
+        onCompleted: (data) => {
+            console.log(data);
+            const result = JSON.parse(data.getMusicPath);
+            console.log(result);
+        },
+    });
+
     useEffect(() => {
         const unsubBoard = board.subscribeToMore({
             document: subBoard,
@@ -122,7 +141,9 @@ function Main() {
             {location === "/" && <Intro />}
             {location === "/color" && <Color />}
             {location === "/shape" && <Shape />}
-            {location === "/music" && <Music input={inputs[1]} />}
+            {location === "/music" && (
+                <Music inputs={inputs} musicType={subMusicData?.subMusic} />
+            )}
             {(location === "/space" ||
                 location === "/sea" ||
                 location === "/ether") && (
@@ -144,6 +165,7 @@ function Main() {
                             primaryColor={primaryColor}
                             secondaryColor={secondaryColor}
                             therapeuticColor={therapeuticColor}
+                            musicType={subMusicData?.subMusic}
                         />
                     </Canvas>
                 </Suspense>

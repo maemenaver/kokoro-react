@@ -18,6 +18,7 @@ class PlaceProps {
     primaryColor: string;
     secondaryColor: string;
     therapeuticColor: string;
+    musicType?: string;
 }
 
 const Place = (props: PlaceProps) => {
