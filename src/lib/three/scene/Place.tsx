@@ -5,25 +5,19 @@ import { CameraShake, PerspectiveCamera } from "@react-three/drei";
 import { useControls } from "leva";
 import { useSpring } from "@react-spring/three";
 import { OrbitChildGroup } from "../model/OrbitChildGroup";
-import { useLocation } from "wouter";
 import Space from "./Space";
 import Ether from "./Ether";
 import Sea from "./Sea";
 import Bubble from "../model/Bubble";
 import { useUniformsStore } from "../../zustand/useUniformsStore";
 import PostProcessing from "../effects/PostProcessing";
+import Transition from "../effects/Transition";
 
 class PlaceProps {
     objCount: number;
-    primaryColor: string;
-    secondaryColor: string;
-    therapeuticColor: string;
-    musicType?: string;
 }
 
 const Place = (props: PlaceProps) => {
-    const [location] = useLocation();
-    const scene = useThree((state) => state.scene);
     const set = useThree((state) => state.set);
 
     // const { addSelectedLight, removeSelectedLight } = useBloomStore();
@@ -89,29 +83,29 @@ const Place = (props: PlaceProps) => {
 
             return (
                 <>
-                    {location !== "/ether" && (
-                        <mesh
-                            name="visualOrbit"
-                            position={[0, y, 0]}
-                            rotation={[Math.PI / 2, 0, 0]}
-                        >
-                            <ringGeometry
-                                args={[distance, distance + 0.2, 30]}
-                            />
-                            <meshBasicMaterial
-                                transparent
-                                opacity={1.0}
-                                side={THREE.DoubleSide}
-                            />
-                        </mesh>
-                    )}
+                    <mesh
+                        key={`mesh_${i}`}
+                        name="visualOrbit"
+                        position={[0, y, 0]}
+                        rotation={[Math.PI / 2, 0, 0]}
+                    >
+                        <ringGeometry
+                            key={`geometry_${i}`}
+                            args={[distance, distance + 0.2, 30]}
+                        />
+                        <meshBasicMaterial
+                            key={`material_${i}`}
+                            transparent
+                            opacity={1.0}
+                            side={THREE.DoubleSide}
+                        />
+                    </mesh>
 
                     <OrbitChildGroup
                         path={path}
                         key={i}
                         numParticles={numParticles}
                         position={new THREE.Vector3(x, y, z)}
-                        therapeuticColor={props.therapeuticColor}
                         colorType={"therapeuticColor"}
                     />
                 </>
@@ -179,13 +173,6 @@ const Place = (props: PlaceProps) => {
         },
     });
 
-    useEffect(() => {
-        if (location === "/sea") {
-            scene.fog = new THREE.Fog(206145, 0.1, 70);
-            scene.background = new THREE.Color("#203455");
-        }
-    }, []);
-
     useFrame(({ clock }) => {
         useUniformsStore.getState().setUTime(clock.getElapsedTime());
 
@@ -222,29 +209,22 @@ const Place = (props: PlaceProps) => {
                     {orbitChild.current}
                 </group>
 
-                {location === "/space" && (
-                    <Space
-                        primaryColor={props.primaryColor}
-                        secondaryColor={props.secondaryColor}
-                    />
-                )}
-                {location === "/ether" && (
-                    <Ether
-                        primaryColor={props.primaryColor}
-                        secondaryColor={props.secondaryColor}
-                    />
-                )}
+                {/* {location === "/space" && ( */}
+                <Space />
+                {/* )}
+                {location === "/ether" && ( */}
+                <Ether />
+                {/* )}
                 {location === "/sea" && (
-                    <>
-                        <Bubble numParticles={2000} />
-                        <Sea
-                            primaryColor={props.primaryColor}
-                            secondaryColor={props.secondaryColor}
-                        />
-                    </>
-                )}
+                    <> */}
+                <Bubble numParticles={2000} />
+                <Sea />
+                {/* </>
+                )} */}
             </group>
-            {location !== "/ether" && <PostProcessing />}
+            <PostProcessing />
+            <Transition />
+            {/* {location !== "/ether" && <PostProcessing />} */}
         </>
     );
 };

@@ -1,9 +1,21 @@
-import { ImageList, ImageListItem } from "@mui/material";
-import { Form, Formik } from "formik";
+import {
+    Button,
+    CircularProgress,
+    FormControl,
+    FormControlLabel,
+    ImageList,
+    ImageListItem,
+    MenuItem,
+    Radio,
+} from "@mui/material";
+import { Field, Form, Formik } from "formik";
 import { useCallback, useState } from "react";
 import { baseURL } from "../config";
 import axiosInstance from "../lib/axiosInstance";
 import { UiFileInputButton } from "../components/primitive/UIFileInputButton";
+import { RadioGroup, Select } from "formik-mui";
+import { useMutation } from "@apollo/client";
+import { setPlaceGql } from "../lib/apollo/gql";
 
 const Shape = (props) => {
     const { router, status, content, image } = props;
@@ -35,6 +47,8 @@ const Shape = (props) => {
         [thumb]
     );
 
+    const [setPlace] = useMutation(setPlaceGql);
+
     return (
         <>
             <div
@@ -58,7 +72,21 @@ const Shape = (props) => {
                 >
                     What's your Fellow?
                 </p>
-                <Formik initialValues={{}} onSubmit={(value, helper) => {}}>
+                <Formik
+                    initialValues={{
+                        place: "space",
+                    }}
+                    onSubmit={(value, helper) => {
+                        setPlace({
+                            variables: {
+                                place: value.place,
+                            },
+                            onCompleted: () => {
+                                helper.setSubmitting(false);
+                            },
+                        });
+                    }}
+                >
                     {({ submitForm, isSubmitting }) => (
                         <Form
                             style={{
@@ -98,6 +126,44 @@ const Shape = (props) => {
                                 onChange={onChange}
                                 thumb={thumb}
                             />
+                            <Field
+                                component={RadioGroup}
+                                name="place"
+                                style={{
+                                    marginLeft: "10px",
+                                    flexDirection: "row",
+                                }}
+                            >
+                                <FormControlLabel
+                                    label="space"
+                                    value="space"
+                                    control={<Radio disabled={isSubmitting} />}
+                                    disabled={isSubmitting}
+                                />
+                                <FormControlLabel
+                                    label="ether"
+                                    value="ether"
+                                    control={<Radio disabled={isSubmitting} />}
+                                    disabled={isSubmitting}
+                                />
+                                <FormControlLabel
+                                    label="sea"
+                                    value="sea"
+                                    control={<Radio disabled={isSubmitting} />}
+                                    disabled={isSubmitting}
+                                />
+                            </Field>
+                            {isSubmitting ? (
+                                <CircularProgress />
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={submitForm}
+                                >
+                                    저장
+                                </Button>
+                            )}
                         </Form>
                     )}
                 </Formik>

@@ -42,8 +42,20 @@ export const sendMusicGql = gql`
     }
 `;
 
+export const setPlaceGql = gql`
+    mutation Mutation($place: String!) {
+        setPlace(place: $place)
+    }
+`;
+
 export const subMusicGql = gql`
     subscription Subscription {
         subMusic
+    }
+`;
+
+export const subPlaceGql = gql`
+    subscription Subscription {
+        subPlace
     }
 `;

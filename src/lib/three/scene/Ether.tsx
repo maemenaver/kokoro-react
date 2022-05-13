@@ -1,4 +1,4 @@
-import react, { useEffect, useMemo, useRef } from "react";
+import react, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import PointModel from "../model/PointModel";
 import { Environment, Sky } from "@react-three/drei";
@@ -10,13 +10,18 @@ import {
 import { Butterfly } from "../model/Butterfly";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
+import { useColorStore } from "../../zustand/useColorStore";
+import { useObjectStore } from "../../zustand/useObjectStore";
 
-class EtherProps {
-    primaryColor: string;
-    secondaryColor: string;
-}
+class EtherProps {}
 
 const Ether = (props: EtherProps) => {
+    const { primaryColor } = useColorStore();
+
+    const etherGroupRef = useRef();
+
+    const clouds = useLoader(TextureLoader, "/textures/clouds.png");
+
     const butterflyPosition = useMemo(
         () =>
             new Array(1000).fill(0).map((v) => {
@@ -36,67 +41,69 @@ const Ether = (props: EtherProps) => {
         []
     );
 
-    const cloudsRef = useRef<THREE.Group>(null);
-
-    const clouds = useLoader(TextureLoader, "/textures/clouds.png");
-
     const [saturnControl, setSaturnControl] = useControls("Saturn", () => ({
         color1: {
-            value: props.primaryColor,
+            value: primaryColor,
             label: "Color1",
         },
         color2: {
-            value: props.primaryColor,
+            value: primaryColor,
             label: "Color2",
         },
     }));
 
     useEffect(() => {
-        console.log(props.primaryColor);
+        useObjectStore.setState((state) => ({
+            etherGroup: etherGroupRef.current,
+        }));
+    }, []);
+
+    useEffect(() => {
+        console.log(primaryColor);
         setSaturnControl({
             color1:
-                props.primaryColor === "orange"
+                primaryColor === "orange"
                     ? "#e2b972"
-                    : props.primaryColor === "yellow"
+                    : primaryColor === "yellow"
                     ? "#c2dae8"
-                    : props.primaryColor === "black"
+                    : primaryColor === "black"
                     ? "#1d1d1d"
-                    : props.primaryColor === "red"
+                    : primaryColor === "red"
                     ? "#db5a7d"
-                    : props.primaryColor === "purple"
+                    : primaryColor === "purple"
                     ? "#6883be"
-                    : props.primaryColor === "green"
+                    : primaryColor === "green"
                     ? "#40a73a"
-                    : props.primaryColor === "blue"
+                    : primaryColor === "blue"
                     ? "#98c5e5"
-                    : props.primaryColor === "grey"
+                    : primaryColor === "grey"
                     ? "#767e80"
-                    : props.primaryColor,
+                    : primaryColor,
             color2:
-                props.primaryColor === "orange"
+                primaryColor === "orange"
                     ? "#d86d58"
-                    : props.primaryColor === "yellow"
+                    : primaryColor === "yellow"
                     ? "#dbc458"
-                    : props.primaryColor === "black"
+                    : primaryColor === "black"
                     ? "#000000"
-                    : props.primaryColor === "red"
+                    : primaryColor === "red"
                     ? "#efceba"
-                    : props.primaryColor === "purple"
+                    : primaryColor === "purple"
                     ? "#b4a3d5"
-                    : props.primaryColor === "green"
+                    : primaryColor === "green"
                     ? "#92d1a7"
-                    : props.primaryColor === "blue"
+                    : primaryColor === "blue"
                     ? "#528dd9"
-                    : props.primaryColor === "grey"
+                    : primaryColor === "grey"
                     ? "#695f5f"
-                    : props.primaryColor,
+                    : primaryColor,
         });
-    }, [props.primaryColor]);
+    }, [primaryColor]);
 
     return (
-        <>
-            {/* <ambientLight /> */}
+        <group ref={etherGroupRef} name="ether">
             <PointModel
+                key="center"
                 path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
@@ -105,19 +112,13 @@ const Ether = (props: EtherProps) => {
                 color2={saturnControl.color2}
                 blending={THREE.NormalBlending}
             />
-            {/* <Effects /> */}
-            <group ref={cloudsRef}>
-                {/* <Cloud
-                    opacity={0.5}
-                    speed={0.4} // Rotation speed
-                    width={10} // Width of the full cloud
-                    depth={1.5} // Z-dir depth
-                    segments={20} // Number of particles
-                /> */}
+
+            <group key="ButterflyGroup" name={"ButterflyGroup"}>
+                {butterflyPosition.map((position, i) => (
+                    <Butterfly key={i} position={position} scale={1} />
+                ))}
             </group>
-            {butterflyPosition.map((position, i) => (
-                <Butterfly key={i} position={position} scale={1} />
-            ))}
+
             {/* <mesh scale={80} position={[0, 0, -40]}>
                 <planeGeometry  attach="geometry" />
                 <shaderMaterial
@@ -151,7 +152,7 @@ const Ether = (props: EtherProps) => {
             </mesh>
             <Sky />
             {/* <Environment preset="sunset" /> */}
-        </>
+        </group>
     );
 };
 

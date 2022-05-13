@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import React, { useRef, useEffect, useMemo, useState } from "react";
+import React, { useRef, useMemo } from "react";
 import { useColorStore } from "../../zustand/useColorStore";
 import PointModel from "./PointModel";
 
@@ -7,12 +7,11 @@ class OrbitChildGroupProps {
     path: string;
     numParticles: number;
     position: THREE.Vector3;
-    therapeuticColor?: string;
     colorType?: "therapeuticColor" | "primaryColor" | "secondaryColor";
 }
 
 export function OrbitChildGroup(props: OrbitChildGroupProps) {
-    const { therapeuticColor } = useColorStore();
+    const therapeuticColor = useColorStore((state) => state.therapeuticColor);
 
     const groupRef = useRef<THREE.Group>(null);
 

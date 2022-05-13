@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { shaderMaterial } from "@react-three/drei";
 import glsl from "babel-plugin-glsl/macro";
 
 const vertexShader = glsl`
@@ -34,24 +33,25 @@ const vertexShader = glsl`
 `;
 
 const fragmentShader = glsl`
-varying vec3 vPosition;
+    varying vec3 vPosition;
 
-uniform vec3 uColor1;
-uniform vec3 uColor2;
+    uniform vec3 uColor1;
+    uniform vec3 uColor2;
+    uniform float uOpacity;
 
-void main() {
-    vec3 color = vec3(1.0, 0.0, 0.0);
-    // color = vec3(1.0, 1.0, 0.0);
-    // color.r = 0.0;
+    void main() {
+        vec3 color = vec3(1.0, 0.0, 0.0);
+        // color = vec3(1.0, 1.0, 0.0);
+        // color.r = 0.0;
 
-    // vec3 color1 = vec3(10.0/255.0, 30.0/255.0, 100.0/255.0); // rgb(10, 30, 100)
-    // vec3 color2 = vec3(1.0, 1.0, 0.0);
+        // vec3 color1 = vec3(10.0/255.0, 30.0/255.0, 100.0/255.0); // rgb(10, 30, 100)
+        // vec3 color2 = vec3(1.0, 1.0, 0.0);
 
-    float depth = vPosition.z * 0.5 + 0.5;
-    color = mix(uColor1, uColor2, depth);
-    // color = vec3(vPosition.x, vPosition.y, vPosition.z);
-    gl_FragColor = vec4(color, 1.0);
-}
+        float depth = vPosition.z * 0.5 + 0.5;
+        color = mix(uColor1, uColor2, depth);
+        // color = vec3(vPosition.x, vPosition.y, vPosition.z);
+        gl_FragColor = vec4(color, uOpacity);
+    }
 `;
 
 // const PointShaderMaterial = shaderMaterial(
@@ -65,12 +65,18 @@ void main() {
 //     fragmentShader
 // );
 
+interface PointShaderMaterialRawArgs {
+    blending?: THREE.Blending;
+}
+
 const PointShaderMaterialRaw = (
     color1: THREE.ColorRepresentation,
     color2: THREE.ColorRepresentation,
-    blending?: THREE.Blending
-) =>
-    new THREE.ShaderMaterial({
+    args: PointShaderMaterialRawArgs
+) => {
+    let { blending } = args;
+
+    return new THREE.ShaderMaterial({
         uniforms: {
             uColor1: {
                 value: new THREE.Color(color1),
@@ -84,6 +90,9 @@ const PointShaderMaterialRaw = (
             uScale: {
                 value: 1,
             },
+            uOpacity: {
+                value: 1,
+            },
         },
         vertexShader,
         fragmentShader,
@@ -93,5 +102,6 @@ const PointShaderMaterialRaw = (
         side: THREE.DoubleSide,
         blending: blending ?? THREE.AdditiveBlending,
     });
+};
 
 export { PointShaderMaterialRaw };

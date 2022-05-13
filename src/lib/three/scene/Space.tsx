@@ -1,21 +1,15 @@
-import react, { useEffect, useMemo, useRef } from "react";
+import react, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
-import PointModel from "../model/PointModel";
 import { TextureLoader } from "three";
 import { folder, useControls } from "leva";
-import { Butterfly } from "../model/Butterfly";
 import { GalaxyStars } from "../GalaxyStars";
 import { useColorStore } from "../../zustand/useColorStore";
-import { useSpring } from "@react-spring/three";
 
-class SpaceProps {
-    primaryColor: string;
-    secondaryColor: string;
-}
+class SpaceProps {}
 
 const Space = (props: SpaceProps) => {
-    // const { transitionDelay } = useColorStore();
+    const { primaryColor, secondaryColor } = useColorStore();
 
     const galaxyRef = useRef(null);
 
@@ -23,11 +17,11 @@ const Space = (props: SpaceProps) => {
 
     const [saturnControl, setSaturnControl] = useControls("Saturn", () => ({
         color1: {
-            value: props.primaryColor,
+            value: primaryColor,
             label: "Color1",
         },
         color2: {
-            value: props.primaryColor,
+            value: primaryColor,
             label: "Color2",
         },
     }));
@@ -41,14 +35,12 @@ const Space = (props: SpaceProps) => {
             spin: { min: -5, max: 5, value: 0.78, step: 0.001 },
             randomness: { min: 0, max: 2, value: 0.09, step: 0.001 },
             randomnessPower: { min: 1, max: 10, value: 3, step: 0.001 },
-            // insideColor: { value: "#ff6030", label: "Inside Color" },
-            // outsideColor: { value: "#1b3984", label: "Outside Color" },
             insideColor: {
-                value: props.secondaryColor,
+                value: secondaryColor,
                 label: "Inside Color",
             },
             outsideColor: {
-                value: props.secondaryColor,
+                value: secondaryColor,
 
                 label: "Outside Color",
             },
@@ -56,100 +48,99 @@ const Space = (props: SpaceProps) => {
     }));
 
     useEffect(() => {
-        console.log(props.primaryColor);
         setSaturnControl({
             color1:
-                props.primaryColor === "orange"
+                primaryColor === "orange"
                     ? "#ff0a00"
-                    : props.primaryColor === "yellow"
+                    : primaryColor === "yellow"
                     ? "orange"
-                    : props.primaryColor === "black"
+                    : primaryColor === "black"
                     ? "#1d1d1d"
-                    : props.primaryColor === "red"
+                    : primaryColor === "red"
                     ? "#b4274d"
-                    : props.primaryColor === "purple"
+                    : primaryColor === "purple"
                     ? "#231462"
-                    : props.primaryColor === "green"
+                    : primaryColor === "green"
                     ? "#2c8624"
-                    : props.primaryColor === "blue"
+                    : primaryColor === "blue"
                     ? "#0019ff"
-                    : props.primaryColor === "grey"
+                    : primaryColor === "grey"
                     ? "#1a1821"
-                    : props.primaryColor,
+                    : primaryColor,
             color2:
-                props.primaryColor === "orange"
+                primaryColor === "orange"
                     ? "#ff3000"
-                    : props.primaryColor === "yellow"
+                    : primaryColor === "yellow"
                     ? "orange"
-                    : props.primaryColor === "black"
+                    : primaryColor === "black"
                     ? "#000000"
-                    : props.primaryColor === "red"
+                    : primaryColor === "red"
                     ? "#0b0b0d"
-                    : props.primaryColor === "purple"
+                    : primaryColor === "purple"
                     ? "#10021d"
-                    : props.primaryColor === "green"
+                    : primaryColor === "green"
                     ? "#022706"
-                    : props.primaryColor === "blue"
+                    : primaryColor === "blue"
                     ? "#0053ff"
-                    : props.primaryColor === "grey"
+                    : primaryColor === "grey"
                     ? "#000000"
-                    : props.primaryColor,
+                    : primaryColor,
         });
-    }, [props.primaryColor]);
+    }, [primaryColor]);
 
     useEffect(() => {
         setGalaxyControl({
             ...galaxyControl,
             insideColor:
-                props.secondaryColor === "orange"
+                secondaryColor === "orange"
                     ? "#ff3000"
-                    : props.secondaryColor === "yellow"
+                    : secondaryColor === "yellow"
                     ? "orange"
-                    : props.secondaryColor === "black"
+                    : secondaryColor === "black"
                     ? "#000000"
-                    : props.secondaryColor === "red"
+                    : secondaryColor === "red"
                     ? "#ff00c9"
-                    : props.secondaryColor === "purple"
+                    : secondaryColor === "purple"
                     ? "#1d0c30"
-                    : props.secondaryColor === "green"
+                    : secondaryColor === "green"
                     ? "#001c0c"
-                    : props.secondaryColor === "blue"
+                    : secondaryColor === "blue"
                     ? "#0053ff"
-                    : props.secondaryColor === "grey"
+                    : secondaryColor === "grey"
                     ? "#000000"
-                    : props.secondaryColor,
+                    : secondaryColor,
             outsideColor:
-                props.secondaryColor === "orange"
+                secondaryColor === "orange"
                     ? "#ff0a00"
-                    : props.secondaryColor === "yellow"
+                    : secondaryColor === "yellow"
                     ? "orange"
-                    : props.secondaryColor === "black"
+                    : secondaryColor === "black"
                     ? "#1d1d1d"
-                    : props.secondaryColor === "red"
+                    : secondaryColor === "red"
                     ? "#f830eb"
-                    : props.secondaryColor === "purple"
+                    : secondaryColor === "purple"
                     ? "#291240"
-                    : props.secondaryColor === "green"
+                    : secondaryColor === "green"
                     ? "#002e14"
-                    : props.secondaryColor === "blue"
+                    : secondaryColor === "blue"
                     ? "#0019ff"
-                    : props.secondaryColor === "grey"
+                    : secondaryColor === "grey"
                     ? "#1a1821"
-                    : props.secondaryColor,
+                    : secondaryColor,
         });
-    }, [props.secondaryColor]);
+    }, [secondaryColor]);
 
     return (
         <>
             {/* <ambientLight /> */}
-            <PointModel
+            {/* <PointModel
                 path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
                 numParticles={200000}
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
-            />
+            /> */}
             <GalaxyStars
                 dof={galaxyRef}
                 galaxyControl={galaxyControl}

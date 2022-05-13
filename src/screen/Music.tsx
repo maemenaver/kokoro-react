@@ -1,24 +1,13 @@
-import { useMutation, useQuery, useSubscription } from "@apollo/client";
-import {
-    MIDIMessage,
-    useMIDI,
-    useMIDIMessage,
-    useMIDINote,
-    useMIDINotes,
-} from "@react-midi/hooks";
+import { useMutation } from "@apollo/client";
+import { useMIDI, useMIDIMessage } from "@react-midi/hooks";
 import { useEffect, useState } from "react";
 import { Piano, KeyboardShortcuts, MidiNumbers } from "react-piano";
-import { getMusicPath, sendMusicGql, subMusicGql } from "../lib/apollo/gql";
+import { sendMusicGql } from "../lib/apollo/gql";
 import SoundfontProvider from "../lib/piano/SoundfontProvider";
 import "react-piano/dist/styles.css";
 import DimensionsProvider from "../lib/piano/DimensionsProvider";
-import {
-    CircularProgress,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-} from "@mui/material";
+import { CircularProgress, FormControl, MenuItem, Select } from "@mui/material";
+import { useSubscriptionStore } from "../lib/apollo/useSubscriptionStore";
 
 // webkitAudioContext fallback needed to support Safari
 // @ts-ignore
@@ -50,16 +39,17 @@ const MIDIMessageProvider = (props: MIDIMessageProps) => {
     return <></>;
 };
 
-interface MusicProps {
-    inputs: any[];
-    musicType: string;
-}
+interface MusicProps {}
 
 const Music = (props: MusicProps) => {
     const [data, setData] = useState<number[]>([]);
     const [inputID, setInputID] = useState<number>(0);
     const [message, setMessage] = useState<any>();
     const [result, setResult] = useState<any>();
+
+    const { inputs } = useMIDI();
+
+    const musicType = useSubscriptionStore((state) => state.music);
 
     const [sendMusic] = useMutation(sendMusicGql);
 
@@ -88,16 +78,16 @@ const Music = (props: MusicProps) => {
 
     useEffect(() => {
         if (data.length >= 50) {
-            setResult(props.musicType);
+            setResult(musicType);
         }
-    }, [data, props.musicType]);
+    }, [data, musicType]);
 
     return (
         <>
-            {props.inputs.length > 0 && (
+            {inputs.length > 0 && (
                 <MIDIMessageProvider
                     setMessage={setMessage}
-                    input={props.inputs[inputID]}
+                    input={inputs[inputID]}
                 />
             )}
             <div
@@ -159,37 +149,39 @@ const Music = (props: MusicProps) => {
                                 )}
                             </DimensionsProvider>
                         </div>
-                        <FormControl
-                            fullWidth
-                            style={{
-                                color: "white",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Select
-                                id="demo-simple-select"
-                                value={inputID}
-                                onChange={(event) => {
-                                    setInputID(+event.target.value);
-                                }}
+                        {inputs?.length > 0 && (
+                            <FormControl
+                                fullWidth
                                 style={{
                                     color: "white",
-                                    width: "30%",
-                                    border: "1px solid #ced4da",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                 }}
                             >
-                                {props.inputs.map((v, i) => {
-                                    return (
-                                        <MenuItem value={i} key={i}>
-                                            {v.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
+                                <Select
+                                    id="demo-simple-select"
+                                    value={inputID}
+                                    onChange={(event) => {
+                                        setInputID(+event.target.value);
+                                    }}
+                                    style={{
+                                        color: "white",
+                                        width: "30%",
+                                        border: "1px solid #ced4da",
+                                    }}
+                                >
+                                    {inputs.map((v, i) => {
+                                        return (
+                                            <MenuItem value={i} key={i}>
+                                                {v.name}
+                                            </MenuItem>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
+                        )}
                     </>
                 ) : (
                     <>{result || <CircularProgress />}</>

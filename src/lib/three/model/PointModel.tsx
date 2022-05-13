@@ -1,12 +1,11 @@
 import * as THREE from "three";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { GroupProps, useFrame, useThree } from "@react-three/fiber";
-import { Points, useGLTF, useHelper } from "@react-three/drei";
+import { GroupProps, useFrame } from "@react-three/fiber";
+import { Points, useGLTF } from "@react-three/drei";
 import { PointShaderMaterialRaw } from "../../shader/PointShaderMaterial";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
-import { useBloomStore } from "../../zustand/useBloomStore";
 
 class PointModelProps {
     numParticles: number;
@@ -25,14 +24,28 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
 
         const meshRef = useRef<THREE.Mesh>(null);
         const pointsRef = useRef<THREE.Points>(null);
-
         const sampler = useRef<MeshSurfaceSampler>(null);
+
         const [particlesPosition, setParticlesPosition] =
             useState<Float32Array>(new Float32Array(props.numParticles * 3));
         const [particlesRandomness, setParticlesRandomness] =
             useState<Float32Array>(new Float32Array(props.numParticles * 3));
 
         const [loading, setLoading] = useState<boolean>(true);
+
+        const { color1, color2 } = useSpring({
+            color1: props.color1,
+            color2: props.color2,
+            config: {
+                duration: transitionDelay,
+            },
+            onChange: () => {
+                pointsRef.current.material["uniforms"]["uColor1"].value =
+                    new THREE.Color(color1.get());
+                pointsRef.current.material["uniforms"]["uColor2"].value =
+                    new THREE.Color(color2.get());
+            },
+        });
 
         const particlesGeometry = useCallback(() => {
             if (!loading) {
@@ -54,23 +67,8 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
             return null;
         }, [loading]);
 
-        useFrame(({ clock }) => {
-            // @ts-ignore
-            if (pointsRef?.current?.material?.uniforms) {
-                // @ts-ignore
-                pointsRef.current.material.uniforms.uTime.value =
-                    clock.getElapsedTime();
-            }
-        });
-
         useEffect(() => {
-            // console.log("SaturnModel useEffect");
-            // if (props.path === "/models/Shark.glb") {
-            //     console.log(gltf);
-            // }
-
             sampler.current = new MeshSurfaceSampler(meshRef.current).build();
-            // setSampler(new MeshSurfaceSampler(meshRef.current).build());
 
             for (let i = 0; i < props.numParticles; i++) {
                 const newPosition = new THREE.Vector3();
@@ -97,30 +95,18 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
             setParticlesPosition(particlesPosition);
             setParticlesRandomness(particlesRandomness);
             setLoading(false);
-
-            useBloomStore.getState().addSelectedMesh(pointsRef.current);
         }, []);
-        // useEffect(() => {
-        //     console.log("color changed", props.color1, props.color2);
-        // }, [props.color1, props.color2]);
 
-        const { color1, color2 } = useSpring({
-            color1: props.color1,
-            color2: props.color2,
-            config: {
-                duration: transitionDelay,
-            },
-            onChange: () => {
-                pointsRef.current.material["uniforms"]["uColor1"].value =
-                    new THREE.Color(color1.get());
-                pointsRef.current.material["uniforms"]["uColor2"].value =
-                    new THREE.Color(color2.get());
-            },
+        useFrame(({ clock }) => {
+            if (pointsRef?.current?.material["uniforms"]) {
+                pointsRef.current.material["uniforms"].uTime.value =
+                    clock.getElapsedTime();
+            }
         });
 
         return (
             <>
-                <group ref={ref} {...props} dispose={null}>
+                <group name={"center"} ref={ref} {...props} dispose={null}>
                     <mesh
                         ref={meshRef}
                         visible={false}
@@ -132,10 +118,13 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                         material={PointShaderMaterialRaw(
                             props.color1,
                             props.color2,
-                            props.colorType === "therapeuticColor" &&
-                                therapeuticColor === "#000000"
-                                ? THREE.NormalBlending
-                                : props.blending
+                            {
+                                blending:
+                                    props.colorType === "therapeuticColor" &&
+                                    therapeuticColor === "#000000"
+                                        ? THREE.NormalBlending
+                                        : props.blending,
+                            }
                         )}
                         geometry={particlesGeometry()}
                     />
@@ -163,4 +152,5 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
 
 export default PointModel;
 
-// useGLTF.preload("/models/saturn.glb");
+useGLTF.preload("/models/saturn.glb");
+useGLTF.preload("/models/Shark.glb");

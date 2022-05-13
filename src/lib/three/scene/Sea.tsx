@@ -1,87 +1,75 @@
-import react, { useEffect, useMemo, useRef } from "react";
-import * as THREE from "three";
+import react, { useEffect, useRef } from "react";
 import PointModel from "../model/PointModel";
 import { useControls } from "leva";
 import {
     seaFragmentShader,
     seaVertexShader,
 } from "../../shader/SeaShaderMaterial";
-import { useGLTF, useTexture } from "@react-three/drei";
-import Bubble from "../model/Bubble";
 import { GodRay } from "../model/GodRay";
-import { useThree } from "@react-three/fiber";
+import { useColorStore } from "../../zustand/useColorStore";
 
-class SeaProps {
-    primaryColor: string;
-    secondaryColor: string;
-}
+class SeaProps {}
 
 const Sea = (props: SeaProps) => {
     const castleRef = useRef();
-    const scene = useThree((v) => v.scene);
+
+    const { primaryColor } = useColorStore();
 
     const [saturnControl, setSaturnControl] = useControls("Saturn", () => ({
         color1: {
-            value: props.primaryColor,
+            value: primaryColor,
             label: "Color1",
         },
         color2: {
-            value: props.primaryColor,
+            value: primaryColor,
             label: "Color2",
         },
     }));
 
     useEffect(() => {
-        // scene.fog = new THREE.Fog(new THREE.Color("#203455"), 0.1, 40);
-
-        console.log(castleRef);
-    }, []);
-
-    useEffect(() => {
-        console.log(props.primaryColor);
+        console.log(primaryColor);
         setSaturnControl({
             color1:
-                props.primaryColor === "orange"
+                primaryColor === "orange"
                     ? "#ff0a00"
-                    : props.primaryColor === "yellow"
+                    : primaryColor === "yellow"
                     ? "orange"
-                    : props.primaryColor === "black"
+                    : primaryColor === "black"
                     ? "#aaa7a7"
-                    : props.primaryColor === "red"
+                    : primaryColor === "red"
                     ? "#0d0104"
-                    : props.primaryColor === "purple"
+                    : primaryColor === "purple"
                     ? "#2a1c4e"
-                    : props.primaryColor === "green"
+                    : primaryColor === "green"
                     ? "#095802"
-                    : props.primaryColor === "blue"
+                    : primaryColor === "blue"
                     ? "#0019ff"
-                    : props.primaryColor === "grey"
+                    : primaryColor === "grey"
                     ? "#81478d"
-                    : props.primaryColor,
+                    : primaryColor,
             color2:
-                props.primaryColor === "orange"
+                primaryColor === "orange"
                     ? "#ff3000"
-                    : props.primaryColor === "yellow"
+                    : primaryColor === "yellow"
                     ? "orange"
-                    : props.primaryColor === "black"
+                    : primaryColor === "black"
                     ? "#4b3e3e"
-                    : props.primaryColor === "red"
+                    : primaryColor === "red"
                     ? "#a01414"
-                    : props.primaryColor === "purple"
+                    : primaryColor === "purple"
                     ? "#5f1652"
-                    : props.primaryColor === "green"
+                    : primaryColor === "green"
                     ? "#022706"
-                    : props.primaryColor === "blue"
+                    : primaryColor === "blue"
                     ? "#0053ff"
-                    : props.primaryColor === "grey"
+                    : primaryColor === "grey"
                     ? "#495476"
-                    : props.primaryColor,
+                    : primaryColor,
         });
-    }, [props.primaryColor]);
+    }, [primaryColor]);
 
     return (
         <>
-            <ambientLight />
             <PointModel
                 path={"/models/shark.glb"}
                 position={[0, 0, 0]}
