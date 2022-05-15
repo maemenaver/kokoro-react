@@ -7,11 +7,13 @@ import {
 } from "../../shader/SeaShaderMaterial";
 import { GodRay } from "../model/GodRay";
 import { useColorStore } from "../../zustand/useColorStore";
+import { useObjectStore } from "../../zustand/useObjectStore";
 
 class SeaProps {}
 
 const Sea = (props: SeaProps) => {
     const castleRef = useRef();
+    const seaGroupRef = useRef();
 
     const { primaryColor } = useColorStore();
 
@@ -27,7 +29,10 @@ const Sea = (props: SeaProps) => {
     }));
 
     useEffect(() => {
-        console.log(primaryColor);
+        useObjectStore.setState((state) => ({ seaGroup: seaGroupRef.current }));
+    }, []);
+
+    useEffect(() => {
         setSaturnControl({
             color1:
                 primaryColor === "orange"
@@ -69,7 +74,7 @@ const Sea = (props: SeaProps) => {
     }, [primaryColor]);
 
     return (
-        <>
+        <group ref={seaGroupRef}>
             <PointModel
                 path={"/models/shark.glb"}
                 position={[0, 0, 0]}
@@ -120,7 +125,7 @@ const Sea = (props: SeaProps) => {
                 scale={[10, 10, 10]}
             /> */}
             {/* <SeaEffects /> */}
-        </>
+        </group>
     );
 };
 

@@ -13,6 +13,7 @@ const skyVertexShader = glsl`
 
 const skyFragmentShader = glsl`
     uniform vec3 uColor;
+    uniform float uOpacity;
 
     varying vec2 vUv;
 
@@ -21,7 +22,7 @@ const skyFragmentShader = glsl`
         vec3 skyColor = uColor;
         vec3 scatterColor = mix(vec3(1.0),vec3(1.0,0.3,0.0) * 1.5,0.0);
         vec3 sky = mix(skyColor, vec3(scatterColor), atmosphere / 0.9);
-        gl_FragColor = vec4(sky , 1.0);
+        gl_FragColor = vec4(sky , uOpacity);
     }
 `;
 

@@ -19,6 +19,7 @@ const Ether = (props: EtherProps) => {
     const { primaryColor } = useColorStore();
 
     const etherGroupRef = useRef();
+    const skyRef = useRef<any>();
 
     const clouds = useLoader(TextureLoader, "/textures/clouds.png");
 
@@ -113,44 +114,25 @@ const Ether = (props: EtherProps) => {
                 blending={THREE.NormalBlending}
             />
 
-            <group key="ButterflyGroup" name={"ButterflyGroup"}>
+            <group key="ButterflyGroup" name={"ButterflyGroup"} scale={1}>
                 {butterflyPosition.map((position, i) => (
                     <Butterfly key={i} position={position} scale={1} />
                 ))}
             </group>
-
-            {/* <mesh scale={80} position={[0, 0, -40]}>
-                <planeGeometry  attach="geometry" />
-                <shaderMaterial
-                    vertexShader={skyVertexShader}
-                    fragmentShader={skyFragmentShader}
-                    side={THREE.DoubleSide}
-                    transparent={true}
-                    opacity={1}
-                    depthTest={false}
-                    depthWrite={true}
-                    
-                    uniforms={{
-                        uColor: {
-                            value: new THREE.Color("#3366CC"),
-                        },
-                    }}
-                />
-            </mesh> */}
-            <mesh scale={39}>
+            <mesh name={"clouds"} scale={39}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
                     attach="material"
                     side={THREE.BackSide}
                     map={clouds}
                     transparent={true}
-                    opacity={1.0}
+                    opacity={1}
                     // blendSrc={THREE.SrcAlphaSaturateFactor}
                     depthTest={false}
                     depthWrite={true}
                 />
             </mesh>
-            <Sky />
+            {/* <Sky ref={skyRef} azimuth={Math.PI / 2} /> */}
             {/* <Environment preset="sunset" /> */}
         </group>
     );

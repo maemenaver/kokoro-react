@@ -11,7 +11,11 @@ import Sea from "./Sea";
 import Bubble from "../model/Bubble";
 import { useUniformsStore } from "../../zustand/useUniformsStore";
 import PostProcessing from "../effects/PostProcessing";
-import Transition from "../effects/Transition";
+import {
+    skyFragmentShader,
+    skyVertexShader,
+} from "../../shader/SkyShaderMaterial";
+import { useObjectStore } from "../../zustand/useObjectStore";
 
 class PlaceProps {
     objCount: number;
@@ -114,8 +118,8 @@ const Place = (props: PlaceProps) => {
     );
 
     const ambientLightRef = useRef<THREE.Light>();
-
     const cameraCenterRef = useRef<THREE.PerspectiveCamera>();
+    const etherBackgroundRef = useRef<THREE.Mesh>();
 
     const groupRef = useRef<THREE.Group>();
     const orbitRef = useRef<THREE.Group>();
@@ -173,6 +177,12 @@ const Place = (props: PlaceProps) => {
         },
     });
 
+    useEffect(() => {
+        useObjectStore.setState((state) => ({
+            etherBackground: etherBackgroundRef.current,
+        }));
+    }, []);
+
     useFrame(({ clock }) => {
         useUniformsStore.getState().setUTime(clock.getElapsedTime());
 
@@ -204,6 +214,32 @@ const Place = (props: PlaceProps) => {
                 ref={cameraCenterRef}
             />
             <CameraShake />
+            <group name={"backgroundGroup"}>
+                <mesh
+                    ref={etherBackgroundRef}
+                    scale={[300, 150, 1]}
+                    position={[0, 0, -100]}
+                >
+                    <planeGeometry attach="geometry" />
+                    <shaderMaterial
+                        attach="material"
+                        vertexShader={skyVertexShader}
+                        fragmentShader={skyFragmentShader}
+                        side={THREE.DoubleSide}
+                        transparent={true}
+                        depthTest={false}
+                        depthWrite={true}
+                        uniforms={{
+                            uColor: {
+                                value: new THREE.Color("#3366CC"),
+                            },
+                            uOpacity: {
+                                value: 1,
+                            },
+                        }}
+                    />
+                </mesh>
+            </group>
             <group name={"mainGroup"} ref={groupRef} position={[0, 0, -30]}>
                 <group name={"orbitGroup"} ref={orbitRef}>
                     {orbitChild.current}
@@ -223,7 +259,6 @@ const Place = (props: PlaceProps) => {
                 )} */}
             </group>
             <PostProcessing />
-            <Transition />
             {/* {location !== "/ether" && <PostProcessing />} */}
         </>
     );

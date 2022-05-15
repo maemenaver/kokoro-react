@@ -1,68 +1,154 @@
 import * as THREE from "three";
-import React, { useRef, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
-import {
-    BlendFunction,
-    BloomEffect,
-    EffectComposer,
-    EffectPass,
-    KernelSize,
-    RenderPass,
-} from "postprocessing";
 import { useLocation } from "wouter";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
 import { useObjectStore } from "../../zustand/useObjectStore";
+import { useGodRayStore } from "../../zustand/useGodRayStore";
 
 export default function Transition() {
     const scene = useThree((state) => state.scene);
     const [location] = useLocation();
 
     const transitionDelay = useColorStore((state) => state.transitionDelay);
-    const etherGroup = useObjectStore((state) => state.etherGroup);
+    const {
+        etherGroup,
+        seaGroup,
+        spaceGroup,
+        spaceParticles,
+        etherBackground,
+    } = useObjectStore();
+    const seaGodray = useObjectStore((state) => state.seaGodray);
 
     const [etherCenterOpacityTo, setEtherCenterOpacityTo] = useState(0);
+    const [spaceCenterOpacityTo, setSpaceCenterOpacityTo] = useState(0);
+    const [seaCenterOpacityTo, setSeaCenterOpacityTo] = useState(0);
 
-    const etherCenter = useMemo(
-        () =>
-            etherGroup &&
-            etherGroup
-                .getObjectByName("center")
-                .getObjectByProperty("type", "Points"),
+    const [spaceSecondaryOpacityTo, setSpaceSecondaryOpacityTo] = useState(0);
+    const [backgroundColorTo, setBackgroundColorTo] =
+        useState<THREE.ColorRepresentation>("#000000");
+
+    const { etherCenter, etherClouds } = useMemo(
+        () => ({
+            etherCenter:
+                etherGroup &&
+                etherGroup
+                    .getObjectByName("center")
+                    .getObjectByProperty("type", "Points"),
+            etherClouds: etherGroup && etherGroup.getObjectByName("clouds"),
+        }),
         [etherGroup]
     );
 
-    const { etherCenterOpacity } = useSpring({
+    const { spaceCenter, spaceBackground } = useMemo(
+        () => ({
+            spaceCenter:
+                spaceGroup &&
+                spaceGroup
+                    .getObjectByName("center")
+                    .getObjectByProperty("type", "Points"),
+            spaceBackground:
+                spaceGroup && spaceGroup.getObjectByName("background"),
+        }),
+        [spaceGroup]
+    );
+
+    const { seaCenter } = useMemo(
+        () => ({
+            seaCenter:
+                seaGroup &&
+                seaGroup
+                    .getObjectByName("center")
+                    .getObjectByProperty("type", "Points"),
+        }),
+        [seaGroup]
+    );
+
+    const {
+        etherCenterOpacity,
+        spaceCenterOpacity,
+        seaCenterOpacity,
+        backgroundColor,
+    } = useSpring({
         etherCenterOpacity: etherCenterOpacityTo,
+        spaceCenterOpacity: spaceCenterOpacityTo,
+        seaCenterOpacity: seaCenterOpacityTo,
+        backgroundColor: backgroundColorTo,
         config: {
             duration: transitionDelay,
+        },
+        onChange: () => {
+            // Scene
+            if (scene) {
+                scene.background = new THREE.Color(backgroundColor.get());
+                scene.fog = new THREE.Fog(backgroundColor.get(), 10, 60);
+            }
+
+            // Ether
+            if (etherCenter) {
+                etherCenter["material"]["uniforms"].uOpacity.value =
+                    etherCenterOpacity.get();
+            }
+            if (etherClouds) {
+                etherClouds["material"]["opacity"] = etherCenterOpacity.get();
+            }
+            if (etherBackground) {
+                etherBackground["material"]["uniforms"].uOpacity.value =
+                    etherCenterOpacity.get();
+                etherBackground["material"]["uniformsNeedUpdate"] = true;
+            }
+
+            // Space
+            if (spaceCenter) {
+                spaceCenter["material"]["uniforms"].uOpacity.value =
+                    spaceCenterOpacity.get();
+            }
+            if (spaceBackground) {
+                spaceBackground["material"]["opacity"] =
+                    spaceCenterOpacity.get();
+            }
+            if (spaceParticles) {
+                spaceParticles["material"]["opacity"] =
+                    spaceCenterOpacity.get();
+            }
+
+            // Sea
+            if (seaCenter) {
+                seaCenter["material"]["uniforms"].uOpacity.value =
+                    seaCenterOpacity.get();
+            }
+            if (seaGodray) {
+                // console.log(seaGodray);
+                seaGodray["material"]["uniforms"].uStrength.value =
+                    useGodRayStore.getState().strength * seaCenterOpacity.get();
+                seaGodray["material"]["uniformsNeedUpdate"] = true;
+            }
         },
     });
 
     useEffect(() => {
-        if (location === "/sea") {
-            scene.fog = new THREE.Fog(206145, 0.1, 70);
-            scene.background = new THREE.Color("#203455");
-        } else {
-            scene.fog = null;
-            scene.background = null;
-        }
+        setEtherCenterOpacityTo(0);
+        setSpaceCenterOpacityTo(0);
+        setSeaCenterOpacityTo(0);
 
-        if (location === "/ether") {
-            setEtherCenterOpacityTo(1);
-        } else {
-            setEtherCenterOpacityTo(0);
-        }
-    }, [location]);
+        switch (location) {
+            case "/ether":
+                setEtherCenterOpacityTo(1);
+                setBackgroundColorTo("#ffffff");
+                break;
 
-    useFrame(() => {
-        console.log(etherCenter);
+            case "/space":
+                setSpaceCenterOpacityTo(1);
+                setBackgroundColorTo("#000000");
+                break;
 
-        if (etherCenter) {
-            etherCenter["material"]["uniforms"].uOpacity.value =
-                etherCenterOpacity.get();
+            case "/sea":
+                setSeaCenterOpacityTo(1);
+                setBackgroundColorTo("#203455");
+                break;
         }
-    });
+    }, [location, seaGodray]);
 
     return null;
 }

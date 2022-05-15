@@ -1,17 +1,19 @@
 import react, { useEffect, useRef } from "react";
-import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { folder, useControls } from "leva";
 import { GalaxyStars } from "../GalaxyStars";
 import { useColorStore } from "../../zustand/useColorStore";
+import PointModel from "../model/PointModel";
+import { useObjectStore } from "../../zustand/useObjectStore";
 
 class SpaceProps {}
 
 const Space = (props: SpaceProps) => {
     const { primaryColor, secondaryColor } = useColorStore();
 
-    const galaxyRef = useRef(null);
+    const galaxyRef = useRef();
+    const spaceGroupRef = useRef();
 
     const spaceBg = useLoader(TextureLoader, "/textures/crab_nebula.png");
 
@@ -46,6 +48,12 @@ const Space = (props: SpaceProps) => {
             },
         }),
     }));
+
+    useEffect(() => {
+        useObjectStore.setState((state) => ({
+            spaceGroup: spaceGroupRef.current,
+        }));
+    }, []);
 
     useEffect(() => {
         setSaturnControl({
@@ -131,16 +139,16 @@ const Space = (props: SpaceProps) => {
     }, [secondaryColor]);
 
     return (
-        <>
+        <group ref={spaceGroupRef}>
             {/* <ambientLight /> */}
-            {/* <PointModel
+            <PointModel
                 path={"/models/saturn.glb"}
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
                 numParticles={200000}
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
-            /> */}
+            />
             <GalaxyStars
                 dof={galaxyRef}
                 galaxyControl={galaxyControl}
@@ -148,15 +156,16 @@ const Space = (props: SpaceProps) => {
                 outsideColor={galaxyControl.outsideColor}
             />
             {/* <Effects /> */}
-            <mesh scale={400}>
-                <sphereGeometry attach="geometry" />
+            {/* <mesh name="background" scale={400}>
+                <sphereGeometry attach="geometry"  />
                 <meshBasicMaterial
                     attach="material"
-                    side={THREE.BackSide}
+                    side={THREE.DoubleSide}
                     map={spaceBg}
+                    transparent={true}
                 />
-            </mesh>
-        </>
+            </mesh> */}
+        </group>
     );
 };
 

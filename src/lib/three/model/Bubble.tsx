@@ -101,7 +101,7 @@ const Bubble = React.forwardRef<THREE.Group, BubbleProps & GroupProps>(
 
         return (
             <>
-                <group ref={ref} {...props}>
+                <group ref={ref} name={"Bubble"} {...props}>
                     <Points ref={pointsRef} geometry={particlesGeometry()}>
                         <pointsMaterial
                             attach="material"

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import React, { useEffect } from "react";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Route, Switch, useLocation } from "wouter";
+import { Route, Switch } from "wouter";
 import { useQuery } from "@apollo/client";
 import { getMusicPath } from "../lib/apollo/gql";
 import { Music } from "./Music";
@@ -11,10 +11,9 @@ import { Shape } from "./Shape";
 import Place from "../lib/three/scene/Place";
 import { Loader, Stats } from "@react-three/drei";
 import { Subscription } from "../lib/apollo/Subscription";
+import { ColorControl } from "../components/ColorControl";
 
 function Main() {
-    const [location] = useLocation();
-
     const musicPath = useQuery(getMusicPath, {
         onCompleted: (data) => {
             console.log(data);
@@ -64,6 +63,7 @@ function Main() {
                     </Canvas>
                     <Stats />
                     <Loader />
+                    <ColorControl />
                 </Route>
             </Switch>
         </div>

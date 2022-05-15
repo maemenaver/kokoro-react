@@ -1,28 +1,14 @@
 import * as THREE from "three";
-import React, {
-    useRef,
-    useEffect,
-    useMemo,
-    useCallback,
-    useState,
-} from "react";
-import {
-    useGLTF,
-    useAnimations,
-    useTexture,
-    useHelper,
-    ComputedAttribute,
-} from "@react-three/drei";
+import React, { useRef, useEffect, useMemo, useState } from "react";
+import { useTexture, ComputedAttribute } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { BoxHelper, BufferGeometry, MeshBasicMaterial, Vector2 } from "three";
-import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
-import { MathUtils } from "three";
 import { useUniformsStore } from "../../zustand/useUniformsStore";
 import { useGodRayStore } from "../../zustand/useGodRayStore";
 import {
     godRayFragmentShader,
     godRayVertexShader,
 } from "../../shader/GodRayMaterial";
+import { useObjectStore } from "../../zustand/useObjectStore";
 
 export function GodRay(props) {
     const group = useRef<THREE.Group>();
@@ -41,11 +27,7 @@ export function GodRay(props) {
 
     const gradientNoise = useTexture("/textures/gradient-noise.png");
 
-    // useHelper(mesh, BoxHelper, "green");
-
     useEffect(() => {
-        console.log("useEffect");
-
         const random = Math.random();
         aOffset.set([random, random, random, random], 0);
 
@@ -61,6 +43,12 @@ export function GodRay(props) {
             // mesh.current.rotation.x += clock.getElapsedTime() * 0.01;
             // mesh.current.rotation.y += clock.getElapsedTime() * 0.01;
             // mesh.current.rotation.z += clock.getElapsedTime() * 0.01;
+            if (!useObjectStore.getState().seaGodray) {
+                useObjectStore.setState((state) => ({
+                    seaGodray: mesh.current,
+                }));
+            }
+
             mesh.current.material["uniforms"].uTime.value = Math.sin(
                 clock.getElapsedTime() / 5
             );
@@ -73,7 +61,7 @@ export function GodRay(props) {
                 ref={mesh}
                 position={[0, 0, 0]}
                 // rotation={[0, 0, 0]}
-                scale={[80, 80, 1]}
+                scale={[120, 80, 1]}
             >
                 <planeBufferGeometry>
                     {/* <bufferAttribute attachObject={["attributes", "aOffset"]} array={} /> */}

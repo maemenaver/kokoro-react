@@ -1,17 +1,10 @@
 import * as THREE from "three";
-import React, {
-    Suspense,
-    useRef,
-    useState,
-    useEffect,
-    useCallback,
-    useMemo,
-} from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { EffectComposer, DepthOfField } from "@react-three/postprocessing";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import { useFrame } from "@react-three/fiber";
 import { useControls, folder } from "leva";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../zustand/useColorStore";
+import { useObjectStore } from "../zustand/useObjectStore";
 
 interface GalaxyStarsProps {
     insideColor: THREE.ColorRepresentation;
@@ -135,8 +128,12 @@ export function GalaxyStars({
     });
 
     useEffect(() => {
-        console.log("Color changed");
+        useObjectStore.setState((state) => ({
+            spaceParticles: particles.current,
+        }));
+    }, []);
 
+    useEffect(() => {
         const positions = new Float32Array(galaxyControl.count * 3);
         const colors = new Float32Array(galaxyControl.count * 3);
         const colorInside = new THREE.Color(insideColor.get());
