@@ -105,10 +105,10 @@ const Ether = (props: EtherProps) => {
         <group ref={etherGroupRef} name="ether">
             <PointModel
                 key="center"
-                path={"/models/saturn.glb"}
+                path={"/models/air_ballon.glb"}
                 position={[0, 0, 0]}
-                scale={[10, 11, 10]}
-                numParticles={400000}
+                scale={[17, 17, 17]}
+                numParticles={70000}
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
                 blending={THREE.NormalBlending}
@@ -119,17 +119,17 @@ const Ether = (props: EtherProps) => {
                     <Butterfly key={i} position={position} scale={1} />
                 ))}
             </group>
-            <mesh name={"clouds"} scale={39}>
+            <mesh name={"clouds"} scale={80}>
                 <sphereGeometry attach="geometry" />
                 <meshBasicMaterial
                     attach="material"
                     side={THREE.BackSide}
                     map={clouds}
                     transparent={true}
-                    opacity={1}
-                    // blendSrc={THREE.SrcAlphaSaturateFactor}
-                    depthTest={false}
-                    depthWrite={true}
+                    opacity={0}
+                    toneMapped={false}
+                    // depthTest={false}
+                    // depthWrite={true}
                 />
             </mesh>
             {/* <Sky ref={skyRef} azimuth={Math.PI / 2} /> */}

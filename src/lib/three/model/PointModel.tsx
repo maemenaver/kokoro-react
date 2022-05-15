@@ -18,7 +18,12 @@ class PointModelProps {
 
 const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
     (props, ref) => {
-        const { transitionDelay, therapeuticColor } = useColorStore();
+        const { transitionDelay, therapeuticColor } = useColorStore(
+            (state) => ({
+                transitionDelay: state.transitionDelay,
+                therapeuticColor: state.therapeuticColor,
+            })
+        );
 
         const gltf = useGLTF(props.path);
 
@@ -124,9 +129,14 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                                     therapeuticColor === "#000000"
                                         ? THREE.NormalBlending
                                         : props.blending,
+                                opacity:
+                                    props.colorType === "therapeuticColor"
+                                        ? 1
+                                        : 0,
                             }
                         )}
                         geometry={particlesGeometry()}
+                        renderOrder={999}
                     />
                     {/* {props.colorType === "therapeuticColor" &&
                         therapeuticColor === "#000000" && (
@@ -154,3 +164,4 @@ export default PointModel;
 
 useGLTF.preload("/models/saturn.glb");
 useGLTF.preload("/models/Shark.glb");
+useGLTF.preload("/models/air_ballon.glb");
