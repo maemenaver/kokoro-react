@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* #leva__root {
+  visibility: hidden;
+} */
+
+@font-face {
+  font-family: "LetterGothicMTStd";
+  src: url('fonts/LetterGothicMTStd.otf')
+}
