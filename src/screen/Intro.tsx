@@ -16,7 +16,7 @@ const Intro = (props) => {
                     // backgroundColor: "#0000005"
                 }}
             >
-                <p>Your Space</p>
+                <p>Space for U</p>
                 <a href="/space">Start</a>
             </div>
         </>
