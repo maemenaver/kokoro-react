@@ -16,7 +16,7 @@ export default function Transition(props: TransitionProps) {
     const scene = useThree((state) => state.scene);
     const [location] = useLocation();
 
-    const shape = useSubscriptionStore((state) => state.shape);
+    // const shape = useSubscriptionStore((state) => state.shape);
 
     const transitionDelay = useColorStore((state) => state.transitionDelay);
     const {
@@ -25,6 +25,8 @@ export default function Transition(props: TransitionProps) {
         spaceGroup,
         spaceParticles,
         etherBackground,
+        butterflyGroup,
+        orbitGroup,
         orbitObjects,
         setOrbitObjectsOpacity,
     } = useObjectStore();
@@ -108,6 +110,12 @@ export default function Transition(props: TransitionProps) {
                 );
                 props.setBloomIntensity(bloomIntensity.get());
             }
+            if (orbitGroup) {
+                orbitGroup.children.forEach((parent) => {
+                    parent.getObjectByName("visualOrbit")["material"].opacity =
+                        0.3 + seaCenterOpacity.get() * 0.7;
+                });
+            }
             // if (orbitObjects) {
             //     orbitObjects.forEach((v) => {
             //         console.log(v);
@@ -127,6 +135,13 @@ export default function Transition(props: TransitionProps) {
             }
             if (etherClouds) {
                 etherClouds["material"]["opacity"] = etherCenterOpacity.get();
+            }
+            if (butterflyGroup) {
+                butterflyGroup.scale.set(
+                    etherCenterOpacity.get(),
+                    etherCenterOpacity.get(),
+                    etherCenterOpacity.get()
+                );
             }
             if (etherBackground) {
                 etherBackground["material"]["uniforms"].uOpacity.value =

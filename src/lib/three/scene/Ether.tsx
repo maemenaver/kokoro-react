@@ -1,14 +1,9 @@
-import react, { useEffect, useMemo, useRef, useState } from "react";
+import react, { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import PointModel from "../model/PointModel";
-import { Environment, Sky } from "@react-three/drei";
 import { useControls } from "leva";
-import {
-    skyFragmentShader,
-    skyVertexShader,
-} from "../../shader/SkyShaderMaterial";
 import { Butterfly } from "../model/Butterfly";
-import { useLoader } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { useColorStore } from "../../zustand/useColorStore";
 import { useObjectStore } from "../../zustand/useObjectStore";
@@ -20,6 +15,7 @@ const Ether = (props: EtherProps) => {
     const { primaryColor } = useColorStore();
 
     const etherGroupRef = useRef();
+    const butterflyGroupRef = useRef<THREE.Group>();
     const skyRef = useRef<any>();
 
     const clouds = useLoader(TextureLoader, "/textures/clouds.png");
@@ -57,6 +53,7 @@ const Ether = (props: EtherProps) => {
     useEffect(() => {
         useObjectStore.setState((state) => ({
             etherGroup: etherGroupRef.current,
+            butterflyGroup: butterflyGroupRef.current,
         }));
     }, []);
 
@@ -102,6 +99,10 @@ const Ether = (props: EtherProps) => {
         });
     }, [primaryColor]);
 
+    useFrame(({ clock }) => {
+        butterflyGroupRef.current.rotation.y = clock.getElapsedTime() / 20;
+    });
+
     return (
         <group ref={etherGroupRef} name="ether">
             <PointModel
@@ -116,7 +117,12 @@ const Ether = (props: EtherProps) => {
                 blending={THREE.NormalBlending}
             />
 
-            <group key="ButterflyGroup" name={"ButterflyGroup"} scale={1}>
+            <group
+                key="ButterflyGroup"
+                ref={butterflyGroupRef}
+                name={"ButterflyGroup"}
+                scale={1}
+            >
                 {butterflyPosition.map((position, i) => (
                     <Butterfly key={i} position={position} scale={1} />
                 ))}

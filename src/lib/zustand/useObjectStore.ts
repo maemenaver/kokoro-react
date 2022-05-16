@@ -13,7 +13,9 @@ export interface IObject {
 
     seaGodray: THREE.Mesh;
 
-    // orbitGroup: THREE.Group;
+    butterflyGroup: THREE.Group;
+
+    orbitGroup: THREE.Group;
     orbitObjects: orbitObjectsType;
     setOrbitObjectsOpacity: (name: string, opacity: number) => void;
 }
@@ -24,13 +26,14 @@ export const useObjectStore = create<IObject>(
         spaceGroup: null,
         seaGroup: null,
 
+        butterflyGroup: null,
         etherBackground: null,
 
         spaceParticles: null,
 
         seaGodray: null,
 
-        // orbitGroup: null,
+        orbitGroup: null,
         orbitObjects: { ...initialOrbitObjects },
         setOrbitObjectsOpacity: (name, opacity) => {
             const result = { ...get().orbitObjects };
