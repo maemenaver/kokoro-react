@@ -77,6 +77,7 @@ const Sea = (props: SeaProps) => {
         <group ref={seaGroupRef}>
             <PointModel
                 path={"/models/shark.glb"}
+                objName={"seaCenter"}
                 position={[0, 0, 0]}
                 scale={[25, 25, 25]}
                 numParticles={50000}

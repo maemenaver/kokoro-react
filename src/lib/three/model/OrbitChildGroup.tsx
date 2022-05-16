@@ -5,6 +5,7 @@ import PointModel from "./PointModel";
 
 class OrbitChildGroupProps {
     path: string;
+    objName: string;
     numParticles: number;
     position: THREE.Vector3;
     colorType?: "therapeuticColor" | "primaryColor" | "secondaryColor";
@@ -27,6 +28,7 @@ export function OrbitChildGroup(props: OrbitChildGroupProps) {
         >
             <PointModel
                 path={props.path}
+                objName={props.objName}
                 numParticles={props.numParticles}
                 scale={[5, 5, 5]}
                 position={position}
@@ -36,7 +38,7 @@ export function OrbitChildGroup(props: OrbitChildGroupProps) {
                         : therapeuticColor === "yellow"
                         ? "orange"
                         : therapeuticColor === "black"
-                        ? "#1d1d1d"
+                        ? "#ffffff"
                         : therapeuticColor === "red"
                         ? "#b4274d"
                         : therapeuticColor === "purple"
@@ -55,7 +57,7 @@ export function OrbitChildGroup(props: OrbitChildGroupProps) {
                         : therapeuticColor === "yellow"
                         ? "orange"
                         : therapeuticColor === "black"
-                        ? "#000000"
+                        ? "#ffffff"
                         : therapeuticColor === "red"
                         ? "#0b0b0d"
                         : therapeuticColor === "purple"
@@ -68,7 +70,8 @@ export function OrbitChildGroup(props: OrbitChildGroupProps) {
                         ? "#000000"
                         : therapeuticColor
                 }
-                colorType={props.colorType}
+                colorType={"therapeuticColor"}
+                blending={THREE.NormalBlending}
                 ref={groupRef}
             />
         </group>

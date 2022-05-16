@@ -12,6 +12,7 @@ import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import { useColorStore } from "../../zustand/useColorStore";
 import { useObjectStore } from "../../zustand/useObjectStore";
+import { Ballon } from "../model/Ballon";
 
 class EtherProps {}
 
@@ -105,6 +106,7 @@ const Ether = (props: EtherProps) => {
         <group ref={etherGroupRef} name="ether">
             <PointModel
                 key="center"
+                objName={"etherCenter"}
                 path={"/models/air_ballon.glb"}
                 position={[0, 0, 0]}
                 scale={[17, 17, 17]}
@@ -132,6 +134,7 @@ const Ether = (props: EtherProps) => {
                     // depthWrite={true}
                 />
             </mesh>
+            {/* <Ballon /> */}
             {/* <Sky ref={skyRef} azimuth={Math.PI / 2} /> */}
             {/* <Environment preset="sunset" /> */}
         </group>

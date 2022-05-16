@@ -1,15 +1,22 @@
 import * as THREE from "three";
 import React, { useEffect, useState, useMemo } from "react";
-import { useThree, useFrame } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { useLocation } from "wouter";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
 import { useObjectStore } from "../../zustand/useObjectStore";
-import { useGodRayStore } from "../../zustand/useGodRayStore";
+// import { useGodRayStore } from "../../zustand/useGodRayStore";
+import { useSubscriptionStore } from "../../apollo/useSubscriptionStore";
 
-export default function Transition() {
+interface TransitionProps {
+    setBloomIntensity: any;
+}
+
+export default function Transition(props: TransitionProps) {
     const scene = useThree((state) => state.scene);
     const [location] = useLocation();
+
+    const shape = useSubscriptionStore((state) => state.shape);
 
     const transitionDelay = useColorStore((state) => state.transitionDelay);
     const {
@@ -18,6 +25,8 @@ export default function Transition() {
         spaceGroup,
         spaceParticles,
         etherBackground,
+        orbitObjects,
+        setOrbitObjectsOpacity,
     } = useObjectStore();
     const seaGodray = useObjectStore((state) => state.seaGodray);
 
@@ -25,7 +34,10 @@ export default function Transition() {
     const [spaceCenterOpacityTo, setSpaceCenterOpacityTo] = useState(0);
     const [seaCenterOpacityTo, setSeaCenterOpacityTo] = useState(0);
 
-    const [spaceSecondaryOpacityTo, setSpaceSecondaryOpacityTo] = useState(0);
+    // const [spaceSecondaryOpacityTo, setSpaceSecondaryOpacityTo] = useState(0);
+
+    const [fogNearTo, setFogNearTo] = useState(10);
+    const [fogFarTo, setFogFarTo] = useState(60);
     const [backgroundColorTo, setBackgroundColorTo] =
         useState<THREE.ColorRepresentation>("#000000");
 
@@ -34,7 +46,7 @@ export default function Transition() {
             etherCenter:
                 etherGroup &&
                 etherGroup
-                    .getObjectByName("center")
+                    .getObjectByName("etherCenter")
                     .getObjectByProperty("type", "Points"),
             etherClouds: etherGroup && etherGroup.getObjectByName("clouds"),
         }),
@@ -46,7 +58,7 @@ export default function Transition() {
             spaceCenter:
                 spaceGroup &&
                 spaceGroup
-                    .getObjectByName("center")
+                    .getObjectByName("spaceCenter")
                     .getObjectByProperty("type", "Points"),
             spaceBackground:
                 spaceGroup && spaceGroup.getObjectByName("background"),
@@ -59,7 +71,7 @@ export default function Transition() {
             seaCenter:
                 seaGroup &&
                 seaGroup
-                    .getObjectByName("center")
+                    .getObjectByName("seaCenter")
                     .getObjectByProperty("type", "Points"),
         }),
         [seaGroup]
@@ -70,11 +82,15 @@ export default function Transition() {
         spaceCenterOpacity,
         seaCenterOpacity,
         backgroundColor,
+        fogNear,
+        fogFar,
     } = useSpring({
         etherCenterOpacity: etherCenterOpacityTo,
         spaceCenterOpacity: spaceCenterOpacityTo,
         seaCenterOpacity: seaCenterOpacityTo,
         backgroundColor: backgroundColorTo,
+        fogNear: fogNearTo,
+        fogFar: fogFarTo,
         config: {
             duration: transitionDelay,
         },
@@ -82,8 +98,23 @@ export default function Transition() {
             // Scene
             if (scene) {
                 scene.background = new THREE.Color(backgroundColor.get());
-                scene.fog = new THREE.Fog(backgroundColor.get(), 10, 60);
+                scene.fog = new THREE.Fog(
+                    backgroundColor.get(),
+                    fogNear.get(),
+                    fogFar.get()
+                );
             }
+            // if (orbitObjects) {
+            //     orbitObjects.forEach((v) => {
+            //         console.log(v);
+            //         v["material"]["uniforms"].uColor1.value = new THREE.Color(
+            //             backgroundColor.get()
+            //         );
+            //         v["material"]["uniforms"].uColor2.value = new THREE.Color(
+            //             backgroundColor.get()
+            //         );
+            //     });
+            // }
 
             // Ether
             if (etherCenter) {
@@ -118,14 +149,30 @@ export default function Transition() {
                 seaCenter["material"]["uniforms"].uOpacity.value =
                     seaCenterOpacity.get();
             }
-            if (seaGodray) {
-                // console.log(seaGodray);
-                seaGodray["material"]["uniforms"].uStrength.value =
-                    useGodRayStore.getState().strength * seaCenterOpacity.get();
-                seaGodray["material"]["uniformsNeedUpdate"] = true;
-            }
+            // if (seaGodray) {
+            //     // console.log(seaGodray);
+            //     // seaGodray["material"]["uniforms"].uStrength.value =
+            //     //     useGodRayStore.getState().strength * seaCenterOpacity.get();
+            //     // seaGodray["material"]["uniformsNeedUpdate"] = true;
+            //     useGodRayStore.setState((state) => ({
+            //         strength: 0.75 * seaCenterOpacity.get(),
+            //     }));
+            // }
         },
     });
+
+    // useEffect(() => {}, []);
+
+    // useEffect(() => {
+    //     Object.keys(orbitObjects).forEach((key) => {
+    //         const value = orbitObjects[key];
+
+    //         const opacity = +shape.find((v) => v === key);
+    //         if (value.opacity !== opacity) {
+    //             setOrbitObjectsOpacity(key, opacity);
+    //         }
+    //     });
+    // }, [shape]);
 
     useEffect(() => {
         setEtherCenterOpacityTo(0);
@@ -136,16 +183,22 @@ export default function Transition() {
             case "/ether":
                 setEtherCenterOpacityTo(1);
                 setBackgroundColorTo("#ffffff");
+                setFogNearTo(70);
+                setFogFarTo(90);
                 break;
 
             case "/space":
                 setSpaceCenterOpacityTo(1);
                 setBackgroundColorTo("#000000");
+                setFogNearTo(10);
+                setFogFarTo(60);
                 break;
 
             case "/sea":
                 setSeaCenterOpacityTo(1);
                 setBackgroundColorTo("#203455");
+                setFogNearTo(10);
+                setFogFarTo(60);
                 break;
         }
     }, [location, seaGodray]);

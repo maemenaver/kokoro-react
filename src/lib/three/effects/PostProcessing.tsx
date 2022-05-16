@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import React, { useRef, useEffect, useState } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import {
@@ -8,7 +7,6 @@ import {
     EffectPass,
     KernelSize,
     RenderPass,
-    SelectiveBloomEffect,
 } from "postprocessing";
 import Transition from "./Transition";
 
@@ -36,10 +34,9 @@ export default function PostProcessing() {
 
         gl.autoClear = false;
         composer.current.reset();
-        const renderB = new RenderPass(scene, camera);
 
+        const renderB = new RenderPass(scene, camera);
         composer.current.addPass(renderB);
-        console.log("not useMemo");
 
         const effectPassA = new EffectPass(
             camera,
@@ -62,5 +59,5 @@ export default function PostProcessing() {
 
     useFrame(() => composer.current.render(), 1);
 
-    return <Transition />;
+    return <Transition setBloomIntensity={setBloomIntensity} />;
 }

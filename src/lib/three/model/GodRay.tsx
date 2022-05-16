@@ -38,6 +38,11 @@ export function GodRay(props) {
         setLoading(false);
     }, []);
 
+    // useEffect(() => {
+    //     console.log(strength);
+    //     mesh.current.material["uniforms"].uniformsNeedUpdate = true;
+    // }, [strength]);
+
     useFrame(({ clock }) => {
         if (mesh?.current) {
             // mesh.current.rotation.x += clock.getElapsedTime() * 0.01;
@@ -52,6 +57,7 @@ export function GodRay(props) {
             mesh.current.material["uniforms"].uTime.value = Math.sin(
                 clock.getElapsedTime() / 5
             );
+            // mesh.current.material["uniforms"].uStrength.value = strength;
         }
     });
 
@@ -91,7 +97,7 @@ export function GodRay(props) {
                             ),
                         },
                         uStrength: {
-                            value: useGodRayStore.getState().strength,
+                            value: 0.75,
                         },
                         uLength: { value: useGodRayStore.getState().length },
                         uFadeSmoothness: {
@@ -105,7 +111,7 @@ export function GodRay(props) {
                             ),
                         },
                     }}
-                    side={THREE.DoubleSide}
+                    side={THREE.FrontSide}
                     transparent={true}
                     depthTest={false}
                     blending={THREE.AdditiveBlending}

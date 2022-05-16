@@ -94,7 +94,9 @@ export function BubbleFlow(props) {
                     vertexShader={godRayVertexShader}
                     fragmentShader={godRayFragmentShader}
                     uniforms={{
-                        uTime: useUniformsStore.getState().uTime,
+                        uTime: {
+                            value: 0,
+                        },
                         uNoiseTexture: {
                             value: gradientNoise,
                         },

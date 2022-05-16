@@ -7,9 +7,12 @@ import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
 import { initialOrbitObjects } from "../../../config";
+import { useObjectStore } from "../../zustand/useObjectStore";
+import { useSubscriptionStore } from "../../apollo/useSubscriptionStore";
 
 class PointModelProps {
     numParticles: number;
+    objName: string;
     path: string;
     color1: THREE.ColorRepresentation;
     color2: THREE.ColorRepresentation;
@@ -31,6 +34,7 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
         const meshRef = useRef<THREE.Mesh>(null);
         const pointsRef = useRef<THREE.Points>(null);
         const sampler = useRef<MeshSurfaceSampler>(null);
+        const opacityRef = useRef<number>(0);
 
         const [particlesPosition, setParticlesPosition] =
             useState<Float32Array>(new Float32Array(props.numParticles * 3));
@@ -107,12 +111,20 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
             if (pointsRef?.current?.material["uniforms"]) {
                 pointsRef.current.material["uniforms"].uTime.value =
                     clock.getElapsedTime();
+                if (props.colorType === "therapeuticColor" && props.objName) {
+                    pointsRef.current.material["uniforms"].uOpacity.value =
+                        useSubscriptionStore
+                            .getState()
+                            .shape.find((v) => v === props.objName)
+                            ? 1
+                            : 0;
+                }
             }
         });
 
         return (
             <>
-                <group name={props.name} ref={ref} {...props} dispose={null}>
+                <group ref={ref} name={props.objName} {...props} dispose={null}>
                     <mesh
                         ref={meshRef}
                         visible={false}
@@ -130,10 +142,7 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                                     therapeuticColor === "#000000"
                                         ? THREE.NormalBlending
                                         : props.blending,
-                                opacity:
-                                    props.colorType === "therapeuticColor"
-                                        ? 1
-                                        : 0,
+                                opacity: opacityRef.current,
                             }
                         )}
                         geometry={particlesGeometry()}

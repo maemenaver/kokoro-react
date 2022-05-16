@@ -226,7 +226,7 @@ export function GalaxyStars({
                 depthWrite={true}
                 transparent={true}
                 vertexColors={true}
-                // blending={THREE.AdditiveBlending}
+                blending={THREE.AdditiveBlending}
             />
         </points>
     );

@@ -143,6 +143,7 @@ const Space = (props: SpaceProps) => {
             {/* <ambientLight /> */}
             <PointModel
                 path={"/models/saturn.glb"}
+                objName={"spaceCenter"}
                 position={[0, 0, 0]}
                 scale={[10, 11, 10]}
                 numParticles={200000}

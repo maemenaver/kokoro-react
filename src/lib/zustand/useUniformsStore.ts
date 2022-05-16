@@ -4,8 +4,8 @@ import create, { GetState, SetState } from "zustand";
 import { devtools } from "zustand/middleware";
 
 export interface IGlobalUniforms {
-    uTime: IUniform<number>;
-    setUTime: (v: number) => void;
+    // uTime: IUniform<number>;
+    // setUTime: (v: number) => void;
     uResolution: IUniform;
     fogNear: IUniform<number>;
     fogFar: IUniform<number>;
@@ -17,10 +17,10 @@ export interface IGlobalUniforms {
 
 export const useUniformsStore = create<IGlobalUniforms>(
     devtools((set, get) => ({
-        uTime: {
-            value: 0,
-        },
-        setUTime: (v) => set((state) => ({ uTime: { value: v } })),
+        // uTime: {
+        //     value: 0,
+        // },
+        // setUTime: (v) => set((state) => ({ uTime: { value: v } })),
         uResolution: {
             value: undefined,
         },
