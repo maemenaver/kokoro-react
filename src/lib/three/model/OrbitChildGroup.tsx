@@ -71,7 +71,7 @@ export function OrbitChildGroup(props: OrbitChildGroupProps) {
                         : therapeuticColor
                 }
                 colorType={"therapeuticColor"}
-                blending={THREE.NormalBlending}
+                blending={THREE.AdditiveBlending}
                 ref={groupRef}
             />
         </group>

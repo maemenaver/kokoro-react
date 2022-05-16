@@ -33,6 +33,7 @@ export default function Transition(props: TransitionProps) {
     const [etherCenterOpacityTo, setEtherCenterOpacityTo] = useState(0);
     const [spaceCenterOpacityTo, setSpaceCenterOpacityTo] = useState(0);
     const [seaCenterOpacityTo, setSeaCenterOpacityTo] = useState(0);
+    const [bloomTo, setBloomTo] = useState(1);
 
     // const [spaceSecondaryOpacityTo, setSpaceSecondaryOpacityTo] = useState(0);
 
@@ -82,6 +83,7 @@ export default function Transition(props: TransitionProps) {
         spaceCenterOpacity,
         seaCenterOpacity,
         backgroundColor,
+        bloomIntensity,
         fogNear,
         fogFar,
     } = useSpring({
@@ -89,6 +91,7 @@ export default function Transition(props: TransitionProps) {
         spaceCenterOpacity: spaceCenterOpacityTo,
         seaCenterOpacity: seaCenterOpacityTo,
         backgroundColor: backgroundColorTo,
+        bloomIntensity: bloomTo,
         fogNear: fogNearTo,
         fogFar: fogFarTo,
         config: {
@@ -103,6 +106,7 @@ export default function Transition(props: TransitionProps) {
                     fogNear.get(),
                     fogFar.get()
                 );
+                props.setBloomIntensity(bloomIntensity.get());
             }
             // if (orbitObjects) {
             //     orbitObjects.forEach((v) => {
@@ -126,7 +130,7 @@ export default function Transition(props: TransitionProps) {
             }
             if (etherBackground) {
                 etherBackground["material"]["uniforms"].uOpacity.value =
-                    etherCenterOpacity.get();
+                    etherCenterOpacity.get() * 0.5;
                 etherBackground["material"]["uniformsNeedUpdate"] = true;
             }
 
@@ -182,9 +186,10 @@ export default function Transition(props: TransitionProps) {
         switch (location) {
             case "/ether":
                 setEtherCenterOpacityTo(1);
-                setBackgroundColorTo("#ffffff");
-                setFogNearTo(70);
-                setFogFarTo(90);
+                setBackgroundColorTo("#203455");
+                setFogNearTo(200);
+                setFogFarTo(300);
+                setBloomTo(1);
                 break;
 
             case "/space":
@@ -192,6 +197,7 @@ export default function Transition(props: TransitionProps) {
                 setBackgroundColorTo("#000000");
                 setFogNearTo(10);
                 setFogFarTo(60);
+                setBloomTo(3);
                 break;
 
             case "/sea":
@@ -199,6 +205,7 @@ export default function Transition(props: TransitionProps) {
                 setBackgroundColorTo("#203455");
                 setFogNearTo(10);
                 setFogFarTo(60);
+                setBloomTo(3);
                 break;
         }
     }, [location, seaGodray]);
