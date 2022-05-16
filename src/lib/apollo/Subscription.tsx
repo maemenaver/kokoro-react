@@ -1,6 +1,6 @@
 import { useSubscription } from "@apollo/client";
 import { useLocation } from "wouter";
-import { subMusicGql, subPlaceGql } from "./gql";
+import { subMusicGql, subPlaceGql, subShapeGql } from "./gql";
 import { useSubscriptionStore } from "./useSubscriptionStore";
 
 export const Subscription = () => {
@@ -28,5 +28,12 @@ export const Subscription = () => {
         },
     });
 
-    return <></>;
+    const { data: subShapeData } = useSubscription(subShapeGql, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            const result: string[] = subscriptionData.data["subShape"];
+            useSubscriptionStore.setState((state) => ({ shape: result }));
+        },
+    });
+
+    return null;
 };

@@ -10,12 +10,22 @@ import {
 } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useCallback, useState } from "react";
-import { baseURL } from "../config";
+import { baseURL, initialOrbitObjects } from "../config";
 import axiosInstance from "../lib/axiosInstance";
 import { UiFileInputButton } from "../components/primitive/UIFileInputButton";
-import { RadioGroup, Select } from "formik-mui";
+import { Checkbox, CheckboxWithLabel, RadioGroup, Select } from "formik-mui";
 import { useMutation } from "@apollo/client";
-import { setPlaceGql } from "../lib/apollo/gql";
+import { setPlaceGql, setShapeGql } from "../lib/apollo/gql";
+
+const initialOrbitObjectsState = () => {
+    const initial = {};
+
+    Object.keys(initialOrbitObjects).forEach((v) => {
+        initial[v] = true;
+    });
+
+    return initial;
+};
 
 const Shape = (props) => {
     const { router, status, content, image } = props;
@@ -48,6 +58,7 @@ const Shape = (props) => {
     );
 
     const [setPlace] = useMutation(setPlaceGql);
+    const [setShape] = useMutation(setShapeGql);
 
     return (
         <>
@@ -75,14 +86,36 @@ const Shape = (props) => {
                 <Formik
                     initialValues={{
                         place: "space",
+                        ...initialOrbitObjectsState(),
                     }}
                     onSubmit={(value, helper) => {
+                        const shape = Object.keys(value)
+                            .map((key) => {
+                                if (key === "place") {
+                                    return;
+                                }
+                                if (value[key] === false) {
+                                    return;
+                                }
+                                return key;
+                            })
+                            .filter((v) => v !== undefined);
+
+                        console.log(shape);
+
                         setPlace({
                             variables: {
                                 place: value.place,
                             },
                             onCompleted: () => {
-                                helper.setSubmitting(false);
+                                setShape({
+                                    variables: {
+                                        shape,
+                                    },
+                                    onCompleted: () => {
+                                        helper.setSubmitting(false);
+                                    },
+                                });
                             },
                         });
                     }}
@@ -153,6 +186,26 @@ const Shape = (props) => {
                                     disabled={isSubmitting}
                                 />
                             </Field>
+                            <div
+                                style={{
+                                    marginLeft: "10px",
+                                    flexDirection: "row",
+                                }}
+                            >
+                                {Object.keys(initialOrbitObjects).map((v) => {
+                                    return (
+                                        <Field
+                                            component={CheckboxWithLabel}
+                                            type="checkbox"
+                                            name={v}
+                                            Label={{
+                                                label: v,
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </div>
+
                             {isSubmitting ? (
                                 <CircularProgress />
                             ) : (

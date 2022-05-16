@@ -48,6 +48,12 @@ export const setPlaceGql = gql`
     }
 `;
 
+export const setShapeGql = gql`
+    mutation Mutation($shape: [String!]!) {
+        setShape(shape: $shape)
+    }
+`;
+
 export const subMusicGql = gql`
     subscription Subscription {
         subMusic
@@ -57,5 +63,11 @@ export const subMusicGql = gql`
 export const subPlaceGql = gql`
     subscription Subscription {
         subPlace
+    }
+`;
+
+export const subShapeGql = gql`
+    subscription Subscription {
+        subShape
     }
 `;

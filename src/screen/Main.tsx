@@ -9,7 +9,7 @@ import { Music } from "./Music";
 import { Color } from "./Color";
 import { Shape } from "./Shape";
 import Place from "../lib/three/scene/Place";
-import { Loader, Stats } from "@react-three/drei";
+import { Loader, Preload, Stats } from "@react-three/drei";
 import { Subscription } from "../lib/apollo/Subscription";
 import { ColorControl } from "../components/ColorControl";
 
@@ -58,7 +58,8 @@ function Main() {
                         }}
                     >
                         <Suspense fallback={null}>
-                            <Place key="place" objCount={10} />
+                            <Place key="place" />
+                            <Preload all />
                         </Suspense>
                     </Canvas>
                     <Stats />

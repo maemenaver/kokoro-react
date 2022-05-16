@@ -6,6 +6,7 @@ import { PointShaderMaterialRaw } from "../../shader/PointShaderMaterial";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
+import { initialOrbitObjects } from "../../../config";
 
 class PointModelProps {
     numParticles: number;
@@ -111,7 +112,7 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
 
         return (
             <>
-                <group name={"center"} ref={ref} {...props} dispose={null}>
+                <group name={props.name} ref={ref} {...props} dispose={null}>
                     <mesh
                         ref={meshRef}
                         visible={false}
@@ -162,6 +163,12 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
 
 export default PointModel;
 
+// Orbit Objects
+Object.values(initialOrbitObjects).forEach((v) => {
+    useGLTF.preload(v.path);
+});
+
+// Center Objects
 useGLTF.preload("/models/saturn.glb");
 useGLTF.preload("/models/Shark.glb");
 useGLTF.preload("/models/air_ballon.glb");
