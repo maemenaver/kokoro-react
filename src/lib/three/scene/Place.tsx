@@ -15,6 +15,7 @@ import {
     skyVertexShader,
 } from "../../shader/SkyShaderMaterial";
 import { useObjectStore } from "../../zustand/useObjectStore";
+import { AudioBackground } from "../effects/AudioBackground";
 
 class PlaceProps {}
 
@@ -179,8 +180,11 @@ const Place = (props: PlaceProps) => {
                 near={0.1}
                 far={500}
                 ref={cameraCenterRef}
-            />
-            <CameraShake />
+            >
+                <CameraShake />
+                <AudioBackground />
+            </PerspectiveCamera>
+
             <group name={"backgroundGroup"}>
                 <mesh
                     ref={etherBackgroundRef}

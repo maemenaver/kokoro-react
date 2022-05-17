@@ -1,3 +1,6 @@
+import { Button } from "@mui/material";
+import { useSubscriptionStore } from "../lib/apollo/useSubscriptionStore";
+
 const Intro = (props) => {
     return (
         <>
@@ -8,17 +11,19 @@ const Intro = (props) => {
                     alignItems: "center",
                     justifyContent: "center",
                     position: "fixed",
-                    zIndex: "1",
+                    zIndex: 1000,
                     color: "white",
                     fontSize: 60,
                     width: "100%",
                     height: "100%",
                     // backgroundColor: "#0000005"
                 }}
-            >
-                <p>Space for U</p>
-                <a href="/space">Start</a>
-            </div>
+                onClick={(event) => {
+                    useSubscriptionStore.setState((state) => ({
+                        isStarted: true,
+                    }));
+                }}
+            ></div>
         </>
     );
 };

@@ -50,6 +50,7 @@ const Music = (props: MusicProps) => {
     const { inputs } = useMIDI();
 
     const musicType = useSubscriptionStore((state) => state.music);
+    const musicReceived = useSubscriptionStore((state) => state.musicReceived);
 
     const [sendMusic] = useMutation(sendMusicGql);
 
@@ -77,10 +78,13 @@ const Music = (props: MusicProps) => {
     }, [data]);
 
     useEffect(() => {
-        if (data.length >= 50) {
+        if (musicReceived && data.length >= 50) {
             setResult(musicType);
+            useSubscriptionStore.setState((state) => ({
+                musicReceived: false,
+            }));
         }
-    }, [data, musicType]);
+    }, [data, musicReceived]);
 
     return (
         <>

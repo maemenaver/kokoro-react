@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Route, Switch } from "wouter";
-import { useQuery } from "@apollo/client";
-import { getMusicPath } from "../lib/apollo/gql";
 import { Music } from "./Music";
 import { Color } from "./Color";
 import { Shape } from "./Shape";
@@ -12,16 +10,9 @@ import Place from "../lib/three/scene/Place";
 import { Loader, Preload, Stats } from "@react-three/drei";
 import { Subscription } from "../lib/apollo/Subscription";
 import { ColorControl } from "../components/ColorControl";
+import { Intro } from "./Intro";
 
 function Main() {
-    const musicPath = useQuery(getMusicPath, {
-        onCompleted: (data) => {
-            console.log(data);
-            const result = JSON.parse(data.getMusicPath);
-            console.log(result);
-        },
-    });
-
     return (
         <div
             style={{
@@ -40,9 +31,11 @@ function Main() {
                     <Shape />
                 </Route>
                 <Route path="/music">
+                    {/* <Intro /> */}
                     <Music />
                 </Route>
                 <Route>
+                    <Intro />
                     <Canvas
                         key="canvas"
                         mode="concurrent"
