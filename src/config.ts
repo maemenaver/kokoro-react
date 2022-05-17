@@ -47,4 +47,24 @@ export const initialOrbitObjects = {
         numParticles: 2000,
         opacity: 1,
     },
+    castle: {
+        path: "/models/castle.glb",
+        numParticles: 7000,
+        opacity: 1,
+    },
+    cup: {
+        path: "/models/cup.glb",
+        numParticles: 5000,
+        opacity: 1,
+    },
+    mic: {
+        path: "/models/mic.glb",
+        numParticles: 5000,
+        opacity: 1,
+    },
+    magnifyingGlass: {
+        path: "/models/magnifyingGlass.glb",
+        numParticles: 5000,
+        opacity: 1,
+    },
 };

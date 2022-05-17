@@ -22,7 +22,7 @@ const Ether = (props: EtherProps) => {
 
     const butterflyPosition = useMemo(
         () =>
-            new Array(1000).fill(0).map((v) => {
+            new Array(250).fill(0).map((v) => {
                 const distanceOffset = 25;
                 const distanceRange = 5;
                 const distance =

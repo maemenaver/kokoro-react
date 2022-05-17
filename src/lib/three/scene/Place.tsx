@@ -57,7 +57,7 @@ const Place = (props: PlaceProps) => {
                             >
                                 <torusGeometry
                                     key={`geometry_${i}`}
-                                    args={[distance, 0.2, 8, 36]}
+                                    args={[distance, 0.05, 8, 36]}
                                 />
                                 <meshStandardMaterial
                                     key={`material_${i}`}
@@ -147,6 +147,7 @@ const Place = (props: PlaceProps) => {
     useEffect(() => {
         useObjectStore.setState((state) => ({
             etherBackground: etherBackgroundRef.current,
+            orbitGroup: orbitRef.current,
         }));
     }, []);
 

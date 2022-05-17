@@ -19,6 +19,8 @@ export default function Transition(props: TransitionProps) {
     // const shape = useSubscriptionStore((state) => state.shape);
 
     const transitionDelay = useColorStore((state) => state.transitionDelay);
+    const secondaryColor = useColorStore((state) => state.secondaryColor);
+
     const {
         etherGroup,
         seaGroup,
@@ -201,7 +203,7 @@ export default function Transition(props: TransitionProps) {
         switch (location) {
             case "/ether":
                 setEtherCenterOpacityTo(1);
-                setBackgroundColorTo("#203455");
+                setBackgroundColorTo(secondaryColor);
                 setFogNearTo(200);
                 setFogFarTo(300);
                 setBloomTo(1);
@@ -223,7 +225,7 @@ export default function Transition(props: TransitionProps) {
                 setBloomTo(3);
                 break;
         }
-    }, [location, seaGodray]);
+    }, [location, seaGodray, secondaryColor]);
 
     return null;
 }
