@@ -7,7 +7,7 @@ import { Music } from "./Music";
 import { Color } from "./Color";
 import { Shape } from "./Shape";
 import Place from "../lib/three/scene/Place";
-import { Loader, Preload } from "@react-three/drei";
+import { Loader, Preload, Stats } from "@react-three/drei";
 import { Subscription } from "../lib/apollo/Subscription";
 import { ColorControl } from "../components/ColorControl";
 import { Intro } from "./Intro";
@@ -23,7 +23,6 @@ function Main() {
                 width: "100vw",
                 height: "100vh",
                 overflow: "hidden",
-                backgroundColor: "#000000",
             }}
         >
             <Subscription />
@@ -70,7 +69,7 @@ function Main() {
                             <Preload all />
                         </Suspense>
                     </Canvas>
-                    {/* <Stats /> */}
+                    <Stats />
                     <Loader />
                     <ColorControl />
                 </Route>

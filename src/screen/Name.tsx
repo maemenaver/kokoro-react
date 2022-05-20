@@ -43,13 +43,12 @@ const Name = (props) => {
             >
                 <div
                     onClick={() => {
-                        setLocation("/color");
+                        // setLocation("/color");
                     }}
                 >
                     <NavigateBefore
                         style={{
-                            fontSize: 60,
-                            color: "#000000",
+                            opacity: 0,
                         }}
                     />
                 </div>
@@ -85,7 +84,8 @@ const Name = (props) => {
                                         setLocation("/emote");
                                     });
                             } else {
-                                setLocation("/emote");
+                                helper.setSubmitting(false);
+                                helper.setFieldError("outlined", "🥺");
                             }
                         }}
                     >
@@ -129,13 +129,12 @@ const Name = (props) => {
                 </div>
                 <div
                     onClick={() => {
-                        setLocation("/music");
+                        // setLocation("/music");
                     }}
                 >
                     <NavigateNextIcon
                         style={{
-                            fontSize: 60,
-                            color: "#000000",
+                            opacity: 0,
                         }}
                     />
                 </div>

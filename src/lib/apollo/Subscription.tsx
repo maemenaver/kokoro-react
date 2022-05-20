@@ -1,6 +1,13 @@
 import { useQuery, useSubscription } from "@apollo/client";
 import { useLocation } from "wouter";
-import { getMusicPath, subMusicGql, subPlaceGql, subShapeGql } from "./gql";
+import {
+    getMusicPath,
+    subColorGql,
+    subMusicGql,
+    subPlaceGql,
+    subShapeGql,
+    subStartGql,
+} from "./gql";
 import { useSubscriptionStore } from "./useSubscriptionStore";
 
 export const Subscription = () => {
@@ -42,6 +49,43 @@ export const Subscription = () => {
         onSubscriptionData: ({ subscriptionData }) => {
             const result: string[] = subscriptionData.data["subShape"];
             useSubscriptionStore.setState((state) => ({ shape: result }));
+        },
+    });
+
+    useSubscription(subColorGql, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            const result: string[] = subscriptionData.data["subColor"];
+            useSubscriptionStore.setState((state) => ({ color: result }));
+        },
+    });
+
+    useSubscription(subStartGql, {
+        onSubscriptionData: ({ subscriptionData }) => {
+            const result: boolean = subscriptionData.data["subStart"];
+
+            if (result) {
+                if (
+                    location === "/space" ||
+                    location === "/ether" ||
+                    location === "/sea"
+                ) {
+                    useSubscriptionStore.setState((state) => ({
+                        isStarted: true,
+                    }));
+                }
+            } else {
+                if (
+                    location === "/space" ||
+                    location === "/ether" ||
+                    location === "/sea"
+                ) {
+                    setLocation("/space");
+                } else {
+                    setLocation("/");
+                }
+
+                window.location.reload();
+            }
         },
     });
 

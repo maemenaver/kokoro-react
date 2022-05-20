@@ -3,11 +3,13 @@ import { useSubscriptionStore } from "../lib/apollo/useSubscriptionStore";
 import VideoBg from "reactjs-videobg";
 import { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "react-spring";
+import { useLocation } from "wouter";
 
 const Intro = (props) => {
     const divRef = useRef();
 
     const isStarted = useSubscriptionStore((state) => state.isStarted);
+    const [location] = useLocation();
 
     const { opacity } = useSpring({
         opacity: +!isStarted,
@@ -23,6 +25,16 @@ const Intro = (props) => {
     return (
         <>
             <animated.div
+                style={{
+                    backgroundColor: "#000000",
+                    zIndex: -9,
+                    width: "100%",
+                    height: "100%",
+                    opacity: 0.6,
+                    position: "fixed",
+                }}
+            />
+            <animated.div
                 ref={divRef}
                 style={{
                     display: "flex",
@@ -35,7 +47,12 @@ const Intro = (props) => {
                     width: "100%",
                     height: "100%",
                     opacity,
-                    zIndex: 10,
+                    zIndex:
+                        (location !== "/space" &&
+                            location !== "/sea" &&
+                            location !== "/ether" &&
+                            -10) ||
+                        10,
                     pointerEvents: isStarted ? "none" : "initial",
                 }}
                 onClick={() => {

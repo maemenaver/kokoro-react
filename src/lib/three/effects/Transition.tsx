@@ -45,6 +45,8 @@ export default function Transition(props: TransitionProps) {
     const [fogFarTo, setFogFarTo] = useState(60);
     const [backgroundColorTo, setBackgroundColorTo] =
         useState<THREE.ColorRepresentation>("#000000");
+    const [orbitColorTo, setOrbitColorTo] =
+        useState<THREE.ColorRepresentation>("#ffffff");
 
     const { etherCenter, etherClouds } = useMemo(
         () => ({
@@ -87,6 +89,7 @@ export default function Transition(props: TransitionProps) {
         spaceCenterOpacity,
         seaCenterOpacity,
         backgroundColor,
+        orbitColor,
         bloomIntensity,
         fogNear,
         fogFar,
@@ -95,6 +98,7 @@ export default function Transition(props: TransitionProps) {
         spaceCenterOpacity: spaceCenterOpacityTo,
         seaCenterOpacity: seaCenterOpacityTo,
         backgroundColor: backgroundColorTo,
+        orbitColor: orbitColorTo,
         bloomIntensity: bloomTo,
         fogNear: fogNearTo,
         fogFar: fogFarTo,
@@ -116,6 +120,8 @@ export default function Transition(props: TransitionProps) {
                 orbitGroup.children.forEach((parent) => {
                     parent.getObjectByName("visualOrbit")["material"].opacity =
                         0.3 + seaCenterOpacity.get() * 0.7;
+                    parent.getObjectByName("visualOrbit")["material"].color =
+                        new THREE.Color(orbitColor.get());
                 });
             }
             // if (orbitObjects) {
@@ -185,35 +191,44 @@ export default function Transition(props: TransitionProps) {
 
     useEffect(() => {
         let etherBackgroundColor = secondaryColor;
+        let seaBackgroundColor = secondaryColor;
         switch (secondaryColor) {
             case "orange":
                 etherBackgroundColor = "#7c5100";
+                seaBackgroundColor = "#203455";
                 break;
 
             case "yellow":
                 etherBackgroundColor = "#5f5f00";
+                seaBackgroundColor = "#203455";
                 break;
 
             case "black":
                 etherBackgroundColor = "#000000";
+                seaBackgroundColor = "#203455";
                 break;
 
             case "red":
                 etherBackgroundColor = "#620000";
+                seaBackgroundColor = "#203455";
                 break;
 
             case "purple":
+                seaBackgroundColor = "#203455";
                 break;
 
             case "green":
+                seaBackgroundColor = "#203455";
                 break;
 
             case "blue":
                 etherBackgroundColor = "#00005f";
+                seaBackgroundColor = "#203455";
                 break;
 
             case "grey":
                 etherBackgroundColor = "#000000";
+                seaBackgroundColor = "#203455";
                 break;
         }
 
@@ -225,14 +240,16 @@ export default function Transition(props: TransitionProps) {
             case "/ether":
                 setEtherCenterOpacityTo(1);
                 setBackgroundColorTo(etherBackgroundColor);
+                setOrbitColorTo("#ffffff");
                 setFogNearTo(200);
                 setFogFarTo(300);
-                setBloomTo(1);
+                setBloomTo(0.8);
                 break;
 
             case "/space":
                 setSpaceCenterOpacityTo(1);
                 setBackgroundColorTo("#000000");
+                setOrbitColorTo("#ffffff");
                 setFogNearTo(10);
                 setFogFarTo(60);
                 setBloomTo(3);
@@ -240,7 +257,8 @@ export default function Transition(props: TransitionProps) {
 
             case "/sea":
                 setSeaCenterOpacityTo(1);
-                setBackgroundColorTo("#203455");
+                setBackgroundColorTo(seaBackgroundColor);
+                setOrbitColorTo("#ffffff");
                 setFogNearTo(10);
                 setFogFarTo(60);
                 setBloomTo(3);

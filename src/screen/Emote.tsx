@@ -14,6 +14,8 @@ import { TextField } from "formik-mui";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "wouter";
+import { setEmoteGql, setStartGql } from "../lib/apollo/gql";
+import { useMutation } from "@apollo/client";
 
 const Emote = (props) => {
     const { router, status, content, image } = props;
@@ -21,6 +23,9 @@ const Emote = (props) => {
     const [progress, setProgress] = useState<number>(0);
 
     const [, setLocation] = useLocation();
+
+    const [setEmote] = useMutation(setEmoteGql);
+    const [setStart] = useMutation(setStartGql);
 
     return (
         <>
@@ -41,8 +46,7 @@ const Emote = (props) => {
                 >
                     <NavigateBefore
                         style={{
-                            fontSize: 60,
-                            color: "#000000",
+                            opacity: 0,
                         }}
                     />
                 </div>
@@ -71,6 +75,16 @@ const Emote = (props) => {
                             condition: "",
                         }}
                         onSubmit={(value, helper) => {
+                            setEmote({
+                                variables: {
+                                    emote: value.condition,
+                                },
+                            });
+                            setStart({
+                                variables: {
+                                    start: true,
+                                },
+                            });
                             setLocation("/color");
                         }}
                     >
@@ -174,8 +188,7 @@ const Emote = (props) => {
                 >
                     <NavigateNextIcon
                         style={{
-                            fontSize: 60,
-                            color: "#000000",
+                            opacity: 0,
                         }}
                     />
                 </div>

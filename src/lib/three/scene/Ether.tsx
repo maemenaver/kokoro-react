@@ -111,7 +111,7 @@ const Ether = (props: EtherProps) => {
                 path={"/models/air_ballon.glb"}
                 position={[0, 0, 0]}
                 scale={[17, 17, 17]}
-                numParticles={70000}
+                numParticles={200000}
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
                 blending={THREE.NormalBlending}

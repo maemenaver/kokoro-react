@@ -12,11 +12,12 @@ export interface ISubscription {
     place: string;
     setPlace: (v: string) => void;
     shape: string[];
+    color: string[];
 }
 
 export const useSubscriptionStore = create<ISubscription>(
     devtools((set, get) => ({
-        music: "Happy",
+        music: null,
         setMusic: (v) => set((state) => ({ music: v })),
         musicReceived: false,
         musicPath: null,
@@ -25,5 +26,6 @@ export const useSubscriptionStore = create<ISubscription>(
         place: "space",
         setPlace: (v) => set((state) => ({ place: v })),
         shape: Object.keys(initialOrbitObjects),
+        color: [],
     }))
 );

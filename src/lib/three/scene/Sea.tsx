@@ -80,7 +80,7 @@ const Sea = (props: SeaProps) => {
                 objName={"seaCenter"}
                 position={[0, 0, 0]}
                 scale={[25, 25, 25]}
-                numParticles={50000}
+                numParticles={100000}
                 color1={saturnControl.color1}
                 color2={saturnControl.color2}
             />

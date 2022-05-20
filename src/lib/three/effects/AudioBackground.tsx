@@ -26,17 +26,19 @@ export const AudioBackground = () => {
     );
 
     const selectMusic = useCallback(() => {
-        console.log(music, path);
+        if (music) {
+            console.log(music, path);
 
-        let dir = path.children.find((v) => v.name === music);
-        if (path) {
-            dir = dir.children.filter((v) => v.name !== ".DS_Store");
+            let dir = path.children.find((v) => v.name === music);
+            if (path) {
+                dir = dir.children.filter((v) => v.name !== ".DS_Store");
+            }
+
+            console.log(dir);
+            const selectedIndex = Math.floor(dir.length * Math.random());
+            console.log(dir[selectedIndex].name);
+            setSelectedMusic(encodeURIComponent(dir[selectedIndex].name));
         }
-
-        console.log(dir);
-        const selectedIndex = Math.floor(dir.length * Math.random());
-        console.log(dir[selectedIndex].name);
-        setSelectedMusic(encodeURIComponent(dir[selectedIndex].name));
     }, [music, path, selectedMusic]);
 
     useEffect(() => {
@@ -44,29 +46,31 @@ export const AudioBackground = () => {
     }, [music, path, isStarted]);
 
     useEffect(() => {
-        console.log(`${baseURL}/scrapes/${music}/${selectedMusic}`);
-        if (isStarted) {
-            const audioLoader = new THREE.AudioLoader();
-            audioLoader.load(
-                `${baseURL}/scrapes/${music}/${selectedMusic}`,
-                (buffer) => {
-                    if (audioRef.current.isPlaying) {
-                        audioRef.current.stop();
+        if (music) {
+            console.log(`${baseURL}/scrapes/${music}/${selectedMusic}`);
+            if (isStarted) {
+                const audioLoader = new THREE.AudioLoader();
+                audioLoader.load(
+                    `${baseURL}/scrapes/${music}/${selectedMusic}`,
+                    (buffer) => {
+                        if (audioRef.current.isPlaying) {
+                            audioRef.current.stop();
+                        }
+                        audioRef.current.setVolume(0);
+                        audioRef.current.setBuffer(buffer);
+                        audioRef.current.setVolume(1);
+                        audioRef.current.play();
                     }
-                    audioRef.current.setVolume(0);
-                    audioRef.current.setBuffer(buffer);
-                    audioRef.current.setVolume(1);
-                    audioRef.current.play(0.5);
-                }
-            );
+                );
+            }
         }
     }, [selectedMusic, isStarted]);
 
     return (
         <group>
-            {isStarted && selectedMusic && (
+            {music && isStarted && selectedMusic && (
                 <PositionalAudio
-                    url={`${baseURL}/scrapes/Happy/0051_The%20Planets%20Op%2032%20IV%20Jupiter%20the%20Bringer%20of%20Jollity%202.mp3`}
+                    url={`${baseURL}/scrapes/Happy/Allegro.mp3`}
                     ref={audioRef}
                     onEnded={selectMusic}
                     autoplay

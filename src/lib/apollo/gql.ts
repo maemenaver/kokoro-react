@@ -53,9 +53,33 @@ export const setPlaceGql = gql`
     }
 `;
 
+export const setEmoteGql = gql`
+    mutation Mutation($emote: String!) {
+        setEmote(emote: $emote)
+    }
+`;
+
+export const setStartGql = gql`
+    mutation Mutation($start: Boolean!) {
+        setStart(start: $start)
+    }
+`;
+
+export const setIsFellowGql = gql`
+    mutation Mutation($toggle: Boolean!) {
+        setIsFellow(toggle: $toggle)
+    }
+`;
+
 export const setShapeGql = gql`
     mutation Mutation($shape: [String!]!) {
         setShape(shape: $shape)
+    }
+`;
+
+export const subStartGql = gql`
+    subscription Subscription {
+        subStart
     }
 `;
 
@@ -74,5 +98,11 @@ export const subPlaceGql = gql`
 export const subShapeGql = gql`
     subscription Subscription {
         subShape
+    }
+`;
+
+export const subColorGql = gql`
+    subscription Subscription {
+        subColor
     }
 `;

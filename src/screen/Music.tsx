@@ -85,9 +85,9 @@ const Music = (props: MusicProps) => {
     useEffect(() => {
         if (musicReceived && data.length >= 50) {
             setResult(musicType);
-            useSubscriptionStore.setState((state) => ({
-                musicReceived: false,
-            }));
+            // useSubscriptionStore.setState((state) => ({
+            //     musicReceived: false,
+            // }));
         }
     }, [data, musicReceived]);
 

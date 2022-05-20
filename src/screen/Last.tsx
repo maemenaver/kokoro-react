@@ -5,6 +5,8 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
 import { useLocation } from "wouter";
 import { Button, CircularProgress } from "@mui/material";
+import { useMutation } from "@apollo/client";
+import { setStartGql } from "../lib/apollo/gql";
 
 const Last = (props) => {
     const { router, status, content, image } = props;
@@ -12,6 +14,7 @@ const Last = (props) => {
     const [progress, setProgress] = useState<number>(0);
 
     const [, setLocation] = useLocation();
+    const [setStart] = useMutation(setStartGql);
 
     const onChange = useCallback(
         async (formData: FormData) => {
@@ -53,13 +56,13 @@ const Last = (props) => {
             >
                 <div
                     onClick={() => {
-                        // setLocation("/color");
+                        setLocation("/music");
                     }}
                 >
                     <NavigateBefore
                         style={{
                             fontSize: 60,
-                            color: "#000000",
+                            color: "#ffffff",
                         }}
                     />
                 </div>
@@ -90,7 +93,11 @@ const Last = (props) => {
                                 "https://docs.google.com/forms/d/183zIoVqFCUFND5whxPY2OtjQupJLm7zvCcrncuNAw78/viewform?edit_requested=true",
                                 "_blank"
                             );
-                            setLocation("/");
+                            setStart({
+                                variables: {
+                                    start: false,
+                                },
+                            });
                         }}
                     >
                         {({ submitForm, isSubmitting }) => (
@@ -105,11 +112,11 @@ const Last = (props) => {
                                     <CircularProgress />
                                 ) : (
                                     <Button
-                                        variant="contained"
+                                        variant="outlined"
                                         color="primary"
                                         onClick={submitForm}
                                     >
-                                        설문
+                                        💌
                                     </Button>
                                 )}
                             </Form>
@@ -123,8 +130,7 @@ const Last = (props) => {
                 >
                     <NavigateNextIcon
                         style={{
-                            fontSize: 60,
-                            color: "#000000",
+                            opacity: 0,
                         }}
                     />
                 </div>
