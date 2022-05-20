@@ -1,5 +1,5 @@
-export const baseURL = "http://127.0.0.1:8053";
-export const websocketURL = "ws://127.0.0.1:8053";
+export const baseURL = `http://maemesoft.iptime.org:8053`;
+export const websocketURL = `ws://maemesoft.iptime.org:8053`;
 
 export const initialOrbitObjects = {
     cherry: {
@@ -59,11 +59,16 @@ export const initialOrbitObjects = {
     },
     mic: {
         path: "/models/mic.glb",
-        numParticles: 5000,
+        numParticles: 2000,
         opacity: 1,
     },
     magnifyingGlass: {
         path: "/models/magnifyingGlass.glb",
+        numParticles: 5000,
+        opacity: 1,
+    },
+    mushroom: {
+        path: "/models/mushroom.glb",
         numParticles: 5000,
         opacity: 1,
     },

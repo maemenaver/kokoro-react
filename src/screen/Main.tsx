@@ -7,10 +7,14 @@ import { Music } from "./Music";
 import { Color } from "./Color";
 import { Shape } from "./Shape";
 import Place from "../lib/three/scene/Place";
-import { Loader, Preload, Stats } from "@react-three/drei";
+import { Loader, Preload } from "@react-three/drei";
 import { Subscription } from "../lib/apollo/Subscription";
 import { ColorControl } from "../components/ColorControl";
 import { Intro } from "./Intro";
+import { Fellow } from "./Fellow";
+import { Name } from "./Name";
+import { Emote } from "./Emote";
+import { Last } from "./Last";
 
 function Main() {
     return (
@@ -23,19 +27,30 @@ function Main() {
             }}
         >
             <Subscription />
+            <Intro />
             <Switch>
+                <Route path="/">
+                    <Name />
+                </Route>
+                <Route path="/emote">
+                    <Emote />
+                </Route>
                 <Route path="/color">
                     <Color />
                 </Route>
                 <Route path="/shape">
                     <Shape />
                 </Route>
+                <Route path="/fellow">
+                    <Fellow />
+                </Route>
                 <Route path="/music">
-                    {/* <Intro /> */}
                     <Music />
                 </Route>
+                <Route path="/last">
+                    <Last />
+                </Route>
                 <Route>
-                    <Intro />
                     <Canvas
                         key="canvas"
                         mode="concurrent"
@@ -55,7 +70,7 @@ function Main() {
                             <Preload all />
                         </Suspense>
                     </Canvas>
-                    <Stats />
+                    {/* <Stats /> */}
                     <Loader />
                     <ColorControl />
                 </Route>

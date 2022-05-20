@@ -12,11 +12,20 @@ code {
     monospace;
 }
 
-/* #leva__root {
+#leva__root {
   visibility: hidden;
-} */
+}
 
 @font-face {
   font-family: "LetterGothicMTStd";
   src: url('fonts/LetterGothicMTStd.otf')
+}
+
+.ReactPiano__NoteLabel {
+  visibility: hidden;
+}
+
+.MuiOutlinedInput-root {
+  border-width: 1px;
+  border-color: "white",
 }

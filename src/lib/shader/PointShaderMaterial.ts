@@ -54,19 +54,10 @@ const fragmentShader = glsl`
     }
 `;
 
-// const PointShaderMaterial = shaderMaterial(
-//     {
-//         uColor1: new THREE.Color("red"),
-//         uColor2: new THREE.Color("blue"),
-//         uTime: 0,
-//         uScale: 0,
-//     },
-//     vertexShader,
-//     fragmentShader
-// );
-
 interface PointShaderMaterialRawArgs {
     blending?: THREE.Blending;
+    opacity?: number;
+    scale?: number;
 }
 
 const PointShaderMaterialRaw = (
@@ -91,7 +82,7 @@ const PointShaderMaterialRaw = (
                 value: 1,
             },
             uOpacity: {
-                value: 1,
+                value: args.opacity,
             },
         },
         vertexShader,

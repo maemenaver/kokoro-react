@@ -14,9 +14,9 @@ export interface IColor {
 
 export const useColorStore = create<IColor>(
     devtools((set, get) => ({
-        primaryColor: "red",
+        primaryColor: "white",
         setPrimaryColor: (v) => set((state) => ({ primaryColor: v })),
-        secondaryColor: "red",
+        secondaryColor: "black",
         setSecondaryColor: (v) => set((state) => ({ secondaryColor: v })),
         therapeuticColor: "black",
         setTherapeuticColor: (v) => set((state) => ({ therapeuticColor: v })),

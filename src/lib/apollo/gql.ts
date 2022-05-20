@@ -3,14 +3,15 @@ import { gql } from "@apollo/client";
 export const subBoard = gql`
     subscription SubBoard {
         subBoard {
-            therapeuticColor
-            authorID
-            content
-            hashtag
+            author
+            emote
             id
-            image
+            music
+            place
             primaryColor
             secondaryColor
+            shape
+            therapeuticColor
         }
     }
 `;
@@ -18,14 +19,18 @@ export const subBoard = gql`
 export const getBoard = gql`
     query GetBoard {
         getBoard {
-            therapeuticColor
-            authorID
-            content
-            hashtag
+            author
+            createdAt
+            deletedAt
+            emote
             id
-            image
+            music
+            place
             primaryColor
             secondaryColor
+            shape
+            therapeuticColor
+            updatedAt
         }
     }
 `;

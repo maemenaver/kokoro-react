@@ -47,13 +47,9 @@ export const ColorControl = () => {
     const board = useQuery(getBoard, {
         onCompleted: (data) => {
             console.log(data);
-            const primary = colorTranslate(data["getBoard"][0]["primaryColor"]);
-            const secondary = colorTranslate(
-                data["getBoard"][0]["secondaryColor"]
-            );
-            const therapeutic = colorTranslate(
-                data["getBoard"][0]["therapeuticColor"]
-            );
+            const primary = "white";
+            const secondary = "black";
+            const therapeutic = "black";
             setColors({
                 primaryColor: primary,
                 secondaryColor: secondary,

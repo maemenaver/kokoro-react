@@ -16,6 +16,7 @@ import {
 } from "../../shader/SkyShaderMaterial";
 import { useObjectStore } from "../../zustand/useObjectStore";
 import { AudioBackground } from "../effects/AudioBackground";
+import Particles from "../model/Particles";
 
 class PlaceProps {}
 
@@ -23,6 +24,8 @@ const Place = (props: PlaceProps) => {
     const set = useThree((state) => state.set);
 
     // const { addSelectedLight, removeSelectedLight } = useBloomStore();
+    const mouse = useRef([0, 0]);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
     const orbitChild = useRef<JSX.Element[]>(
         new Array(Object.keys(useObjectStore.getState().orbitObjects).length)
@@ -208,6 +211,17 @@ const Place = (props: PlaceProps) => {
                         }}
                     />
                 </mesh>
+                {/* <mesh position={[0, 0, -20]} scale={1}>
+                    <sphereGeometry attach="geometry" />
+                    <meshStandardMaterial
+                        attach="material"
+                        color="#ffffff"
+                        side={THREE.DoubleSide}
+                        transparent={true}
+                    />
+                </mesh> */}
+                {/* <pointLight distance={100} intensity={4} color="white" /> */}
+                {/* <Particles count={isMobile ? 5000 : 10000} mouse={mouse} /> */}
             </group>
             <group name={"mainGroup"} ref={groupRef} position={[0, 0, -30]}>
                 <group name={"orbitGroup"} ref={orbitRef}>

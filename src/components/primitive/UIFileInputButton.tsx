@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { useRef } from "react";
 
 export interface IProps {
@@ -44,9 +45,12 @@ export const UiFileInputButton: any = (props) => {
 
     return (
         <form ref={formRef}>
-            <button type="button" onClick={onClickHandler}>
+            {/* <button type="button" onClick={onClickHandler}>
                 {props.label}
-            </button>
+            </button> */}
+            <Button variant="outlined" color="primary" onClick={onClickHandler}>
+                🌈
+            </Button>
             <input
                 accept={props.acceptedFileTypes}
                 multiple={props.allowMultipleFiles}

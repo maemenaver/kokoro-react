@@ -1,29 +1,66 @@
 import { Button } from "@mui/material";
 import { useSubscriptionStore } from "../lib/apollo/useSubscriptionStore";
+import VideoBg from "reactjs-videobg";
+import { useEffect, useRef, useState } from "react";
+import { useSpring, animated } from "react-spring";
 
 const Intro = (props) => {
+    const divRef = useRef();
+
+    const isStarted = useSubscriptionStore((state) => state.isStarted);
+
+    const { opacity } = useSpring({
+        opacity: +!isStarted,
+        config: {
+            duration: 3000,
+        },
+    });
+
+    useEffect(() => {
+        console.log(divRef);
+    }, []);
+
     return (
         <>
-            <div
+            <animated.div
+                ref={divRef}
                 style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
                     position: "fixed",
-                    zIndex: 1000,
                     color: "white",
                     fontSize: 60,
                     width: "100%",
                     height: "100%",
-                    // backgroundColor: "#0000005"
+                    opacity,
+                    zIndex: 10,
+                    pointerEvents: isStarted ? "none" : "initial",
                 }}
-                onClick={(event) => {
+                onClick={() => {
                     useSubscriptionStore.setState((state) => ({
                         isStarted: true,
                     }));
                 }}
-            ></div>
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "#000000",
+                        opacity: 0.3,
+                    }}
+                >
+                    {/* <p style={{}}>Space for U</p> */}
+                </div>
+                <VideoBg>
+                    <VideoBg.Source src={"/bg.mp4"} type="video/mp4" />
+                </VideoBg>
+            </animated.div>
         </>
     );
 };

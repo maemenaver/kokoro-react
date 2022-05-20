@@ -128,7 +128,7 @@ const Shape = (props) => {
                                 alignItems: "center",
                             }}
                         >
-                            <ImageList
+                            {/* <ImageList
                                 sx={{
                                     width: 240,
                                     height: 240,
@@ -158,7 +158,7 @@ const Shape = (props) => {
                                 uploadFileName="files"
                                 onChange={onChange}
                                 thumb={thumb}
-                            />
+                            /> */}
                             <Field
                                 component={RadioGroup}
                                 name="place"

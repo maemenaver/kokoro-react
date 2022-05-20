@@ -140,7 +140,7 @@ const Ether = (props: EtherProps) => {
                     // depthWrite={true}
                 />
             </mesh>
-            {/* <Ballon /> */}
+            {/* <Ballon scale={2} /> */}
             {/* <Sky ref={skyRef} azimuth={Math.PI / 2} /> */}
             {/* <Environment preset="sunset" /> */}
         </group>

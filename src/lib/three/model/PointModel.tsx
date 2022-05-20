@@ -9,6 +9,8 @@ import { useColorStore } from "../../zustand/useColorStore";
 import { initialOrbitObjects } from "../../../config";
 import { useObjectStore } from "../../zustand/useObjectStore";
 import { useSubscriptionStore } from "../../apollo/useSubscriptionStore";
+import { PointModelOpacity } from "./PointModelOpacity";
+import shallow from "zustand/shallow";
 
 class PointModelProps {
     numParticles: number;
@@ -22,13 +24,6 @@ class PointModelProps {
 
 const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
     (props, ref) => {
-        const { transitionDelay, therapeuticColor } = useColorStore(
-            (state) => ({
-                transitionDelay: state.transitionDelay,
-                therapeuticColor: state.therapeuticColor,
-            })
-        );
-
         const gltf = useGLTF(props.path);
 
         const meshRef = useRef<THREE.Mesh>(null);
@@ -47,7 +42,7 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
             color1: props.color1,
             color2: props.color2,
             config: {
-                duration: transitionDelay,
+                duration: useColorStore.getState().transitionDelay,
             },
             onChange: () => {
                 pointsRef.current.material["uniforms"]["uColor1"].value =
@@ -119,11 +114,18 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                             ? 1
                             : 0;
                 }
+                opacityRef.current =
+                    pointsRef.current.material["uniforms"].uOpacity.value;
             }
         });
 
         return (
             <>
+                {/* <PointModelOpacity
+                    colorType={props.colorType}
+                    objName={props.objName}
+                    opacityRef={opacityRef}
+                /> */}
                 <group ref={ref} name={props.objName} {...props} dispose={null}>
                     <mesh
                         ref={meshRef}
@@ -137,11 +139,11 @@ const PointModel = React.forwardRef<THREE.Group, PointModelProps & GroupProps>(
                             props.color1,
                             props.color2,
                             {
-                                blending:
-                                    props.colorType === "therapeuticColor" &&
-                                    therapeuticColor === "#000000"
-                                        ? THREE.NormalBlending
-                                        : props.blending,
+                                blending: props.blending,
+                                // props.colorType === "therapeuticColor" &&
+                                // therapeuticColor === "#000000"
+                                //     ? THREE.NormalBlending
+                                //     : ,
                                 opacity: opacityRef.current,
                             }
                         )}

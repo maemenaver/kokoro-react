@@ -8,6 +8,10 @@ import "react-piano/dist/styles.css";
 import DimensionsProvider from "../lib/piano/DimensionsProvider";
 import { CircularProgress, FormControl, MenuItem, Select } from "@mui/material";
 import { useSubscriptionStore } from "../lib/apollo/useSubscriptionStore";
+import { useLocation } from "wouter";
+
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBefore from "@mui/icons-material/NavigateBefore";
 
 // webkitAudioContext fallback needed to support Safari
 // @ts-ignore
@@ -15,8 +19,8 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = "https://d1pzp51pvbm36p.cloudfront.net";
 
 const noteRange = {
-    first: MidiNumbers.fromNote("c3"),
-    last: MidiNumbers.fromNote("b7"),
+    first: MidiNumbers.fromNote("c2"),
+    last: MidiNumbers.fromNote("b4"),
 };
 const keyboardShortcuts = KeyboardShortcuts.create({
     firstNote: noteRange.first,
@@ -48,6 +52,7 @@ const Music = (props: MusicProps) => {
     const [result, setResult] = useState<any>();
 
     const { inputs } = useMIDI();
+    const [, setLocation] = useLocation();
 
     const musicType = useSubscriptionStore((state) => state.music);
     const musicReceived = useSubscriptionStore((state) => state.musicReceived);
@@ -97,99 +102,133 @@ const Music = (props: MusicProps) => {
             <div
                 style={{
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection: "row",
                     alignItems: "center",
-                    justifyContent: "center",
-                    zIndex: "1",
-                    color: "white",
+                    justifyItems: "center",
                     width: "100%",
                     height: "90%",
                 }}
             >
-                <p
-                    style={{
-                        fontFamily: "LetterGothicMTStd",
-                        fontSize: 32,
+                <div
+                    onClick={() => {
+                        setLocation("/fellow");
                     }}
                 >
-                    What's your Music?
-                </p>
-                {data.length < 50 ? (
-                    <>
-                        <div
-                            style={{
-                                width: "90%",
-                                marginBottom: 30,
-                            }}
-                        >
-                            <DimensionsProvider>
-                                {({ containerWidth, containerHeight }) => (
-                                    <SoundfontProvider
-                                        instrumentName="acoustic_grand_piano"
-                                        audioContext={audioContext}
-                                        hostname={soundfontHostname}
-                                        data={data}
-                                        setData={setData}
-                                        message={message}
-                                        render={({
-                                            isLoading,
-                                            playNote,
-                                            stopNote,
-                                            activeNotes,
-                                        }) => (
-                                            <Piano
-                                                noteRange={noteRange}
-                                                width={containerWidth}
-                                                playNote={playNote}
-                                                stopNote={stopNote}
-                                                disabled={isLoading}
-                                                activeNotes={activeNotes}
-                                                keyboardShortcuts={
-                                                    keyboardShortcuts
-                                                }
-                                            />
-                                        )}
-                                    />
-                                )}
-                            </DimensionsProvider>
-                        </div>
-                        {inputs?.length > 0 && (
-                            <FormControl
-                                fullWidth
+                    <NavigateBefore
+                        style={{
+                            fontSize: 60,
+                            color: "#ffffff",
+                        }}
+                    />
+                </div>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: "1",
+                        color: "white",
+                        flex: 1,
+                    }}
+                >
+                    <p
+                        style={{
+                            fontFamily: "LetterGothicMTStd",
+                            fontSize: 32,
+                        }}
+                    >
+                        What's your Music?
+                    </p>
+                    {data.length < 50 ? (
+                        <>
+                            <div
                                 style={{
-                                    color: "white",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
+                                    width: "90%",
+                                    marginBottom: 30,
                                 }}
                             >
-                                <Select
-                                    id="demo-simple-select"
-                                    value={inputID}
-                                    onChange={(event) => {
-                                        setInputID(+event.target.value);
-                                    }}
+                                <DimensionsProvider>
+                                    {({ containerWidth, containerHeight }) => (
+                                        <SoundfontProvider
+                                            instrumentName="acoustic_grand_piano"
+                                            audioContext={audioContext}
+                                            hostname={soundfontHostname}
+                                            data={data}
+                                            setData={setData}
+                                            message={message}
+                                            render={({
+                                                isLoading,
+                                                playNote,
+                                                stopNote,
+                                                activeNotes,
+                                            }) => (
+                                                <Piano
+                                                    noteRange={noteRange}
+                                                    width={containerWidth}
+                                                    playNote={playNote}
+                                                    stopNote={stopNote}
+                                                    disabled={isLoading}
+                                                    activeNotes={activeNotes}
+                                                    keyboardShortcuts={
+                                                        keyboardShortcuts
+                                                    }
+                                                />
+                                            )}
+                                        />
+                                    )}
+                                </DimensionsProvider>
+                            </div>
+                            {inputs?.length > 0 && (
+                                <FormControl
+                                    fullWidth
                                     style={{
                                         color: "white",
-                                        width: "30%",
-                                        border: "1px solid #ced4da",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        justifyContent: "center",
                                     }}
                                 >
-                                    {inputs.map((v, i) => {
-                                        return (
-                                            <MenuItem value={i} key={i}>
-                                                {v.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                                </Select>
-                            </FormControl>
-                        )}
-                    </>
-                ) : (
-                    <>{result || <CircularProgress />}</>
-                )}
+                                    <Select
+                                        id="demo-simple-select"
+                                        value={inputID}
+                                        onChange={(event) => {
+                                            setInputID(+event.target.value);
+                                        }}
+                                        style={{
+                                            color: "white",
+                                            width: "30%",
+                                            border: "1px solid #ced4da",
+                                        }}
+                                    >
+                                        {inputs.map((v, i) => {
+                                            return (
+                                                <MenuItem value={i} key={i}>
+                                                    {v.name}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            )}
+                        </>
+                    ) : (
+                        <>{result || <CircularProgress />}</>
+                    )}
+                </div>
+                <div
+                    onClick={() => {
+                        setLocation("/last");
+                    }}
+                >
+                    <NavigateNextIcon
+                        style={{
+                            fontSize: 60,
+                            color: "#ffffff",
+                        }}
+                    />
+                </div>
             </div>
         </>
     );

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import React, { useEffect, useState, useMemo } from "react";
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useLocation } from "wouter";
 import { useSpring } from "@react-spring/three";
 import { useColorStore } from "../../zustand/useColorStore";
@@ -131,10 +131,6 @@ export default function Transition(props: TransitionProps) {
             // }
 
             // Ether
-            if (etherCenter) {
-                etherCenter["material"]["uniforms"].uOpacity.value =
-                    etherCenterOpacity.get();
-            }
             if (etherClouds) {
                 etherClouds["material"]["opacity"] = etherCenterOpacity.get();
             }
@@ -152,10 +148,6 @@ export default function Transition(props: TransitionProps) {
             }
 
             // Space
-            if (spaceCenter) {
-                spaceCenter["material"]["uniforms"].uOpacity.value =
-                    spaceCenterOpacity.get();
-            }
             if (spaceBackground) {
                 spaceBackground["material"]["opacity"] =
                     spaceCenterOpacity.get();
@@ -166,10 +158,6 @@ export default function Transition(props: TransitionProps) {
             }
 
             // Sea
-            if (seaCenter) {
-                seaCenter["material"]["uniforms"].uOpacity.value =
-                    seaCenterOpacity.get();
-            }
             // if (seaGodray) {
             //     // console.log(seaGodray);
             //     // seaGodray["material"]["uniforms"].uStrength.value =
@@ -196,6 +184,39 @@ export default function Transition(props: TransitionProps) {
     // }, [shape]);
 
     useEffect(() => {
+        let etherBackgroundColor = secondaryColor;
+        switch (secondaryColor) {
+            case "orange":
+                etherBackgroundColor = "#7c5100";
+                break;
+
+            case "yellow":
+                etherBackgroundColor = "#5f5f00";
+                break;
+
+            case "black":
+                etherBackgroundColor = "#000000";
+                break;
+
+            case "red":
+                etherBackgroundColor = "#620000";
+                break;
+
+            case "purple":
+                break;
+
+            case "green":
+                break;
+
+            case "blue":
+                etherBackgroundColor = "#00005f";
+                break;
+
+            case "grey":
+                etherBackgroundColor = "#000000";
+                break;
+        }
+
         setEtherCenterOpacityTo(0);
         setSpaceCenterOpacityTo(0);
         setSeaCenterOpacityTo(0);
@@ -203,7 +224,7 @@ export default function Transition(props: TransitionProps) {
         switch (location) {
             case "/ether":
                 setEtherCenterOpacityTo(1);
-                setBackgroundColorTo(secondaryColor);
+                setBackgroundColorTo(etherBackgroundColor);
                 setFogNearTo(200);
                 setFogFarTo(300);
                 setBloomTo(1);
@@ -226,6 +247,23 @@ export default function Transition(props: TransitionProps) {
                 break;
         }
     }, [location, seaGodray, secondaryColor]);
+
+    useFrame(() => {
+        if (etherCenter) {
+            etherCenter["material"]["uniforms"].uOpacity.value =
+                etherCenterOpacity.get();
+        }
+
+        if (spaceCenter) {
+            spaceCenter["material"]["uniforms"].uOpacity.value =
+                spaceCenterOpacity.get();
+        }
+
+        if (seaCenter) {
+            seaCenter["material"]["uniforms"].uOpacity.value =
+                seaCenterOpacity.get();
+        }
+    });
 
     return null;
 }

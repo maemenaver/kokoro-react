@@ -1,9 +1,4 @@
-import * as THREE from "three";
-import { shaderMaterial } from "@react-three/drei";
 import glsl from "babel-plugin-glsl/macro";
-import { useUniformsStore } from "../zustand/useUniformsStore";
-import { useGodRayStore } from "../zustand/useGodRayStore";
-
 const godRayVertexShader = glsl`
     attribute float aOffset;
                                     
@@ -73,39 +68,4 @@ const godRayFragmentShader = glsl`
     }
 `;
 
-const GodRayShaderMaterialRaw = (gradientNoiseTexture) =>
-    new THREE.ShaderMaterial({
-        uniforms: {
-            uTime: useUniformsStore.getState().uTime,
-            uNoiseTexture: gradientNoiseTexture,
-            fogNear: useUniformsStore.getState().fogNear,
-            fogFar: useUniformsStore.getState().fogFar,
-            fogFarColor: useUniformsStore.getState().fogFarColor,
-            fogNearColor: useUniformsStore.getState().fogNearColor,
-            uDirection: {
-                value: new THREE.Vector2(
-                    useGodRayStore.getState().directionX,
-                    useGodRayStore.getState().directionY
-                ),
-            },
-            uStrength: {
-                value: useGodRayStore.getState().strength,
-            },
-            uLength: { value: useGodRayStore.getState().length },
-            uFadeSmoothness: {
-                value: useGodRayStore.getState().fadeSmoothness,
-            },
-            uScale: { value: useGodRayStore.getState().scale },
-            uSpeed: { value: useGodRayStore.getState().speed },
-            uLightColor: {
-                value: new THREE.Color(useGodRayStore.getState().color),
-            },
-        },
-        vertexShader: godRayVertexShader,
-        fragmentShader: godRayFragmentShader,
-        transparent: true,
-        depthTest: false,
-        blending: THREE.AdditiveBlending,
-    });
-
-export { godRayVertexShader, godRayFragmentShader, GodRayShaderMaterialRaw };
+export { godRayVertexShader, godRayFragmentShader };
