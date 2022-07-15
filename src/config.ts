@@ -1,5 +1,5 @@
-export const baseURL = `http://maemesoft.iptime.org:8053`;
-export const websocketURL = `ws://maemesoft.iptime.org:8053`;
+export const baseURL = `http://192.168.0.24:8053`;
+export const websocketURL = `ws://192.168.0.24:8053`;
 
 export const initialOrbitObjects = {
     cherry: {

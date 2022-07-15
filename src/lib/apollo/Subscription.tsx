@@ -20,6 +20,7 @@ export const Subscription = () => {
                 musicPath: result,
             }));
         },
+        fetchPolicy: "no-cache",
     });
 
     useSubscription(subMusicGql, {
@@ -29,6 +30,8 @@ export const Subscription = () => {
                 .setMusic(subscriptionData.data["subMusic"]);
             useSubscriptionStore.setState((state) => ({ musicReceived: true }));
         },
+        shouldResubscribe: true,
+        fetchPolicy: "no-cache",
     });
 
     useSubscription(subPlaceGql, {
@@ -43,6 +46,8 @@ export const Subscription = () => {
             )
                 setLocation(`/${result}`);
         },
+        shouldResubscribe: true,
+        fetchPolicy: "no-cache",
     });
 
     useSubscription(subShapeGql, {
@@ -50,6 +55,8 @@ export const Subscription = () => {
             const result: string[] = subscriptionData.data["subShape"];
             useSubscriptionStore.setState((state) => ({ shape: result }));
         },
+        shouldResubscribe: true,
+        fetchPolicy: "no-cache",
     });
 
     useSubscription(subColorGql, {
@@ -57,6 +64,8 @@ export const Subscription = () => {
             const result: string[] = subscriptionData.data["subColor"];
             useSubscriptionStore.setState((state) => ({ color: result }));
         },
+        shouldResubscribe: true,
+        fetchPolicy: "no-cache",
     });
 
     useSubscription(subStartGql, {
@@ -87,6 +96,8 @@ export const Subscription = () => {
                 window.location.reload();
             }
         },
+        shouldResubscribe: true,
+        fetchPolicy: "no-cache",
     });
 
     return null;
