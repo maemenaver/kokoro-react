@@ -1,4 +1,5 @@
 import { useQuery, useSubscription } from "@apollo/client";
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import {
     getMusicPath,
@@ -34,21 +35,42 @@ export const Subscription = () => {
         fetchPolicy: "no-cache",
     });
 
-    useSubscription(subPlaceGql, {
-        onSubscriptionData: ({ subscriptionData }) => {
-            const result: string = subscriptionData.data["subPlace"];
-            useSubscriptionStore.getState().setPlace(result);
+    useEffect(() => {
+        setInterval(() => {
+            const random = Math.floor(Math.random() * 3);
+            let result = "space";
+            switch (random) {
+                case 0:
+                    result = "space";
+                    break;
+                case 1:
+                    result = "ether";
+                    break;
+                case 2:
+                    result = "sea";
+                    break;
+            }
 
-            if (
-                location === "/ether" ||
-                location === "/space" ||
-                location === "/sea"
-            )
-                setLocation(`/${result}`);
-        },
-        shouldResubscribe: true,
-        fetchPolicy: "no-cache",
-    });
+            useSubscriptionStore.getState().setPlace(result);
+            setLocation(`/${result}`);
+        }, 10000);
+    }, []);
+
+    // useSubscription(subPlaceGql, {
+    //     onSubscriptionData: ({ subscriptionData }) => {
+    //         const result: string = subscriptionData.data["subPlace"];
+    //         useSubscriptionStore.getState().setPlace(result);
+
+    //         if (
+    //             location === "/ether" ||
+    //             location === "/space" ||
+    //             location === "/sea"
+    //         )
+    //             setLocation(`/${result}`);
+    //     },
+    //     shouldResubscribe: true,
+    //     fetchPolicy: "no-cache",
+    // });
 
     useSubscription(subShapeGql, {
         onSubscriptionData: ({ subscriptionData }) => {
