@@ -26,7 +26,7 @@ function Main() {
             }}
         >
             <Subscription />
-
+            {/* <Intro /> */}
             <Canvas
                 key="canvas"
                 mode="concurrent"

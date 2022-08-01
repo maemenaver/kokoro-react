@@ -2,7 +2,6 @@
     "name": "kokoro-react",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://omizha.github.io/Space4U-client",
     "dependencies": {
         "@apollo/client": "^3.5.10",
         "@belivvr/aframe-react": "^0.4.1",
