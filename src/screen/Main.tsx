@@ -26,54 +26,29 @@ function Main() {
             }}
         >
             <Subscription />
-            <Intro />
-            <Switch>
-                <Route path="/">
-                    <Name />
-                </Route>
-                <Route path="/emote">
-                    <Emote />
-                </Route>
-                <Route path="/color">
-                    <Color />
-                </Route>
-                <Route path="/shape">
-                    <Shape />
-                </Route>
-                <Route path="/fellow">
-                    <Fellow />
-                </Route>
-                <Route path="/music">
-                    <Music />
-                </Route>
-                <Route path="/last">
-                    <Last />
-                </Route>
-                <Route>
-                    <Canvas
-                        key="canvas"
-                        mode="concurrent"
-                        gl={{
-                            outputEncoding: THREE.LinearEncoding,
-                            autoClear: false,
-                            logarithmicDepthBuffer: true,
-                            alpha: true,
-                            powerPreference: "high-performance",
-                            antialias: false,
-                            stencil: false,
-                            depth: false,
-                        }}
-                    >
-                        <Suspense fallback={null}>
-                            <Place key="place" />
-                            <Preload all />
-                        </Suspense>
-                    </Canvas>
-                    <Stats />
-                    <Loader />
-                    <ColorControl />
-                </Route>
-            </Switch>
+
+            <Canvas
+                key="canvas"
+                mode="concurrent"
+                gl={{
+                    outputEncoding: THREE.LinearEncoding,
+                    autoClear: false,
+                    logarithmicDepthBuffer: true,
+                    alpha: true,
+                    powerPreference: "high-performance",
+                    antialias: false,
+                    stencil: false,
+                    depth: false,
+                }}
+            >
+                <Suspense fallback={null}>
+                    <Place key="place" />
+                    <Preload all />
+                </Suspense>
+            </Canvas>
+            <Stats />
+            <Loader />
+            <ColorControl />
         </div>
     );
 }

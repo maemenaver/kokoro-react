@@ -112,26 +112,26 @@ const Place = (props: PlaceProps) => {
                 cameraCenterRef.current.position.set(x, y, z);
             },
         },
-        rotationX: {
-            value: 0,
-            min: -Math.PI / 2,
-            max: Math.PI / 2,
-            step: 0.1,
-            // step: Math.PI / 2,
-            onChange: (v) => {
-                setCameraRotationXTo(v);
-            },
-        },
-        rotationY: {
-            value: 0,
-            min: -Math.PI / 2,
-            max: Math.PI / 2,
-            step: 0.1,
-            // step: Math.PI / 2,
-            onChange: (v) => {
-                setCameraRotationYTo(v);
-            },
-        },
+        // rotationX: {
+        //     value: 0,
+        //     min: -Math.PI / 2,
+        //     max: Math.PI / 2,
+        //     step: 0.1,
+        //     // step: Math.PI / 2,
+        //     onChange: (v) => {
+        //         setCameraRotationXTo(v);
+        //     },
+        // },
+        // rotationY: {
+        //     value: 0,
+        //     min: -Math.PI / 2,
+        //     max: Math.PI / 2,
+        //     step: 0.1,
+        //     // step: Math.PI / 2,
+        //     onChange: (v) => {
+        //         setCameraRotationYTo(v);
+        //     },
+        // },
     });
 
     const { cameraRotationX } = useSpring({

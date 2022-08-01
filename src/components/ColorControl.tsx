@@ -44,54 +44,73 @@ export const ColorControl = () => {
         },
     }));
 
-    const board = useQuery(getBoard, {
-        onCompleted: (data) => {
-            console.log(data);
-            const primary = "white";
-            const secondary = "black";
-            const therapeutic = "black";
+    // const board = useQuery(getBoard, {
+    //     onCompleted: (data) => {
+    //         console.log(data);
+    //         const primary = "white";
+    //         const secondary = "black";
+    //         const therapeutic = "black";
+    //         setColors({
+    //             primaryColor: primary,
+    //             secondaryColor: secondary,
+    //             therapeuticColor: therapeutic,
+    //         });
+
+    //         setPrimaryColor(primary);
+    //         setSecondaryColor(secondary);
+    //         setTherapeuticColor(therapeutic);
+    //     },
+    // });
+
+    useEffect(() => {
+        setInterval(() => {
+            const primary = colorTranslate(Math.floor(Math.random() * 8));
+            const secondary = colorTranslate(Math.floor(Math.random() * 8));
+            const therapeutic = colorTranslate(Math.floor(Math.random() * 8));
+
+            console.log(primary, secondary, therapeutic);
+
             setColors({
                 primaryColor: primary,
                 secondaryColor: secondary,
                 therapeuticColor: therapeutic,
             });
-
             setPrimaryColor(primary);
             setSecondaryColor(secondary);
             setTherapeuticColor(therapeutic);
-        },
-    });
-
-    useEffect(() => {
-        const unsubBoard = board.subscribeToMore({
-            document: subBoard,
-            updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
-                console.log(subscriptionData);
-                const primary = colorTranslate(
-                    subscriptionData.data["subBoard"]["primaryColor"]
-                );
-                const secondary = colorTranslate(
-                    subscriptionData.data["subBoard"]["secondaryColor"]
-                );
-                const therapeutic = colorTranslate(
-                    subscriptionData.data["subBoard"]["therapeuticColor"]
-                );
-                setColors({
-                    primaryColor: primary,
-                    secondaryColor: secondary,
-                    therapeuticColor: therapeutic,
-                });
-                setPrimaryColor(primary);
-                setSecondaryColor(secondary);
-                setTherapeuticColor(therapeutic);
-            },
-        });
-
-        return () => {
-            if (unsubBoard) unsubBoard();
-        };
+        }, 10000);
     }, []);
+
+    // useEffect(() => {
+    //     const unsubBoard = board.subscribeToMore({
+    //         document: subBoard,
+    //         updateQuery: (prev, { subscriptionData }) => {
+    //             if (!subscriptionData.data) return prev;
+    //             console.log(subscriptionData);
+    //             const primary = colorTranslate(
+    //                 subscriptionData.data["subBoard"]["primaryColor"]
+    //             );
+    //             const secondary = colorTranslate(
+    //                 subscriptionData.data["subBoard"]["secondaryColor"]
+    //             );
+    //             const therapeutic = colorTranslate(
+    //                 subscriptionData.data["subBoard"]["therapeuticColor"]
+    //             );
+    //             setColors({
+    //                 primaryColor: primary,
+    //                 secondaryColor: secondary,
+    //                 therapeuticColor: therapeutic,
+    //             });
+    //             setPrimaryColor(primary);
+    //             setSecondaryColor(secondary);
+    //             setTherapeuticColor(therapeutic);
+    //         },
+    //     });
+
+    //     return () => {
+    //         if (unsubBoard) unsubBoard();
+    //     };
+    // }, []);
 
     return null;
 };
