@@ -2,6 +2,7 @@
     "name": "kokoro-react",
     "version": "0.1.0",
     "private": true,
+    "homepage": "https://omizha.github.io/Space4U-client",
     "dependencies": {
         "@apollo/client": "^3.5.10",
         "@belivvr/aframe-react": "^0.4.1",
@@ -20,6 +21,7 @@
         "babel-plugin-glsl": "^1.0.0",
         "formik": "^2.2.9",
         "formik-mui": "^4.0.0-alpha.3",
+        "gh-pages": "^4.0.0",
         "glslify": "^7.1.1",
         "graphql": "^16.3.0",
         "graphql-ws": "^5.6.4",
@@ -44,7 +46,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "deploy": "gh-pages -d build"
     },
     "eslintConfig": {
         "extends": [
